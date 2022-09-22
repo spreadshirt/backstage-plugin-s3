@@ -1,0 +1,9 @@
+deployment/target
+dist
+dist-types
+coverage
+.vscode
+venv
+*.md
+*.yaml
+*.yml
