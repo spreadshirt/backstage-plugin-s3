@@ -1,5 +1,11 @@
 # @spreadshirt/backstage-plugin-s3-viewer-backend
 
+## 0.1.3
+
+### Patch Changes
+
+- 5ad44d7: Fix discoveryApi call by getting the externalBaseUrl instead of the baseUrl
+
 ## 0.1.2
 
 ### Patch Changes
