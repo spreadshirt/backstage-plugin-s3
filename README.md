@@ -20,3 +20,9 @@ Check the installation process for these plugins in the following links:
 - After every change made in the plugins, execute `yarn changeset` and follow the steps.
 - When everything is ready, execute locally `yarn release` to update all the plugin versions, update the `CHANGELOG.md` files & update the `yarn.lock`.
 - Finally, run `yarn publish-release` to publish the packages to npm.
+
+## License
+
+Copyright 2020-2022 © sprd.net AG. All rights reserved.
+
+Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
