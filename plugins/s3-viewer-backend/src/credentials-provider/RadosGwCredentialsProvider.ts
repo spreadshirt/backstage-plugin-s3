@@ -61,15 +61,15 @@ export class RadosGwCredentialsProvider implements CredentialsProvider {
             const allowedBuckets =
               this.allowedBuckets[platform.endpointName] || [];
 
+            // If no allowedBuckets defined for the platform, all its buckets are allowed by default
             if (allowedBuckets.length === 0) {
               return true;
             }
 
             return allowedBuckets.some(a => {
-              if (a.includes('*')) {
-                return b.match(a);
-              }
-              return b === a;
+              // Add the start/end of regular expression, so no unexpected matches happen
+              // Example: `test` should't match `test-one`, but `test.*` should.
+              return b.match(`^${a}$`);
             });
           });
 

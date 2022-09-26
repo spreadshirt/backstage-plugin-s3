@@ -29,7 +29,6 @@ export const getCombinedCredentialsProvider = (
   const allowedBuckets: { [key: string]: string[] } = {};
   Object.entries(rootConfig.getOptional('s3.allowedBuckets') ?? {}).forEach(
     ([platform, buckets]) => {
-      console.log(`Platform: ${platform}. Data: ${buckets}`);
       allowedBuckets[platform] = buckets as string[];
     },
   );
@@ -43,6 +42,7 @@ export const getCombinedCredentialsProvider = (
           return ConfigCredentialsProvider.fromConfig(
             clusterLocatorMethod,
             logger,
+            allowedBuckets,
           );
         case 'radosgw-admin':
           return RadosGwCredentialsProvider.fromConfig(
