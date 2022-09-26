@@ -82,12 +82,12 @@ s3:
           name: radosgw-endpoint-name
           accessKeyId: ${RADOSGW_ACCESS_KEY}
           secretAccessKey: ${RADOSGW_SECRET_KEY}
-  excludedBuckets:
+  allowedBuckets:
     endpoint-one-name:
-      - secure-bucket-one
-      - secure-bucket-two
+      - allowed-bucket-one
+      - allowed-bucket-two
     radosgw-endpoint-name:
-      - other-secure-bucket
+      - other-allowed-bucket
 ```
 
 ### bucketLocatorMethods
@@ -145,9 +145,11 @@ The accessKeyId to access the platform information or to make requests to radosg
 
 The secretAccessKey to access the platform information or to make requests to radosgw-admin. Right now, it's more than enough to use a key with `read` permissions.
 
-### excludedBuckets
+### allowedBuckets
 
-It is also possible to filter out certain buckets that might have sensitive data that you don't want normal developers to see. To achieve that you need to specify the __platform name__ and then an array of buckets to be ignored. You can add as much as you want.
+For security, when selecting the `radosgw-admin` mode, you need to specify a list of buckets that are whitelisted. It can be done by doing regex as well. So `test-bucket-.*` would allow `test-bucket-one`, `test-bucket-two` and so on.
+
+To achieve that you need to specify the __platform name__ and then an array of buckets to be allowed. You can add as much as you want. And if a platform is not defined here, by default all the buckets will be allowed.
 
 ## Customization
 

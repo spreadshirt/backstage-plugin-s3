@@ -26,6 +26,14 @@ export const getCombinedCredentialsProvider = (
   rootConfig: Config,
   logger: Logger,
 ): CombinedCredentialsProvider => {
+  const allowedBuckets: { [key: string]: string[] } = {};
+  Object.entries(rootConfig.getOptional('s3.allowedBuckets') ?? {}).forEach(
+    ([platform, buckets]) => {
+      console.log(`Platform: ${platform}. Data: ${buckets}`);
+      allowedBuckets[platform] = buckets as string[];
+    },
+  );
+
   const credentialsProvider = rootConfig
     .getConfigArray('s3.bucketLocatorMethods')
     .map(clusterLocatorMethod => {
@@ -40,6 +48,7 @@ export const getCombinedCredentialsProvider = (
           return RadosGwCredentialsProvider.fromConfig(
             clusterLocatorMethod,
             logger,
+            allowedBuckets,
           );
         default:
           throw new Error(`Unsupported s3.bucketLocatorMethods: "${type}"`);

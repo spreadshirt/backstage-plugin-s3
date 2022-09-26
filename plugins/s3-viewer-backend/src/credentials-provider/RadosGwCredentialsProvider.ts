@@ -15,11 +15,16 @@ type RadosGwAdminUserInfo = {
 };
 
 export class RadosGwCredentialsProvider implements CredentialsProvider {
-  constructor(readonly platforms: S3Platform[], readonly logger: Logger) {}
+  constructor(
+    readonly platforms: S3Platform[],
+    readonly logger: Logger,
+    readonly allowedBuckets: { [key: string]: string[] },
+  ) {}
 
   static fromConfig(
     config: Config,
     logger: Logger,
+    allowedBuckets: { [key: string]: string[] },
   ): RadosGwCredentialsProvider {
     const platforms: S3Platform[] = config
       .getConfigArray('platforms')
@@ -35,7 +40,7 @@ export class RadosGwCredentialsProvider implements CredentialsProvider {
         };
       });
 
-    return new RadosGwCredentialsProvider(platforms, logger);
+    return new RadosGwCredentialsProvider(platforms, logger, allowedBuckets);
   }
 
   async getBucketCredentials(): Promise<BucketCredentials[]> {
@@ -50,7 +55,24 @@ export class RadosGwCredentialsProvider implements CredentialsProvider {
             sha256: Sha256,
           });
 
-          const bucketList = await this.fetchBuckets(platform.endpoint, signer);
+          const bucketList = (
+            await this.fetchBuckets(platform.endpoint, signer)
+          ).filter(b => {
+            const allowedBuckets =
+              this.allowedBuckets[platform.endpointName] || [];
+
+            if (allowedBuckets.length === 0) {
+              return true;
+            }
+
+            return allowedBuckets.some(a => {
+              if (a.includes('*')) {
+                return b.match(a);
+              }
+              return b === a;
+            });
+          });
+
           await Promise.all(
             bucketList.map(async bucket => {
               const bucketOwner = await this.getBucketOwner(
