@@ -7,7 +7,6 @@ import {
 import { BucketDetails } from '@spreadshirt/backstage-plugin-s3-viewer-common';
 import { Logger } from 'winston';
 import { S3 } from 'aws-sdk';
-import { Config } from '@backstage/config';
 import { HumanDuration, PluginTaskScheduler } from '@backstage/backend-tasks';
 
 export class S3BucketsProvider implements BucketsProvider {
@@ -19,7 +18,6 @@ export class S3BucketsProvider implements BucketsProvider {
     readonly scheduler: PluginTaskScheduler,
     readonly credentialsProvider: CredentialsProvider,
     readonly statsProvider: BucketStatsProvider | undefined,
-    readonly excludedBucket: { [key: string]: string[] },
     readonly refreshInterval: HumanDuration | undefined,
   ) {
     this.buckets = [];
@@ -28,25 +26,16 @@ export class S3BucketsProvider implements BucketsProvider {
 
   static async create(
     logger: Logger,
-    config: Config,
     scheduler: PluginTaskScheduler,
     credentialsProvider: CredentialsProvider,
     statsProvider: BucketStatsProvider | undefined,
     refreshInterval: HumanDuration | undefined,
   ): Promise<S3BucketsProvider> {
-    const excludedBuckets: { [key: string]: string[] } = {};
-    Object.entries(config.getOptional('s3.excludedBuckets') ?? {}).forEach(
-      ([platform, buckets]) => {
-        excludedBuckets[platform] = buckets as string[];
-      },
-    );
-
     const bucketsProvider = new S3BucketsProvider(
       logger,
       scheduler,
       credentialsProvider,
       statsProvider,
-      excludedBuckets,
       refreshInterval,
     );
     await bucketsProvider.start();

@@ -4,9 +4,17 @@ import { Logger } from 'winston';
 import { BucketCredentials, CredentialsProvider, S3Platform } from '../types';
 
 export class ConfigCredentialsProvider implements CredentialsProvider {
-  constructor(readonly platforms: S3Platform[], readonly logger: Logger) {}
+  constructor(
+    readonly platforms: S3Platform[],
+    readonly logger: Logger,
+    readonly allowedBuckets: { [key: string]: string[] },
+  ) {}
 
-  static fromConfig(config: Config, logger: Logger): ConfigCredentialsProvider {
+  static fromConfig(
+    config: Config,
+    logger: Logger,
+    allowedBuckets: { [key: string]: string[] },
+  ): ConfigCredentialsProvider {
     const platforms: S3Platform[] = config
       .getConfigArray('platforms')
       .map(cfg => {
@@ -21,7 +29,7 @@ export class ConfigCredentialsProvider implements CredentialsProvider {
         };
       });
 
-    return new ConfigCredentialsProvider(platforms, logger);
+    return new ConfigCredentialsProvider(platforms, logger, allowedBuckets);
   }
 
   async getBucketCredentials(): Promise<BucketCredentials[]> {
@@ -41,7 +49,23 @@ export class ConfigCredentialsProvider implements CredentialsProvider {
             .promise();
 
           const buckets =
-            bucketList.Buckets?.map(b => b.Name || '').filter(b => b) || [];
+            bucketList.Buckets?.map(b => b.Name || '')
+              .filter(b => b)
+              .filter(b => {
+                const allowedBuckets =
+                  this.allowedBuckets[platform.endpointName] || [];
+
+                // If no allowedBuckets defined for the platform, all its buckets are allowed by default
+                if (allowedBuckets.length === 0) {
+                  return true;
+                }
+
+                return allowedBuckets.some(a => {
+                  // Add the start/end of regular expression, so no unexpected matches happen
+                  // Example: `test` should't match `test-one`, but `test.*` should.
+                  return b.match(`^${a}$`);
+                });
+              }) || [];
           const creds: BucketCredentials[] = buckets.map(b => ({
             bucket: b,
             credentials: platform.credentials,

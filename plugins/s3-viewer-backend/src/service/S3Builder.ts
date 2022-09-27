@@ -59,7 +59,6 @@ export class S3Builder {
       this.bucketsProvider ??
       (await S3BucketsProvider.create(
         logger,
-        config,
         scheduler,
         credentialsProvider,
         this.statsProvider,
