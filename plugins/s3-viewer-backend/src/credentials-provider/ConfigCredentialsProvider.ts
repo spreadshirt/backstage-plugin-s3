@@ -75,7 +75,7 @@ export class ConfigCredentialsProvider implements CredentialsProvider {
           bucketCreds.push(...creds);
         } catch (err) {
           this.logger.error(
-            `Error fecthing credentials for buckets in ${platform.endpoint}: ${err}`,
+            `Error fetching credentials for buckets in ${platform.endpoint}: ${err}`,
           );
         }
       }),

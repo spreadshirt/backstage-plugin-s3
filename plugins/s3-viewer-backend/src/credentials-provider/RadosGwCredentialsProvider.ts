@@ -102,7 +102,7 @@ export class RadosGwCredentialsProvider implements CredentialsProvider {
           );
         } catch (err) {
           this.logger.error(
-            `Error fecthing credentials for buckets in ${platform.endpoint}: ${err}`,
+            `Error fetching credentials for buckets in ${platform.endpoint}: ${err}`,
           );
         }
       }),
