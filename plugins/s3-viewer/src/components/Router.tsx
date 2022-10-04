@@ -20,7 +20,7 @@ import { S3ViewerPage } from './S3ViewerPage';
 export const Router = () => {
   return (
     <Routes>
-      <Route path="*" element={<S3ViewerPage />} />
+      <Route path="/" element={<S3ViewerPage />} />
       <Route path="/:endpoint/:bucket" element={<S3ViewerPage />} />
       <Route path="/:endpoint/:bucket/*" element={<S3ViewerPage />} />
     </Routes>
