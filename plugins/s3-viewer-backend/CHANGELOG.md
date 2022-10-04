@@ -1,5 +1,13 @@
 # @spreadshirt/backstage-plugin-s3-viewer-backend
 
+## 0.1.5
+
+### Patch Changes
+
+- 58dcfce: Upgrade dependencies to backstage 1.6.0 & migrate to react-router v6 stable
+- Updated dependencies [58dcfce]
+  - @spreadshirt/backstage-plugin-s3-viewer-common@0.1.2
+
 ## 0.1.4
 
 ### Patch Changes
