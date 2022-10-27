@@ -1,5 +1,5 @@
 module.exports = require('@backstage/cli/config/eslint-factory')(__dirname, {
-    rules: {
-      'no-console': 'error',
-    },
-  });
+  rules: {
+    'no-console': 'error',
+  },
+});
