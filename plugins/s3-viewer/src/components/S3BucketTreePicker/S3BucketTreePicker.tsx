@@ -9,6 +9,7 @@ import {
   ListItem,
   ListItemText,
   makeStyles,
+  Tooltip,
   Typography,
 } from '@material-ui/core';
 import { BackstageTheme } from '@backstage/theme';
@@ -91,11 +92,10 @@ export const S3BucketTreePicker = ({
     <List dense className={classes.list}>
       {Object.entries(bucketsByEndpoint).map(
         ([endpointName, buckets], idxOne) => (
-          <>
+          <React.Fragment key={idxOne}>
             <ListItem
               className={classes.endpoint}
               onClick={() => handleCollapseClick(endpointName)}
-              key={idxOne}
             >
               <ListItemText primary={endpointName} />
               {open === endpointName ? <ExpandLess /> : <ExpandMore />}
@@ -117,12 +117,14 @@ export const S3BucketTreePicker = ({
                       }
                     }}
                   >
-                    <ListItemText primary={bucketName} />
+                    <Tooltip title={bucketName}>
+                      <ListItemText primary={bucketName} />
+                    </Tooltip>
                   </ListItem>
                 ))}
               </List>
             </Collapse>
-          </>
+          </React.Fragment>
         ),
       )}
     </List>
