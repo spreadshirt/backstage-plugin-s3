@@ -1729,6 +1729,20 @@
     lodash "^4.17.21"
     luxon "^3.0.0"
 
+"@backstage/plugin-auth-node@^0.2.6":
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/@backstage/plugin-auth-node/-/plugin-auth-node-0.2.6.tgz#c9b45bef7a72a5fe4394d95e9977ae09afd479c4"
+  integrity sha512-Uv2QES6X8fPqOruGdDlP3WyzSuEfOJZDIWEsw1Cy7ZCqz3+BZ4LSxZDLpzE/nrqe/xiFmGsldQbionW9MWni+w==
+  dependencies:
+    "@backstage/backend-common" "^0.15.2"
+    "@backstage/config" "^1.0.3"
+    "@backstage/errors" "^1.1.2"
+    "@types/express" "*"
+    express "^4.17.1"
+    jose "^4.6.0"
+    node-fetch "^2.6.7"
+    winston "^3.2.1"
+
 "@backstage/plugin-catalog-common@^1.0.8":
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/@backstage/plugin-catalog-common/-/plugin-catalog-common-1.0.8.tgz#13da7a87c913e042248cbb731011f11746250c36"

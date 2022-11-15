@@ -1,5 +1,6 @@
 import { Config } from '@backstage/config';
-import express, { Router } from 'express';
+import express from 'express';
+import Router from 'express-promise-router';
 import { Logger } from 'winston';
 import {
   BucketsProvider,
@@ -14,7 +15,8 @@ import {
 } from '@backstage/backend-common';
 import { PluginTaskScheduler } from '@backstage/backend-tasks';
 import { HumanDuration } from '@backstage/types';
-import { assertError } from '@backstage/errors';
+import { assertError, AuthenticationError } from '@backstage/errors';
+import { IdentityApi } from '@backstage/plugin-auth-node';
 import { getCombinedCredentialsProvider } from '../credentials-provider';
 
 export interface S3Environment {
@@ -22,10 +24,11 @@ export interface S3Environment {
   config: Config;
   scheduler: PluginTaskScheduler;
   discovery: PluginEndpointDiscovery;
+  identity: IdentityApi;
 }
 
 export interface S3BuilderReturn {
-  router: Router;
+  router: express.Router;
 }
 
 export class S3Builder {
@@ -146,12 +149,30 @@ export class S3Builder {
   }
 
   /**
+   * Analyzes the identity of the user that made the request and checks
+   * for permissions to make such request. Throws an error if the request
+   * is not authorized or the user has no permissions.
+   *
+   * @param request - The received request
+   */
+  private async evaluateRequest(request: express.Request) {
+    const user = await this.env.identity.getIdentity({ request });
+    if (process.env.NODE_ENV === 'production' && !user) {
+      throw new AuthenticationError(
+        "Missing 'Authorization' header in request",
+      );
+    }
+    // TODO: Add permissionChecks as well, and throw NotAllowedError in case a user
+    // cannot access data for a bucket (from where does that data come from?)
+  }
+
+  /**
    * Builds the backend routes for S3.
    *
    * @param client - The S3 client used to list the secrets.
    * @returns The generated backend router
    */
-  protected buildRouter(client: S3Client): Router {
+  protected buildRouter(client: S3Client): express.Router {
     const router = Router();
     router.use(express.json());
 
@@ -159,7 +180,9 @@ export class S3Builder {
       res.json({ status: 'ok' });
     });
 
-    router.get('/buckets', async (_req, res) => {
+    router.get('/buckets', async (req, res) => {
+      await this.evaluateRequest(req);
+
       const buckets = this.bucketsProvider?.getAllBuckets();
       if (!buckets) {
         res.sendStatus(404);
@@ -167,6 +190,8 @@ export class S3Builder {
       res.json(buckets);
     });
     router.get('/buckets/by-endpoint', async (req, res) => {
+      await this.evaluateRequest(req);
+
       const { endpoint } = req.query;
       const bucketsByEndpoint = this.bucketsProvider?.getBucketsByEndpoint(
         endpoint as string,
@@ -177,7 +202,9 @@ export class S3Builder {
       res.json(bucketsByEndpoint);
     });
 
-    router.get('/buckets/grouped', async (_req, res) => {
+    router.get('/buckets/grouped', async (req, res) => {
+      await this.evaluateRequest(req);
+
       const groupedBuckets = this.bucketsProvider?.getGroupedBuckets();
       if (!groupedBuckets) {
         res.sendStatus(404);
@@ -186,6 +213,8 @@ export class S3Builder {
     });
 
     router.get(`/bucket/:bucket`, async (req, res) => {
+      await this.evaluateRequest(req);
+
       const { bucket } = req.params;
       const { endpoint } = req.query;
       const bucketInfo = this.bucketsProvider?.getBucketInfo(
@@ -199,6 +228,8 @@ export class S3Builder {
     });
 
     router.get('/bucket/:bucket/keys', async (req, res) => {
+      await this.evaluateRequest(req);
+
       const { bucket } = req.params;
       const { continuationToken, pageSize, folder, prefix, endpoint } =
         req.query;
@@ -220,6 +251,8 @@ export class S3Builder {
     });
 
     router.get('/bucket/:bucket/:key', async (req, res) => {
+      await this.evaluateRequest(req);
+
       const { bucket, key } = req.params;
       const { endpoint } = req.query;
       try {
@@ -233,6 +266,8 @@ export class S3Builder {
     });
 
     router.get('/stream/:bucket/:key', async (req, res) => {
+      await this.evaluateRequest(req);
+
       const { bucket, key } = req.params;
       const { endpoint } = req.query;
 

@@ -32,6 +32,7 @@ To get started, follow these steps:
         logger: env.logger,
         scheduler: env.scheduler,
         discovery: env.discovery,
+        identity: env.identity,
       }).build();
       return router;
     }
@@ -118,6 +119,7 @@ It is also possible to create a new CredentialsProvider if that is required for 
     logger: env.logger,
     scheduler: env.scheduler,
     discovery: env.discovery,
+    identity: env.identity,
   }).setCredentialsProvider(new CustomCredentialsProvider());
 
   const { router } = await builder.build();
@@ -165,6 +167,7 @@ First of all, the client used to communicate with the S3 buckets can be overwrit
     logger: env.logger,
     scheduler: env.scheduler,
     discovery: env.discovery,
+    identity: env.identity,
   }).setClient(new CustomS3Client());
 
   const { router } = await builder.build();
@@ -180,6 +183,7 @@ It is responsible for fetching all the bucket information for the obtained platf
     logger: env.logger,
     scheduler: env.scheduler,
     discovery: env.discovery,
+    identity: env.identity,
   }).setBucketsProvider(new CustomBucketsProvider());
 
   const { router } = await builder.build();
@@ -195,6 +199,7 @@ By default, the S3 API doesn't provide a straight forward way to fetch informati
     logger: env.logger,
     scheduler: env.scheduler,
     discovery: env.discovery,
+    identity: env.identity,
   }).setBucketStatsProvider(new CustomBucketStatsProvider());
 
   const { router } = await builder.build();
@@ -210,6 +215,7 @@ Finally, it might be useful to refresh the bucket information, so that this data
     logger: env.logger,
     scheduler: env.scheduler,
     discovery: env.discovery,
+    identity: env.identity,
   }).setRefreshInternal({ minutes: 30 });
 
   const { router } = await builder.build();

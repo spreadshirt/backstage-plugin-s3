@@ -4,6 +4,8 @@ import {
   createPlugin,
   DiscoveryApi,
   discoveryApiRef,
+  IdentityApi,
+  identityApiRef,
 } from '@backstage/core-plugin-api';
 import { S3Client, S3ApiRef } from './api';
 
@@ -14,11 +16,11 @@ export const s3ViewerPlugin = createPlugin({
   apis: [
     createApiFactory({
       api: S3ApiRef,
-      deps: { discoveryApi: discoveryApiRef },
-      factory: ({ discoveryApi }: { discoveryApi: DiscoveryApi }) =>
-        new S3Client({
-          discoveryApi,
-        }),
+      deps: { discoveryApi: discoveryApiRef, identityApi: identityApiRef },
+      factory: (deps: {
+        discoveryApi: DiscoveryApi;
+        identityApi: IdentityApi;
+      }) => new S3Client(deps),
     }),
   ],
   routes: {

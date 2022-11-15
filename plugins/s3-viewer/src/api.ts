@@ -1,4 +1,8 @@
-import { DiscoveryApi, createApiRef } from '@backstage/core-plugin-api';
+import {
+  DiscoveryApi,
+  createApiRef,
+  IdentityApi,
+} from '@backstage/core-plugin-api';
 import {
   BucketDetails,
   FetchObjectResult,
@@ -67,8 +71,16 @@ export interface S3Api {
 
 export class S3Client implements S3Api {
   discoveryApi: DiscoveryApi;
-  constructor({ discoveryApi }: { discoveryApi: DiscoveryApi }) {
+  identityApi: IdentityApi;
+  constructor({
+    discoveryApi,
+    identityApi,
+  }: {
+    discoveryApi: DiscoveryApi;
+    identityApi: IdentityApi;
+  }) {
     this.discoveryApi = discoveryApi;
+    this.identityApi = identityApi;
   }
 
   private async callApi<T>(
@@ -76,17 +88,30 @@ export class S3Client implements S3Api {
     query: { [key in string]: any },
   ): Promise<T> {
     const apiUrl = await this.discoveryApi.getBaseUrl('s3');
+    const identity = await this.identityApi.getBackstageIdentity();
+    const { token } = await this.identityApi.getCredentials();
+
+    // The Authorization is not needed if in dev mode & the user is guest.
     const response = await fetch(
       `${apiUrl}/${path}?${new URLSearchParams(query).toString()}`,
-      {
-        headers: {
-          Accept: 'application/json',
-        },
-      },
+      identity.userEntityRef === 'user:default/guest' &&
+        process.env.NODE_ENV !== 'production'
+        ? {
+            headers: {
+              Accept: 'application/json',
+            },
+          }
+        : {
+            headers: {
+              Accept: 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+          },
     );
+
     if (!response.ok) {
       throw new Error(
-        `Error fetching s3 data from path '${path}': ${await response.text()}`,
+        `Request failed for ${path}, ${response.status} ${response.statusText}`,
       );
     }
 
