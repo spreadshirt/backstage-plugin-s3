@@ -15,8 +15,20 @@ import {
 } from '@backstage/backend-common';
 import { PluginTaskScheduler } from '@backstage/backend-tasks';
 import { HumanDuration } from '@backstage/types';
-import { assertError, AuthenticationError } from '@backstage/errors';
+import {
+  assertError,
+  AuthenticationError,
+  NotAllowedError,
+} from '@backstage/errors';
 import { IdentityApi } from '@backstage/plugin-auth-node';
+import {
+  AuthorizePermissionRequest,
+  AuthorizeResult,
+  PermissionEvaluator,
+  PolicyDecision,
+  QueryPermissionRequest,
+} from '@backstage/plugin-permission-common';
+import { permissions } from '@spreadshirt/backstage-plugin-s3-viewer-common';
 import { getCombinedCredentialsProvider } from '../credentials-provider';
 
 export interface S3Environment {
@@ -25,6 +37,7 @@ export interface S3Environment {
   scheduler: PluginTaskScheduler;
   discovery: PluginEndpointDiscovery;
   identity: IdentityApi;
+  permissions: PermissionEvaluator;
 }
 
 export interface S3BuilderReturn {
@@ -155,15 +168,38 @@ export class S3Builder {
    *
    * @param request - The received request
    */
-  private async evaluateRequest(request: express.Request) {
+  private async evaluateRequest(
+    request: express.Request,
+    permission: AuthorizePermissionRequest | QueryPermissionRequest,
+  ): Promise<{
+    decision: PolicyDecision;
+  }> {
+    // If not in production, allow all the requests
+    if (process.env.NODE_ENV !== 'production') {
+      return {
+        decision: { result: AuthorizeResult.ALLOW },
+      };
+    }
+
     const user = await this.env.identity.getIdentity({ request });
-    if (process.env.NODE_ENV === 'production' && !user) {
+    if (!user) {
       throw new AuthenticationError(
         "Missing 'Authorization' header in request",
       );
     }
-    // TODO: Add permissionChecks as well, and throw NotAllowedError in case a user
-    // cannot access data for a bucket (from where does that data come from?)
+
+    const decision = (
+      await this.env.permissions.authorize(
+        [permission as AuthorizePermissionRequest],
+        { token: user.token },
+      )
+    )[0];
+
+    if (decision.result === AuthorizeResult.DENY) {
+      throw new NotAllowedError('Unauthorized');
+    }
+
+    return { decision };
   }
 
   /**
@@ -181,7 +217,9 @@ export class S3Builder {
     });
 
     router.get('/buckets', async (req, res) => {
-      await this.evaluateRequest(req);
+      await this.evaluateRequest(req, {
+        permission: permissions.s3ViewerBucketsList,
+      });
 
       const buckets = this.bucketsProvider?.getAllBuckets();
       if (!buckets) {
@@ -190,7 +228,9 @@ export class S3Builder {
       res.json(buckets);
     });
     router.get('/buckets/by-endpoint', async (req, res) => {
-      await this.evaluateRequest(req);
+      await this.evaluateRequest(req, {
+        permission: permissions.s3ViewerBucketsList,
+      });
 
       const { endpoint } = req.query;
       const bucketsByEndpoint = this.bucketsProvider?.getBucketsByEndpoint(
@@ -203,7 +243,9 @@ export class S3Builder {
     });
 
     router.get('/buckets/grouped', async (req, res) => {
-      await this.evaluateRequest(req);
+      await this.evaluateRequest(req, {
+        permission: permissions.s3ViewerBucketsList,
+      });
 
       const groupedBuckets = this.bucketsProvider?.getGroupedBuckets();
       if (!groupedBuckets) {
@@ -213,7 +255,9 @@ export class S3Builder {
     });
 
     router.get(`/bucket/:bucket`, async (req, res) => {
-      await this.evaluateRequest(req);
+      await this.evaluateRequest(req, {
+        permission: permissions.s3ViewerBucketsRead,
+      });
 
       const { bucket } = req.params;
       const { endpoint } = req.query;
@@ -228,7 +272,9 @@ export class S3Builder {
     });
 
     router.get('/bucket/:bucket/keys', async (req, res) => {
-      await this.evaluateRequest(req);
+      await this.evaluateRequest(req, {
+        permission: permissions.s3ViewerBucketsRead,
+      });
 
       const { bucket } = req.params;
       const { continuationToken, pageSize, folder, prefix, endpoint } =
@@ -251,7 +297,9 @@ export class S3Builder {
     });
 
     router.get('/bucket/:bucket/:key', async (req, res) => {
-      await this.evaluateRequest(req);
+      await this.evaluateRequest(req, {
+        permission: permissions.s3ViewerObjectRead,
+      });
 
       const { bucket, key } = req.params;
       const { endpoint } = req.query;
@@ -266,7 +314,9 @@ export class S3Builder {
     });
 
     router.get('/stream/:bucket/:key', async (req, res) => {
-      await this.evaluateRequest(req);
+      await this.evaluateRequest(req, {
+        permission: permissions.s3ViewerObjectDownload,
+      });
 
       const { bucket, key } = req.params;
       const { endpoint } = req.query;

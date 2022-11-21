@@ -88,25 +88,16 @@ export class S3Client implements S3Api {
     query: { [key in string]: any },
   ): Promise<T> {
     const apiUrl = await this.discoveryApi.getBaseUrl('s3');
-    const identity = await this.identityApi.getBackstageIdentity();
     const { token } = await this.identityApi.getCredentials();
 
-    // The Authorization is not needed if in dev mode & the user is guest.
     const response = await fetch(
       `${apiUrl}/${path}?${new URLSearchParams(query).toString()}`,
-      identity.userEntityRef === 'user:default/guest' &&
-        process.env.NODE_ENV !== 'production'
-        ? {
-            headers: {
-              Accept: 'application/json',
-            },
-          }
-        : {
-            headers: {
-              Accept: 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-          },
+      {
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      },
     );
 
     if (!response.ok) {

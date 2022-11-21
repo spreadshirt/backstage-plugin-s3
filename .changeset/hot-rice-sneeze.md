@@ -2,7 +2,7 @@
 '@spreadshirt/backstage-plugin-s3-viewer-backend': minor
 ---
 
-**BREAKING**: The s3-viewer-backend `createRouter` now requires that the `identityApi` is passed to the router.
+**BREAKING**: The s3-viewer-backend `createRouter` now requires that the `identityApi` and `permissionEvaluator` is passed to the router.
 
   These changes are **required** to `packages/backend/src/plugins/s3.ts`
 
@@ -22,6 +22,7 @@
       scheduler: env.scheduler,
       discovery: env.discovery,
 +     identity: env.identity,
++     permissions: env.permissions,
       }).build();
       return router;
   }

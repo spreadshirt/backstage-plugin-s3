@@ -8,6 +8,8 @@ Amazon Simple Storage Service (Amazon S3) is an object storage service that offe
 
 With this plugin you will be able to navigate around your internal AWS S3 storage using a table view, as well as previewing and downloading the objects stored there.
 
+It also includes a permission integration, to restrict access to certain data within your S3 instance.
+
 ## Getting started
 
 To get started, follow these steps:
@@ -33,6 +35,7 @@ To get started, follow these steps:
         scheduler: env.scheduler,
         discovery: env.discovery,
         identity: env.identity,
+        permissions: env.permissions,
       }).build();
       return router;
     }
@@ -120,6 +123,7 @@ It is also possible to create a new CredentialsProvider if that is required for 
     scheduler: env.scheduler,
     discovery: env.discovery,
     identity: env.identity,
+    permissions: env.permissions,
   }).setCredentialsProvider(new CustomCredentialsProvider());
 
   const { router } = await builder.build();
@@ -168,6 +172,7 @@ First of all, the client used to communicate with the S3 buckets can be overwrit
     scheduler: env.scheduler,
     discovery: env.discovery,
     identity: env.identity,
+    permissions: env.permissions,
   }).setClient(new CustomS3Client());
 
   const { router } = await builder.build();
@@ -184,6 +189,7 @@ It is responsible for fetching all the bucket information for the obtained platf
     scheduler: env.scheduler,
     discovery: env.discovery,
     identity: env.identity,
+    permissions: env.permissions,
   }).setBucketsProvider(new CustomBucketsProvider());
 
   const { router } = await builder.build();
@@ -200,6 +206,7 @@ By default, the S3 API doesn't provide a straight forward way to fetch informati
     scheduler: env.scheduler,
     discovery: env.discovery,
     identity: env.identity,
+    permissions: env.permissions,
   }).setBucketStatsProvider(new CustomBucketStatsProvider());
 
   const { router } = await builder.build();
@@ -216,7 +223,39 @@ Finally, it might be useful to refresh the bucket information, so that this data
     scheduler: env.scheduler,
     discovery: env.discovery,
     identity: env.identity,
+    permissions: env.permissions,
   }).setRefreshInternal({ minutes: 30 });
 
   const { router } = await builder.build();
+```
+
+## Permissions Setup
+
+The information present in the S3 buckets can be dangerous to be shared to all the Backstage users. Therefore, the permissions setup is needed. In order to make it work, every request to this plugin needs to have an `Authorization` header or a cookie called `token`. To achieve that, you can follow this tutorial to [Authenticate API requests](https://github.com/backstage/backstage/blob/master/contrib/docs/tutorials/authenticate-api-requests.md). Note that the [service-to-service auth](https://backstage.io/docs/auth/service-to-service-auth) is also needed.
+
+Once this setup is done, you will need to extend the permission policy to check for the available permissions and `ALLOW` or `DENY` the access to any data you want. This step is completely up to the end user, as the way of obtaining this permissions might differ from every company. The following example would allow to list all the buckets and keys, but deny downloading the objects:
+
+```typescript
+  // In packages/backend/src/plugins/permission.ts
+  import { S3_VIEWER_RESOURCE_TYPE, permissions as s3ViewerPermissions } from '@spreadshirt/backstage-plugin-s3-viewer-common';
+  // other imports...
+
+  exporrt class CustomPolicy implements PermissionPolicy {
+    async handle(
+    request: PolicyQuery,
+    user?: BackstageIdentityResponse,
+  ): Promise<PolicyDecision> {
+    // other permission checks
+
+    if (isResourcePermission(request.permission, S3_VIEWER_RESOURCE_TYPE)) {
+      if (isPermission(request.permission, s3ViewerPermissions.s3ViewerObjectDownload)) {
+        return { result: AuthorizeResult.DENY };
+      }
+      return { result: AuthorizeResult.ALLOW };
+    }
+
+    return { result: AuthorizeResult.ALLOW };
+  }
+  }
+  
 ```
