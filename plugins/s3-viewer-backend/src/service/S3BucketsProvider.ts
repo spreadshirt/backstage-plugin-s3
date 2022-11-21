@@ -7,7 +7,8 @@ import {
 import { BucketDetails } from '@spreadshirt/backstage-plugin-s3-viewer-common';
 import { Logger } from 'winston';
 import { S3 } from 'aws-sdk';
-import { HumanDuration, PluginTaskScheduler } from '@backstage/backend-tasks';
+import { PluginTaskScheduler } from '@backstage/backend-tasks';
+import { HumanDuration } from '@backstage/types';
 
 export class S3BucketsProvider implements BucketsProvider {
   private buckets: BucketDetails[];

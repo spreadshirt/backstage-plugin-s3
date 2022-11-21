@@ -19,21 +19,22 @@
   "scripts": {
     "tsc": "tsc",
     "tsc:full": "backstage-cli repo clean && tsc --skipLibCheck false --incremental false",
-    "build": "backstage-cli repo build --all",
+    "build:backend": "yarn workspace backend build",
+    "build:all": "backstage-cli repo build --all",
     "clean": "backstage-cli repo clean",
     "test": "backstage-cli test",
     "test:all": "backstage-cli test --coverage",
     "lint": "backstage-cli repo lint",
-    "ci": "yarn install && tsc && yarn build && backstage-cli test --no-watch && yarn lint",
+    "ci": "yarn install && tsc && yarn build:all && backstage-cli test --no-watch && yarn lint",
     "start:frontend": "yarn workspace @spreadshirt/backstage-plugin-s3-viewer start",
     "start:backend": "yarn workspace @spreadshirt/backstage-plugin-s3-viewer-backend start",
     "release": "changeset version && yarn prettier --write 'plugins/*/{package.json,CHANGELOG.md}' '.changeset/*.json' && yarn install --no-immutable",
     "publish-release": "changeset publish",
     "prettier:check": "prettier --check .",
-    "npm:release": "yarn install && tsc && yarn build && changeset publish"
+    "npm:release": "yarn install && tsc && yarn build:all && changeset publish"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.20.0",
+    "@backstage/cli": "^0.21.1",
     "@changesets/cli": "^2.24.4",
     "@spotify/prettier-config": "^12.0.0",
     "@types/react": "^17.0.0",
