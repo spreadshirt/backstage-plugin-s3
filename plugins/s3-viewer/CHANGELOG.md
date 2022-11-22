@@ -1,5 +1,14 @@
 # @spreadshirt/backstage-plugin-s3-viewer
 
+## 0.1.4
+
+### Patch Changes
+
+- 74fef18: Update dependencies to backstage 1.8.2
+- 48da476: Added `Tooltip` to the `S3BucketTreePicker` elements & fix of missing key to list elements
+- Updated dependencies [74fef18]
+  - @spreadshirt/backstage-plugin-s3-viewer-common@0.1.4
+
 ## 0.1.3
 
 ### Patch Changes
