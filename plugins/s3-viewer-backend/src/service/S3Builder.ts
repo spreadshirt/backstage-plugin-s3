@@ -12,7 +12,8 @@ import {
   errorHandler,
   PluginEndpointDiscovery,
 } from '@backstage/backend-common';
-import { HumanDuration, PluginTaskScheduler } from '@backstage/backend-tasks';
+import { PluginTaskScheduler } from '@backstage/backend-tasks';
+import { HumanDuration } from '@backstage/types';
 import { assertError } from '@backstage/errors';
 import { getCombinedCredentialsProvider } from '../credentials-provider';
 
