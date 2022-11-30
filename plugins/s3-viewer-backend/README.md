@@ -285,11 +285,13 @@ The information present in the S3 buckets can be dangerous to be shared to all t
 
 3. If needed, the `useMiddleware` function allows you to inject a custom middleware, in case you need to execute something else. By default, it will use a middleware like the one defined [here](https://github.com/backstage/backstage/blob/master/contrib/docs/tutorials/authenticate-api-requests.md).
 
+**NOTE**: The usage of the middleware is meant to be used in production enviroments, when `NODE_ENV` is set to `production`. While working in development with a `guest` user, please set this environment variable to another value (like `development`), so the authorization won't fail due to an invalid token.
+
 Once this setup is done, you will need to extend the permission policy to check for the available permissions and `ALLOW` or `DENY` the access to any data you want. This step is completely up to the end user, as the way of obtaining this permissions might differ from every company. The following example would allow to list all the buckets and keys, but deny downloading the objects:
 
 ```typescript
   // In packages/backend/src/plugins/permission.ts
-  import { S3_VIEWER_RESOURCE_TYPE, permissions as s3ViewerPermissions } from '@spreadshirt/backstage-plugin-s3-viewer-common';
+  import { S3_VIEWER_RESOURCE_TYPE, s3ViewerPermissions } from '@spreadshirt/backstage-plugin-s3-viewer-common';
   // other imports...
 
   exporrt class CustomPolicy implements PermissionPolicy {
@@ -300,7 +302,7 @@ Once this setup is done, you will need to extend the permission policy to check 
     // other permission checks
 
     if (isResourcePermission(request.permission, S3_VIEWER_RESOURCE_TYPE)) {
-      if (isPermission(request.permission, s3ViewerPermissions.s3ViewerObjectDownload)) {
+      if (isPermission(request.permission, s3ViewerPermissions.s3ObjectDownload)) {
         return { result: AuthorizeResult.DENY };
       }
       return { result: AuthorizeResult.ALLOW };
@@ -308,6 +310,48 @@ Once this setup is done, you will need to extend the permission policy to check 
 
     return { result: AuthorizeResult.ALLOW };
   }
+  
+```
+
+It's also possible to use conditional permissions. This allows the backend to filter elements depending on certain conditions. Right now it's possible to make conditional decisions on the bucket name and the bucket's owner. If a conditional permission is used, the backend will then apply a filter, so the frontend won't display the buckets that are not matching the conditions.
+
+In the following example, we are allowing all the users to **list** all the buckets with owner `team-one` or `team-two`, but then restricting the **read** access to the buckets that are only owned by `team-one` (therefore, no bucket information will be available and no keys will be displayed in the table). Finally, the other requests of type `S3_VIEWER_RESOURCE_TYPE` will be denied: 
+
+```typescript
+  // In packages/backend/src/plugins/permission.ts
+  import { S3_VIEWER_RESOURCE_TYPE, s3ViewerPermissions } from '@spreadshirt/backstage-plugin-s3-viewer-common';
+  // other imports...
+
+  exporrt class CustomPolicy implements PermissionPolicy {
+    async handle(
+    request: PolicyQuery,
+    user?: BackstageIdentityResponse,
+  ): Promise<PolicyDecision> {
+    // other permission checks
+
+    if (isResourcePermission(request.permission, S3_VIEWER_RESOURCE_TYPE)) {
+      if (isPermission(request.permission, s3ViewerPermissions.s3BucketList)) {
+        return createS3ViewerBucketsConditionalDecision(
+          request.permission,
+          s3ViewerBucketConditions.isBucketOwner({
+            owners: ['team-one', 'team-two'],
+          }),
+        );
+      }
+      if (isPermission(request.permission, s3ViewerPermissions.s3BucketRead)) {
+        return createS3ViewerBucketsConditionalDecision(
+          request.permission,
+          s3ViewerBucketConditions.isBucketOwner({
+            owners: ['team-one'],
+          }),
+        );
+      }
+      return { result: AuthorizeResult.DENY };
+    }
+
+    return { result: AuthorizeResult.ALLOW };
   }
   
 ```
+
+In case the access to buckets and other resources is dependant on the logged in user, then you will need to fetch that information from an external source and apply the conditional decisions accordingly. This is not provided by the s3 plugin.
