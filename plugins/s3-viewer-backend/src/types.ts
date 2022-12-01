@@ -2,6 +2,7 @@ import {
   BucketDetails,
   BucketStats,
 } from '@spreadshirt/backstage-plugin-s3-viewer-common';
+import { BucketDetailsFilters } from './permissions';
 
 export type S3Platform = {
   endpoint: string;
@@ -34,24 +35,39 @@ export interface BucketsProvider {
   fetchBuckets(): Promise<void>;
 
   /**
-   * Returns all the bucket names found.
+   * Returns all the discovered bucket names. The list can be filtered out
+   * if a conditional permission was used in a custom permission policy.
+   *
+   * @param filter The filter used to filter the buckets
    */
-  getAllBuckets(): string[];
+  getAllBuckets(filter?: BucketDetailsFilters): string[];
 
   /**
-   * Returns all the bucket names found for a certain endpoint.
+   * Returns all the bucket names found for a certain endpoint. This list can
+   * be filtered out if a conditional permission has been defined in the
+   * permission backend.
+   *
    * @param endpoint The endpoint to fetch the bucket names
+   * @param filter The filter used to filter the buckets
    */
-  getBucketsByEndpoint(endpoint: string): string[];
+  getBucketsByEndpoint(
+    endpoint: string,
+    filter?: BucketDetailsFilters,
+  ): string[];
 
   /**
    * Returns all the bucket names grouped by the endpoint where
-   * they are located. Used for the tree view in the UI.
+   * they are located. Used for the tree view in the UI. This list
+   * can be filtered out if a conditional permission has been
+   * defined in the permission backend.
+   *
+   * @param filter The filter used to filter the buckets
    */
-  getGroupedBuckets(): Record<string, string[]>;
+  getGroupedBuckets(filter?: BucketDetailsFilters): Record<string, string[]>;
 
   /**
    * Gets the bucket details or `undefined` if not found.
+   *
    * @param endpoint The endpoint where the bucket is located
    * @param bucket The bucket name to fetch info from
    */
@@ -60,6 +76,7 @@ export interface BucketsProvider {
   /**
    * Gets the credentials stored to read from a bucket in a certain endpoint,
    * or `undefined` if not found.
+   *
    * @param endpoint The endpoint where the bucket is located
    * @param bucket The bucket name to fetch the credentials
    */
@@ -74,6 +91,7 @@ export interface BucketStatsProvider {
    * Returns the bucket stats for a certain bucket. It's not possible
    * to fetch this data from the S3 API, so it has to be a custom
    * method fetching the data from an external source.
+   *
    * @param endpoint The endpoint where the bucket is located
    * @param bucket The bucket name to fetch the stats
    */

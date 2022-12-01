@@ -9,6 +9,7 @@ import { Logger } from 'winston';
 import { S3 } from 'aws-sdk';
 import { PluginTaskScheduler } from '@backstage/backend-tasks';
 import { HumanDuration } from '@backstage/types';
+import { BucketDetailsFilters, matches } from '../permissions';
 
 export class S3BucketsProvider implements BucketsProvider {
   private buckets: BucketDetails[];
@@ -126,29 +127,38 @@ export class S3BucketsProvider implements BucketsProvider {
     this.bucketCreds = bucketCredentials;
   }
 
-  getAllBuckets(): string[] {
-    return this.buckets.map(b => b.bucket).sort();
+  getAllBuckets(filter?: BucketDetailsFilters): string[] {
+    return this.buckets
+      .filter(b => matches(b, filter))
+      .map(b => b.bucket)
+      .sort();
   }
 
-  getBucketsByEndpoint(endpoint: string): string[] {
+  getBucketsByEndpoint(
+    endpoint: string,
+    filter?: BucketDetailsFilters,
+  ): string[] {
     return this.buckets
+      .filter(b => matches(b, filter))
       .filter(b => b.endpoint === endpoint || b.endpointName === endpoint)
       .map(b => b.bucket)
       .sort();
   }
 
-  getGroupedBuckets(): Record<string, string[]> {
+  getGroupedBuckets(filter?: BucketDetailsFilters): Record<string, string[]> {
     const bucketsByEndpoint: Record<string, string[]> = {};
 
-    this.buckets.forEach(b => {
-      const endpoint = b.endpointName;
-      if (!bucketsByEndpoint[endpoint]) {
-        bucketsByEndpoint[endpoint] = [];
-      }
-      if (!bucketsByEndpoint[endpoint].includes(b.bucket)) {
-        bucketsByEndpoint[endpoint].push(b.bucket);
-      }
-    });
+    this.buckets
+      .filter(bucket => matches(bucket, filter))
+      .forEach(b => {
+        const endpoint = b.endpointName;
+        if (!bucketsByEndpoint[endpoint]) {
+          bucketsByEndpoint[endpoint] = [];
+        }
+        if (!bucketsByEndpoint[endpoint].includes(b.bucket)) {
+          bucketsByEndpoint[endpoint].push(b.bucket);
+        }
+      });
 
     Object.keys(bucketsByEndpoint).forEach(key => {
       bucketsByEndpoint[key] = bucketsByEndpoint[key].sort();

@@ -8,6 +8,8 @@ Amazon Simple Storage Service (Amazon S3) is an object storage service that offe
 
 With this plugin you will be able to navigate around your internal AWS S3 storage using a table view, as well as previewing and downloading the objects stored there.
 
+It also includes a permission integration, to restrict access to certain data within your S3 instance.
+
 ## Getting started
 
 To get started, follow these steps:
@@ -32,6 +34,9 @@ To get started, follow these steps:
         logger: env.logger,
         scheduler: env.scheduler,
         discovery: env.discovery,
+        identity: env.identity,
+        permissions: env.permissions,
+        tokenManager: env.tokenManager,
       }).build();
       return router;
     }
@@ -118,6 +123,9 @@ It is also possible to create a new CredentialsProvider if that is required for 
     logger: env.logger,
     scheduler: env.scheduler,
     discovery: env.discovery,
+    identity: env.identity,
+    permissions: env.permissions,
+    tokenManager: env.tokenManager,
   }).setCredentialsProvider(new CustomCredentialsProvider());
 
   const { router } = await builder.build();
@@ -165,6 +173,9 @@ First of all, the client used to communicate with the S3 buckets can be overwrit
     logger: env.logger,
     scheduler: env.scheduler,
     discovery: env.discovery,
+    identity: env.identity,
+    permissions: env.permissions,
+    tokenManager: env.tokenManager,
   }).setClient(new CustomS3Client());
 
   const { router } = await builder.build();
@@ -180,6 +191,9 @@ It is responsible for fetching all the bucket information for the obtained platf
     logger: env.logger,
     scheduler: env.scheduler,
     discovery: env.discovery,
+    identity: env.identity,
+    permissions: env.permissions,
+    tokenManager: env.tokenManager,
   }).setBucketsProvider(new CustomBucketsProvider());
 
   const { router } = await builder.build();
@@ -195,6 +209,9 @@ By default, the S3 API doesn't provide a straight forward way to fetch informati
     logger: env.logger,
     scheduler: env.scheduler,
     discovery: env.discovery,
+    identity: env.identity,
+    permissions: env.permissions,
+    tokenManager: env.tokenManager,
   }).setBucketStatsProvider(new CustomBucketStatsProvider());
 
   const { router } = await builder.build();
@@ -210,7 +227,131 @@ Finally, it might be useful to refresh the bucket information, so that this data
     logger: env.logger,
     scheduler: env.scheduler,
     discovery: env.discovery,
+    identity: env.identity,
+    permissions: env.permissions,
+    tokenManager: env.tokenManager,
   }).setRefreshInternal({ minutes: 30 });
 
   const { router } = await builder.build();
 ```
+
+## Permissions Setup
+
+The information present in the S3 buckets can be dangerous to be shared to all the Backstage users. Therefore, the permissions setup is needed. In order to make it work, every request to this plugin needs to have an `Authorization` header or a cookie called `s3_viewer_token`. Due to the current design, some requests cannot add the header properly, so the way to solve this issue is enabling a middleware. First, note that the [service-to-service auth](https://backstage.io/docs/auth/service-to-service-auth) is needed. Then, a few steps need to be followed to fully support this feature:
+
+1. Customize the `SignInPage` to add a token as soon as a user is logged in:
+  ```typescript
+  // In packages/app/src/App.tsx
+  // ...
+  import { setTokenCookie } from '@spreadshirt/backstage-plugin-s3-viewer-common';
+
+  const app = createApp({
+    // ...
+
+    components: {
+      SignInPage: props => {
+        const discoveryApi = useApi(discoveryApiRef);
+        return (
+         <SignInPage // Or ProxiedSignInPage
+            {...props}
+            providers={['guest', 'custom', ...providers]}
+            onSignInSuccess={async (identityApi: IdentityApi) => {
+              await setTokenCookie(discoveryApi, identityApi);
+              props.onSignInSuccess(identityApi);
+            }}
+          />
+        );
+      },
+    },
+
+    // ...
+  });
+  ```
+
+2. Then, enable this feature in the backend. For that, add this function before the `build()` step:
+  ```typescript
+  const builder = S3Builder.createBuilder({
+    config: env.config,
+    logger: env.logger,
+    scheduler: env.scheduler,
+    discovery: env.discovery,
+    identity: env.identity,
+    permissions: env.permissions,
+    tokenManager: env.tokenManager,
+  }).useMiddleware();
+
+  const { router } = await builder.build();
+  ```
+
+3. If needed, the `useMiddleware` function allows you to inject a custom middleware, in case you need to execute something else. By default, it will use a middleware like the one defined [here](https://github.com/backstage/backstage/blob/master/contrib/docs/tutorials/authenticate-api-requests.md).
+
+**NOTE**: The usage of the middleware is meant to be used in production enviroments, when `NODE_ENV` is set to `production`. While working in development with a `guest` user, please set this environment variable to another value (like `development`), so the authorization won't fail due to an invalid token.
+
+Once this setup is done, you will need to extend the permission policy to check for the available permissions and `ALLOW` or `DENY` the access to any data you want. This step is completely up to the end user, as the way of obtaining this permissions might differ from every company. The following example would allow to list all the buckets and keys, but deny downloading the objects:
+
+```typescript
+  // In packages/backend/src/plugins/permission.ts
+  import { S3_VIEWER_RESOURCE_TYPE, s3ViewerPermissions } from '@spreadshirt/backstage-plugin-s3-viewer-common';
+  // other imports...
+
+  exporrt class CustomPolicy implements PermissionPolicy {
+    async handle(
+    request: PolicyQuery,
+    user?: BackstageIdentityResponse,
+  ): Promise<PolicyDecision> {
+    // other permission checks
+
+    if (isResourcePermission(request.permission, S3_VIEWER_RESOURCE_TYPE)) {
+      if (isPermission(request.permission, s3ViewerPermissions.s3ObjectDownload)) {
+        return { result: AuthorizeResult.DENY };
+      }
+      return { result: AuthorizeResult.ALLOW };
+    }
+
+    return { result: AuthorizeResult.ALLOW };
+  }
+  
+```
+
+It's also possible to use conditional permissions. This allows the backend to filter elements depending on certain conditions. Right now it's possible to make conditional decisions on the bucket name and the bucket's owner. If a conditional permission is used, the backend will then apply a filter, so the frontend won't display the buckets that are not matching the conditions.
+
+In the following example, we are allowing all the users to **list** all the buckets with owner `team-one` or `team-two`, but then restricting the **read** access to the buckets that are only owned by `team-one` (therefore, no bucket information will be available and no keys will be displayed in the table). Finally, the other requests of type `S3_VIEWER_RESOURCE_TYPE` will be denied: 
+
+```typescript
+  // In packages/backend/src/plugins/permission.ts
+  import { S3_VIEWER_RESOURCE_TYPE, s3ViewerPermissions } from '@spreadshirt/backstage-plugin-s3-viewer-common';
+  // other imports...
+
+  exporrt class CustomPolicy implements PermissionPolicy {
+    async handle(
+    request: PolicyQuery,
+    user?: BackstageIdentityResponse,
+  ): Promise<PolicyDecision> {
+    // other permission checks
+
+    if (isResourcePermission(request.permission, S3_VIEWER_RESOURCE_TYPE)) {
+      if (isPermission(request.permission, s3ViewerPermissions.s3BucketList)) {
+        return createS3ViewerBucketsConditionalDecision(
+          request.permission,
+          s3ViewerBucketConditions.isBucketOwner({
+            owners: ['team-one', 'team-two'],
+          }),
+        );
+      }
+      if (isPermission(request.permission, s3ViewerPermissions.s3BucketRead)) {
+        return createS3ViewerBucketsConditionalDecision(
+          request.permission,
+          s3ViewerBucketConditions.isBucketOwner({
+            owners: ['team-one'],
+          }),
+        );
+      }
+      return { result: AuthorizeResult.DENY };
+    }
+
+    return { result: AuthorizeResult.ALLOW };
+  }
+  
+```
+
+In case the access to buckets and other resources is dependant on the logged in user, then you will need to fetch that information from an external source and apply the conditional decisions accordingly. This is not provided by the s3 plugin.

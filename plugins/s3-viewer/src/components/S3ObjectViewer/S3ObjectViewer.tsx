@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { FetchObjectResult } from '@spreadshirt/backstage-plugin-s3-viewer-common';
 import {
   createStyles,
@@ -17,31 +17,26 @@ import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles(() =>
   createStyles({
-    loadingContainer: {
-      width: '100%',
+    margin: {
+      marginTop: '10px',
+      marginBottom: '10px',
     },
-    previewContainer: {
-      marginBottom: '20px',
-      textAlign: 'center',
+    loading: {
+      width: '90%',
     },
     preview: {
-      maxWidth: '100%',
+      textAlign: 'center',
+      maxWidth: '50%',
       maxHeight: '300px',
     },
   }),
 );
 
-type S3ObjectViewProps = {
+type S3PreviewProps = {
   objectInfo: FetchObjectResult | undefined;
-  loadingObjectInfo: boolean;
-  errorObjectInfo: Error | undefined;
 };
 
-export const S3ObjectViewer = ({
-  objectInfo,
-  loadingObjectInfo,
-  errorObjectInfo,
-}: S3ObjectViewProps) => {
+export const S3Preview = ({ objectInfo }: S3PreviewProps) => {
   const classes = useStyles();
 
   const isPreviewAvailable = (obj: FetchObjectResult | undefined) => {
@@ -75,10 +70,38 @@ export const S3ObjectViewer = ({
     isPreviewAvailable(objectInfo),
   );
 
-  useEffect(
-    () => setIsPreviewLoading(isPreviewAvailable(objectInfo)),
-    [objectInfo],
+  if (!isPreviewAvailable(objectInfo) || !objectInfo) {
+    return <></>;
+  }
+
+  return (
+    <>
+      {isPreviewLoading && <Progress className={classes.loading} />}
+      <img
+        title={`Preview for "${objectInfo.downloadName}"`}
+        alt={`Preview for "${objectInfo.downloadName}"`}
+        src={objectInfo.downloadUrl}
+        loading="lazy"
+        className={classes.preview}
+        onLoad={() => setIsPreviewLoading(false)}
+        onError={() => setIsPreviewLoading(false)}
+      />
+    </>
   );
+};
+
+type S3ObjectViewProps = {
+  objectInfo: FetchObjectResult | undefined;
+  loadingObjectInfo: boolean;
+  errorObjectInfo: Error | undefined;
+};
+
+export const S3ObjectViewer = ({
+  objectInfo,
+  loadingObjectInfo,
+  errorObjectInfo,
+}: S3ObjectViewProps) => {
+  const classes = useStyles();
 
   if (loadingObjectInfo) {
     return <Progress />;
@@ -113,30 +136,9 @@ export const S3ObjectViewer = ({
           direction="column"
           alignItems="center"
           justifyContent="center"
+          className={classes.margin}
         >
-          <Grid item xs={10} className={classes.loadingContainer}>
-            {isPreviewLoading && <Progress />}
-          </Grid>
-        </Grid>
-        <Grid
-          container
-          direction="column"
-          alignItems="center"
-          justifyContent="center"
-        >
-          {isPreviewAvailable(objectInfo) && (
-            <Grid item xs={6} className={classes.previewContainer}>
-              <img
-                title={`Preview for "${objectInfo.downloadName}"`}
-                alt={`Preview for "${objectInfo.downloadName}"`}
-                src={objectInfo.downloadUrl}
-                loading="lazy"
-                className={classes.preview}
-                onLoad={() => setIsPreviewLoading(false)}
-                onError={() => setIsPreviewLoading(false)}
-              />
-            </Grid>
-          )}
+          <S3Preview objectInfo={objectInfo} />
         </Grid>
         <Grid
           container
@@ -148,7 +150,9 @@ export const S3ObjectViewer = ({
             <Button
               style={{ textDecoration: 'none' }}
               variant="outlined"
+              title={`Download ${objectInfo.downloadName}`}
               to={objectInfo.downloadUrl}
+              download={objectInfo.downloadName}
             >
               Download
             </Button>

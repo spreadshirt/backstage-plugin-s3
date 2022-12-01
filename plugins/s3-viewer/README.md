@@ -43,6 +43,13 @@ To get started, follow these steps:
     ```
 4. Add the configuration to the `app-config.yaml` file. This is described in the backend plugin.
 
+5. As the object's preview is streamed from the backend and then displayed as a blob, a new content security polciy needs to be added to the list:
+    ```yaml
+    csp:
+      # Note that it has to be appended to the list, don't remove the other entries!
+      img-src: ['blob:']
+    ```
+
 ## Features
 
 - Available endpoints and buckets displayed in a tree view. By clicking them you can select one bucket or another.
@@ -52,3 +59,4 @@ To get started, follow these steps:
   - If the object is not an image, it won't be loaded.
   - For performance reasons, only the images with a size below 2MB will be loaded.
 - Custom URL generated depending on the selected item, this allows you to share a link to someone else pointing to a concrete endpoint, bucket and even object.
+- Authenticated requests, which can be authorized or rejected in the backend side depending on the user permissions.

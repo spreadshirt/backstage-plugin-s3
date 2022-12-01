@@ -1,5 +1,6 @@
 import { Config } from '@backstage/config';
-import express, { Router } from 'express';
+import express from 'express';
+import Router from 'express-promise-router';
 import { Logger } from 'winston';
 import {
   BucketsProvider,
@@ -11,21 +12,45 @@ import { S3Client } from './S3Api';
 import {
   errorHandler,
   PluginEndpointDiscovery,
+  TokenManager,
 } from '@backstage/backend-common';
 import { PluginTaskScheduler } from '@backstage/backend-tasks';
 import { HumanDuration } from '@backstage/types';
-import { assertError } from '@backstage/errors';
+import {
+  assertError,
+  AuthenticationError,
+  NotAllowedError,
+  NotFoundError,
+} from '@backstage/errors';
+import { IdentityApi } from '@backstage/plugin-auth-node';
+import {
+  AuthorizeResult,
+  PermissionEvaluator,
+  PolicyDecision,
+  QueryPermissionRequest,
+} from '@backstage/plugin-permission-common';
+import { permissions } from '@spreadshirt/backstage-plugin-s3-viewer-common';
 import { getCombinedCredentialsProvider } from '../credentials-provider';
+import cookieParser from 'cookie-parser';
+import { noopMiddleware, s3Middleware } from '../middleware';
+import {
+  BucketDetailsFilters,
+  matches,
+  transformConditions,
+} from '../permissions';
 
 export interface S3Environment {
   logger: Logger;
   config: Config;
   scheduler: PluginTaskScheduler;
   discovery: PluginEndpointDiscovery;
+  identity: IdentityApi;
+  permissions: PermissionEvaluator;
+  tokenManager: TokenManager;
 }
 
 export interface S3BuilderReturn {
-  router: Router;
+  router: express.Router;
 }
 
 export class S3Builder {
@@ -34,6 +59,7 @@ export class S3Builder {
   private credentialsProvider?: CredentialsProvider;
   private bucketsProvider?: BucketsProvider;
   private statsProvider?: BucketStatsProvider;
+  private s3Middleware: express.RequestHandler = noopMiddleware();
 
   constructor(protected readonly env: S3Environment) {}
 
@@ -146,46 +172,175 @@ export class S3Builder {
   }
 
   /**
+   * Sets the middleware to be used in the s3 backend. By default it's a no-op middleware.
+   * Used to authenticate the requests from the frontend, specially the streaming ones,
+   * as it's not possible to add the headers in the frontend plugin.
+   *
+   * This is needed to use the permissions setup. Even though, in a development setup this
+   * command can be skipped, otherwise the requests to the backend will all return a 401.
+   *
+   * @param middleware - The middleware used in the s3 backend. If not set,
+   * the default one will be used
+   * @returns
+   */
+  public async useMiddleware(
+    middleware?: (
+      config: Config,
+      appEnv: S3Environment,
+    ) => Promise<express.RequestHandler>,
+  ) {
+    this.s3Middleware = middleware
+      ? await middleware(this.env.config, this.env)
+      : await s3Middleware(this.env.config, this.env);
+    return this;
+  }
+
+  /**
+   * Analyzes the identity of the user that made the request and checks
+   * for permissions to make such request. Throws an error if the request
+   * is not authorized or the user has no permissions.
+   *
+   * @param request - The received request
+   * @param permission - The permission to be checked by the backend
+   * @returns The decision made by the backend
+   */
+  private async evaluateRequest(
+    request: express.Request,
+    permission: QueryPermissionRequest,
+  ): Promise<{
+    decision: PolicyDecision;
+  }> {
+    let token: string | undefined = undefined;
+    if (process.env.NODE_ENV === 'production') {
+      const user = await this.env.identity.getIdentity({ request });
+      if (!user) {
+        throw new AuthenticationError(
+          "Missing 'Authorization' header in request",
+        );
+      }
+      token = user.token;
+    }
+
+    const decision = (
+      await this.env.permissions.authorizeConditional([permission], { token })
+    )[0];
+
+    if (decision.result === AuthorizeResult.DENY) {
+      throw new NotAllowedError('Unauthorized');
+    }
+
+    return { decision };
+  }
+
+  /**
+   * Parses the decision retuned by the permission backend into a bucket filter, which
+   * is used in the bucketsProvider to return only the allowed buckets.
+   *
+   * @param decision - The decision returned by the permission backend
+   * @returns The filter used if the decision is conditional. `undefined` otherwise
+   */
+  protected getBucketFilter(
+    decision: PolicyDecision,
+  ): BucketDetailsFilters | undefined {
+    if (decision.result !== AuthorizeResult.CONDITIONAL) {
+      return undefined;
+    }
+    return transformConditions(decision.conditions);
+  }
+
+  /**
+   * Receives the decision made and checks if the user is allowed to make such request.
+   *
+   * It throws an error if the bucket is not found or if the user is not
+   * authorized to request data for a certain bucket.
+   *
+   * @param endpoint - The endpoint where the bucket is
+   * @param bucket - The bucket name
+   * @param decision - The decision returned by the permission backend
+   */
+  protected requireBucketPermission(
+    endpoint: string,
+    bucket: string,
+    decision: PolicyDecision,
+  ) {
+    const bucketInfo = this.bucketsProvider?.getBucketInfo(endpoint, bucket);
+    if (!bucketInfo) {
+      throw new NotFoundError();
+    }
+
+    const filter = this.getBucketFilter(decision);
+    if (!matches(bucketInfo, filter)) {
+      throw new NotAllowedError();
+    }
+  }
+
+  /**
    * Builds the backend routes for S3.
    *
    * @param client - The S3 client used to list the secrets.
    * @returns The generated backend router
    */
-  protected buildRouter(client: S3Client): Router {
+  protected buildRouter(client: S3Client): express.Router {
     const router = Router();
     router.use(express.json());
+    router.use(cookieParser());
 
     router.get('/health', (_, res) => {
       res.json({ status: 'ok' });
     });
 
-    router.get('/buckets', async (_req, res) => {
-      const buckets = this.bucketsProvider?.getAllBuckets();
+    router.get('/cookie', this.s3Middleware, (_req, res) => {
+      res.status(200).send('Setting S3 cookie');
+    });
+
+    router.get('/buckets', this.s3Middleware, async (req, res) => {
+      const { decision } = await this.evaluateRequest(req, {
+        permission: permissions.s3BucketList,
+      });
+
+      const filter = this.getBucketFilter(decision);
+      const buckets = this.bucketsProvider?.getAllBuckets(filter);
       if (!buckets) {
-        res.sendStatus(404);
+        throw new NotFoundError();
       }
       res.json(buckets);
     });
-    router.get('/buckets/by-endpoint', async (req, res) => {
+
+    router.get('/buckets/by-endpoint', this.s3Middleware, async (req, res) => {
+      const { decision } = await this.evaluateRequest(req, {
+        permission: permissions.s3BucketList,
+      });
+
+      const filter = this.getBucketFilter(decision);
       const { endpoint } = req.query;
       const bucketsByEndpoint = this.bucketsProvider?.getBucketsByEndpoint(
         endpoint as string,
+        filter,
       );
       if (!bucketsByEndpoint) {
-        res.sendStatus(404);
+        throw new NotFoundError();
       }
       res.json(bucketsByEndpoint);
     });
 
-    router.get('/buckets/grouped', async (_req, res) => {
-      const groupedBuckets = this.bucketsProvider?.getGroupedBuckets();
+    router.get('/buckets/grouped', this.s3Middleware, async (req, res) => {
+      const { decision } = await this.evaluateRequest(req, {
+        permission: permissions.s3BucketList,
+      });
+
+      const filter = this.getBucketFilter(decision);
+      const groupedBuckets = this.bucketsProvider?.getGroupedBuckets(filter);
       if (!groupedBuckets) {
-        res.sendStatus(404);
+        throw new NotFoundError();
       }
       res.json(groupedBuckets);
     });
 
-    router.get(`/bucket/:bucket`, async (req, res) => {
+    router.get(`/bucket/:bucket`, this.s3Middleware, async (req, res) => {
+      const { decision } = await this.evaluateRequest(req, {
+        permission: permissions.s3BucketRead,
+      });
+
       const { bucket } = req.params;
       const { endpoint } = req.query;
       const bucketInfo = this.bucketsProvider?.getBucketInfo(
@@ -193,64 +348,71 @@ export class S3Builder {
         bucket,
       );
       if (!bucketInfo) {
-        res.sendStatus(404);
+        throw new NotFoundError();
+      }
+
+      const filter = this.getBucketFilter(decision);
+      if (!matches(bucketInfo, filter)) {
+        throw new NotAllowedError();
       }
       res.json(bucketInfo);
     });
 
-    router.get('/bucket/:bucket/keys', async (req, res) => {
+    router.get('/bucket/:bucket/keys', this.s3Middleware, async (req, res) => {
+      const { decision } = await this.evaluateRequest(req, {
+        permission: permissions.s3BucketRead,
+      });
+
       const { bucket } = req.params;
       const { continuationToken, pageSize, folder, prefix, endpoint } =
         req.query;
-      try {
-        const data = await client.listBucketKeys(
-          endpoint as string,
-          bucket,
-          continuationToken as string,
-          Number(pageSize as string),
-          folder as string,
-          prefix as string,
-        );
-        res.json(data);
-      } catch (e) {
-        assertError(e);
-        this.env.logger.error(e.message);
-        res.status(400).send(e.message);
-      }
+
+      this.requireBucketPermission(endpoint as string, bucket, decision);
+
+      const keys = await client.listBucketKeys(
+        endpoint as string,
+        bucket,
+        continuationToken as string,
+        Number(pageSize as string),
+        folder as string,
+        prefix as string,
+      );
+      res.json(keys);
     });
 
-    router.get('/bucket/:bucket/:key', async (req, res) => {
-      const { bucket, key } = req.params;
-      const { endpoint } = req.query;
-      try {
-        const data = await client.headObject(endpoint as string, bucket, key);
-        res.json(data);
-      } catch (e) {
-        assertError(e);
-        this.env.logger.error(e.message);
-        res.status(400).send(e.message);
-      }
-    });
+    router.get('/bucket/:bucket/:key', this.s3Middleware, async (req, res) => {
+      const { decision } = await this.evaluateRequest(req, {
+        permission: permissions.s3ObjectRead,
+      });
 
-    router.get('/stream/:bucket/:key', async (req, res) => {
       const { bucket, key } = req.params;
       const { endpoint } = req.query;
 
-      try {
-        const data = await client.headObject(endpoint as string, bucket, key);
-        res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
-        res.setHeader(
-          'Content-Disposition',
-          `attachment; filename="${data.downloadName}"`,
-        );
-        res.setHeader('Content-Type', data.contentType);
-        if (data.contentLength) {
-          res.setHeader('Content-Length', data.contentLength);
-        }
-      } catch (e) {
-        assertError(e);
-        this.env.logger.error(e.message);
-        res.status(400).send(e.message);
+      this.requireBucketPermission(endpoint as string, bucket, decision);
+
+      const object = await client.headObject(endpoint as string, bucket, key);
+      res.json(object);
+    });
+
+    router.get('/stream/:bucket/:key', this.s3Middleware, async (req, res) => {
+      const { decision } = await this.evaluateRequest(req, {
+        permission: permissions.s3ObjectDownload,
+      });
+
+      const { bucket, key } = req.params;
+      const { endpoint } = req.query;
+
+      this.requireBucketPermission(endpoint as string, bucket, decision);
+
+      const object = await client.headObject(endpoint as string, bucket, key);
+      res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
+      res.setHeader(
+        'Content-Disposition',
+        `attachment; filename="${object.downloadName}"`,
+      );
+      res.setHeader('Content-Type', object.contentType);
+      if (object.contentLength) {
+        res.setHeader('Content-Length', object.contentLength);
       }
 
       const body = await client.streamObject(endpoint as string, bucket, key);
@@ -263,7 +425,7 @@ export class S3Builder {
       body.on('end', () => res.send());
     });
 
-    router.use(errorHandler());
+    router.use(this.s3Middleware, errorHandler());
 
     return router;
   }
