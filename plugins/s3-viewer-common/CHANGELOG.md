@@ -1,5 +1,11 @@
 # @spreadshirt/backstage-plugin-s3-viewer-common
 
+## 0.2.0
+
+### Minor Changes
+
+- caaac67: Add permissions to plugin
+
 ## 0.1.4
 
 ### Patch Changes
