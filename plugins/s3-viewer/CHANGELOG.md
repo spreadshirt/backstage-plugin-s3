@@ -1,5 +1,17 @@
 # @spreadshirt/backstage-plugin-s3-viewer
 
+## 0.2.0
+
+### Minor Changes
+
+- aa8f726: Prepare frontend plugin to use the identityApi. This will allow the backend determine if
+  a user is allowed to fetch data for a certain bucket or not.
+
+### Patch Changes
+
+- Updated dependencies [caaac67]
+  - @spreadshirt/backstage-plugin-s3-viewer-common@0.2.0
+
 ## 0.1.4
 
 ### Patch Changes
