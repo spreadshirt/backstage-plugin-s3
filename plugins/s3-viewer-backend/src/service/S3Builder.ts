@@ -258,7 +258,7 @@ export class S3Builder {
    * @param bucket - The bucket name
    * @param decision - The decision returned by the permission backend
    */
-  protected analyzeBucketPermission(
+  protected requireBucketPermission(
     endpoint: string,
     bucket: string,
     decision: PolicyDecision,
@@ -367,7 +367,7 @@ export class S3Builder {
       const { continuationToken, pageSize, folder, prefix, endpoint } =
         req.query;
 
-      this.analyzeBucketPermission(endpoint as string, bucket, decision);
+      this.requireBucketPermission(endpoint as string, bucket, decision);
 
       const keys = await client.listBucketKeys(
         endpoint as string,
@@ -388,7 +388,7 @@ export class S3Builder {
       const { bucket, key } = req.params;
       const { endpoint } = req.query;
 
-      this.analyzeBucketPermission(endpoint as string, bucket, decision);
+      this.requireBucketPermission(endpoint as string, bucket, decision);
 
       const object = await client.headObject(endpoint as string, bucket, key);
       res.json(object);
@@ -402,7 +402,7 @@ export class S3Builder {
       const { bucket, key } = req.params;
       const { endpoint } = req.query;
 
-      this.analyzeBucketPermission(endpoint as string, bucket, decision);
+      this.requireBucketPermission(endpoint as string, bucket, decision);
 
       const object = await client.headObject(endpoint as string, bucket, key);
       res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');

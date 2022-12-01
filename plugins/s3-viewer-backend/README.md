@@ -237,7 +237,7 @@ Finally, it might be useful to refresh the bucket information, so that this data
 
 ## Permissions Setup
 
-The information present in the S3 buckets can be dangerous to be shared to all the Backstage users. Therefore, the permissions setup is needed. In order to make it work, every request to this plugin needs to have an `Authorization` header or a cookie called `token`. Due to the current design, some requests cannot add the header properly, so the way to solve this issue is enabling a middleware. First, note that the [service-to-service auth](https://backstage.io/docs/auth/service-to-service-auth) is needed. Then, a few steps need to be followed to fully support this feature:
+The information present in the S3 buckets can be dangerous to be shared to all the Backstage users. Therefore, the permissions setup is needed. In order to make it work, every request to this plugin needs to have an `Authorization` header or a cookie called `s3_viewer_token`. Due to the current design, some requests cannot add the header properly, so the way to solve this issue is enabling a middleware. First, note that the [service-to-service auth](https://backstage.io/docs/auth/service-to-service-auth) is needed. Then, a few steps need to be followed to fully support this feature:
 
 1. Customize the `SignInPage` to add a token as soon as a user is logged in:
   ```typescript

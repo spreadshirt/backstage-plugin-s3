@@ -13,7 +13,7 @@ function setTokenCookie(
 ) {
   try {
     const payload = decodeJwt(options.token);
-    res.cookie('token', options.token, {
+    res.cookie('s3_viewer_token', options.token, {
       expires: new Date(payload.exp ? payload.exp * 1000 : 0),
       secure: options.secure,
       sameSite: 'lax',
@@ -53,7 +53,7 @@ export const s3Middleware = async (config: Config, appEnv: S3Environment) => {
     try {
       const token =
         getBearerTokenFromAuthorizationHeader(req.headers.authorization) ||
-        (req.cookies?.token as string | undefined);
+        (req.cookies?.s3_viewer_token as string | undefined);
       if (!token) {
         res.status(401).send('Unauthorized');
         return;
@@ -71,7 +71,7 @@ export const s3Middleware = async (config: Config, appEnv: S3Environment) => {
         // Authorization header may be forwarded by plugin requests
         req.headers.authorization = `Bearer ${token}`;
       }
-      if (token && token !== req.cookies?.token) {
+      if (token && token !== req.cookies?.s3_viewer_token) {
         setTokenCookie(res, {
           token,
           secure,
