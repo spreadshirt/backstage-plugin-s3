@@ -5,3 +5,17 @@ app:
 
 backend:
   baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+
+permission:
+  enabled: true
+
+s3:
+  bucketLocatorMethods:
+    - type: config
+      platforms:
+        - endpoint: http://127.0.0.1:8080
+          name: test
+          accessKeyId: 70VkRWd3IHDxEafKZFX9 # Has to match `CEPH_DEMO_ACCESS_KEY` in docker-compose.yaml
+          secretAccessKey: v0GerzwTw0cD2Dcq4m0aGeNzQVnpyzc0zW4Mc05A # Has to match `CEPH_DEMO_SECRET_KEY` in docker-compose.yaml

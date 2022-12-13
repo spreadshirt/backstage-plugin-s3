@@ -14,27 +14,97 @@
  * limitations under the License.
  */
 
-import { errorHandler } from '@backstage/backend-common';
+import {
+  PluginEndpointDiscovery,
+  ServerTokenManager,
+  SingleHostDiscovery,
+  TokenManager,
+} from '@backstage/backend-common';
+import { PluginTaskScheduler } from '@backstage/backend-tasks';
+import { Config } from '@backstage/config';
 import express from 'express';
-import Router from 'express-promise-router';
 import { Logger } from 'winston';
+import { S3Builder } from './S3Builder';
+import {
+  DefaultIdentityClient,
+  IdentityApi,
+} from '@backstage/plugin-auth-node';
+import {
+  PermissionPolicy,
+  ServerPermissionClient,
+} from '@backstage/plugin-permission-node';
+import { createRouter as createPermissionPlugin } from '@backstage/plugin-permission-backend';
+import {
+  AuthorizeResult,
+  PolicyDecision,
+} from '@backstage/plugin-permission-common';
 
 export interface RouterOptions {
   logger: Logger;
+  config: Config;
+  scheduler: PluginTaskScheduler;
 }
 
-export async function createRouter(
-  options: RouterOptions,
-): Promise<express.Router> {
-  const { logger } = options;
-
-  const router = Router();
-  router.use(express.json());
-
-  router.get('/health', (_, response) => {
-    logger.info('PONG!');
-    response.send({ status: 'ok' });
+export async function createRouter({
+  logger,
+  config,
+  scheduler,
+}: RouterOptions): Promise<express.Router> {
+  const discovery = SingleHostDiscovery.fromConfig(config);
+  const identity = DefaultIdentityClient.create({
+    discovery,
+    issuer: await discovery.getExternalBaseUrl('auth'),
   });
-  router.use(errorHandler());
+  const tokenManager = ServerTokenManager.fromConfig(config, {
+    logger,
+  });
+  const permissions = ServerPermissionClient.fromConfig(config, {
+    discovery,
+    tokenManager,
+  });
+
+  const { router } = await S3Builder.createBuilder({
+    config,
+    logger,
+    scheduler,
+    discovery,
+    identity,
+    permissions,
+    tokenManager,
+  }).build();
+
   return router;
+}
+
+class TestPermissionPolicy implements PermissionPolicy {
+  async handle(): Promise<PolicyDecision> {
+    return { result: AuthorizeResult.ALLOW };
+  }
+}
+
+export interface RouterPermissionOptions {
+  logger: Logger;
+  config: Config;
+  discovery: PluginEndpointDiscovery;
+  tokenManager: TokenManager;
+  identity: IdentityApi;
+}
+
+export async function createPluginPermissions({
+  logger,
+  config,
+}: RouterOptions): Promise<express.Router> {
+  const discovery = SingleHostDiscovery.fromConfig(config);
+  const identity = DefaultIdentityClient.create({
+    discovery,
+    issuer: await discovery.getExternalBaseUrl('auth'),
+  });
+
+  return await createPermissionPlugin({
+    config: config,
+    logger: logger,
+    discovery: discovery,
+    policy: new TestPermissionPolicy(),
+    identity: identity,
+  });
 }
