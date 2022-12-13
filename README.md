@@ -4,7 +4,7 @@ This repository contains a set of Backstage plugins for interacting with [AWS S3
 
 The plugin provides:
 
-- A backend plugin that exposes a bunch of endpoints that can be used by the frontend and also by end users.
+- A backend plugin that exposes a bunch of endpoints that can be used by the FrontEnd and also by end users.
 - A common package containing several types shared by frontend and backend.
 - A frontend page where the users can navigate through the different buckets and their objects. As well as previewing, downloading or getting object information.
 

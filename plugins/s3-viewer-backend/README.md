@@ -1,12 +1,14 @@
 # @spreadshirt/backstage-plugin-s3-viewer-backend
 
-A backend for the s3-viewer. This plugin connects to the AWS S3 instances and fetches the data requested by the frontend.
+A backend for the s3-viewer. This plugin connects to the AWS S3 instances and fetches the data requested by the FrontEnd.
+
+![S3 Viewer Plugin Overview](../../demo/examples/img1.png)
 
 ## Introduction
 
 Amazon Simple Storage Service (Amazon S3) is an object storage service that offers industry-leading scalability, data availability, security, and performance.
 
-With this plugin you will be able to navigate around your internal AWS S3 storage using a table view, as well as previewing and downloading the objects stored there.
+With this plugin, you will be able to navigate around your internal AWS S3 storage using a table view, get information about a certain bucket or object, preview the object and download it.
 
 It also includes a permission integration, to restrict access to certain data within your S3 instance.
 
@@ -139,7 +141,7 @@ An array of platforms from where to retrieve the buckets.
 
 `platforms.\*.endpoint`
 
-The endpoint used to fetch the bucket information.
+The endpoint is used to fetch the bucket information.
 
 `platforms.\*.name` __(optional)__
 
@@ -147,11 +149,11 @@ A name to identify the endpoint. This value will be used in the URL for the `s3-
 
 `platforms.\*.accessKeyId`
 
-The accessKeyId to access the platform information or to make requests to radosgw-admin. Right now, it's more than enough to use a key with `read` permissions.
+The accessKeyId is used to access the platform information or to make requests to radosgw-admin. Right now, it's more than enough to use a key with `read` permissions.
 
 `platforms.\*.secretAccessKey`
 
-The secretAccessKey to access the platform information or to make requests to radosgw-admin. Right now, it's more than enough to use a key with `read` permissions.
+The secretAccessKey is used to access the platform information or to make requests to radosgw-admin. Right now, it's more than enough to use a key with `read` permissions.
 
 ### allowedBuckets
 
@@ -201,7 +203,7 @@ It is responsible for fetching all the bucket information for the obtained platf
 
 ### Bucket Stats Provider
 
-By default, the S3 API doesn't provide a straight forward way to fetch information for the buckets, specially the number of objects inside or the size in MB of it. Due to this, this plugin will always return `zero` for those 2 values unless this provider is defined by the user. An example to fetch this data is by using the `radosgw-admin` API, so if you're using the `radosgw-admin` method to locate buckets, it might be useful to implement this as well. As a hint, the endpoint to fetch the bucket information is `<ENDPOINT>/admin/bucket?bucket=<BUCKET_NAME>&format=json`, and the returned object will contain that information under `usage.rgw.main`. The defined providr has to implement the interface `BucketStatsProvider`, and as for the other customizations, it will only be used if it's properly attached to the builder:
+By default, the S3 API doesn't provide a straightforward way to fetch information for the buckets, especially the number of objects inside or the size in MB of it. Due to this, this plugin will always return `zero` for those 2 values unless this provider is defined by the user. An example to fetch this data is by using the `radosgw-admin` API, so if you're using the `radosgw-admin` method to locate buckets, it might be useful to implement this as well. As a hint, the endpoint to fetch the bucket information is `<ENDPOINT>/admin/bucket?bucket=<BUCKET_NAME>&format=json`, and the returned object will contain that information under `usage.rgw.main`. The defined provider has to implement the interface `BucketStatsProvider`, and as for the other customizations, they will only be used if it's properly attached to the builder:
 
 ```typescript
   const builder = S3Builder.createBuilder({
@@ -237,7 +239,7 @@ Finally, it might be useful to refresh the bucket information, so that this data
 
 ## Permissions Setup
 
-The information present in the S3 buckets can be dangerous to be shared to all the Backstage users. Therefore, the permissions setup is needed. In order to make it work, every request to this plugin needs to have an `Authorization` header or a cookie called `s3_viewer_token`. Due to the current design, some requests cannot add the header properly, so the way to solve this issue is enabling a middleware. First, note that the [service-to-service auth](https://backstage.io/docs/auth/service-to-service-auth) is needed. Then, a few steps need to be followed to fully support this feature:
+The information present in the S3 buckets can be dangerous to be shared with all the Backstage users. Therefore, the permissions setup is needed. To make it work, every request to this plugin needs to have an `Authorization` header or a cookie called `s3_viewer_token`. Due to the current design, some requests cannot add the header properly, so the way to solve this issue is to enable a middleware. First, note that the [service-to-service auth](https://backstage.io/docs/auth/service-to-service-auth) is needed. Then, a few steps need to be followed to fully support this feature:
 
 1. Customize the `SignInPage` to add a token as soon as a user is logged in:
   ```typescript
@@ -285,9 +287,9 @@ The information present in the S3 buckets can be dangerous to be shared to all t
 
 3. If needed, the `useMiddleware` function allows you to inject a custom middleware, in case you need to execute something else. By default, it will use a middleware like the one defined [here](https://github.com/backstage/backstage/blob/master/contrib/docs/tutorials/authenticate-api-requests.md).
 
-**NOTE**: The usage of the middleware is meant to be used in production enviroments, when `NODE_ENV` is set to `production`. While working in development with a `guest` user, please set this environment variable to another value (like `development`), so the authorization won't fail due to an invalid token.
+**NOTE**: The usage of the middleware is meant to be used in production environments (when `NODE_ENV` is set to `production`). If you're working in development with a `guest` user, please set this environment variable to another value (like `development`), so the authorization won't fail due to an invalid token.
 
-Once this setup is done, you will need to extend the permission policy to check for the available permissions and `ALLOW` or `DENY` the access to any data you want. This step is completely up to the end user, as the way of obtaining this permissions might differ from every company. The following example would allow to list all the buckets and keys, but deny downloading the objects:
+Once this setup is done, you will need to extend the permission policy to check for the available permissions and `ALLOW` or `DENY` access to any data you want. This step is completely up to the end user, as the way of obtaining these permissions might differ for every company. The following example would allow listing all the buckets and keys, but deny downloading and previewing the objects:
 
 ```typescript
   // In packages/backend/src/plugins/permission.ts
@@ -313,7 +315,7 @@ Once this setup is done, you will need to extend the permission policy to check 
   
 ```
 
-It's also possible to use conditional permissions. This allows the backend to filter elements depending on certain conditions. Right now it's possible to make conditional decisions on the bucket name and the bucket's owner. If a conditional permission is used, the backend will then apply a filter, so the frontend won't display the buckets that are not matching the conditions.
+It's also possible to use conditional permissions. This allows the backend to filter elements depending on certain conditions. Right now it's possible to make conditional decisions on the bucket name and the bucket's owner. If a conditional permission is used, the backend will then apply a filter, so the FrontEnd won't display the buckets that are not matching the conditions.
 
 In the following example, we are allowing all the users to **list** all the buckets with owner `team-one` or `team-two`, but then restricting the **read** access to the buckets that are only owned by `team-one` (therefore, no bucket information will be available and no keys will be displayed in the table). Finally, the other requests of type `S3_VIEWER_RESOURCE_TYPE` will be denied: 
 
@@ -354,4 +356,4 @@ In the following example, we are allowing all the users to **list** all the buck
   
 ```
 
-In case the access to buckets and other resources is dependant on the logged in user, then you will need to fetch that information from an external source and apply the conditional decisions accordingly. This is not provided by the s3 plugin.
+In case the access to buckets and other resources is dependent on the logged-in user, then you will need to fetch that information from an external source and apply the conditional decisions accordingly. This is not provided by the s3 plugin.
