@@ -26,13 +26,13 @@ export class S3BucketsProvider implements BucketsProvider {
     this.bucketCreds = [];
   }
 
-  static async create(
+  static create(
     logger: Logger,
     scheduler: PluginTaskScheduler,
     credentialsProvider: CredentialsProvider,
     statsProvider: BucketStatsProvider | undefined,
     refreshInterval: HumanDuration | undefined,
-  ): Promise<S3BucketsProvider> {
+  ): S3BucketsProvider {
     const bucketsProvider = new S3BucketsProvider(
       logger,
       scheduler,
@@ -40,7 +40,8 @@ export class S3BucketsProvider implements BucketsProvider {
       statsProvider,
       refreshInterval,
     );
-    await bucketsProvider.start();
+    // Don't wait for bucket fetch. This speeds up the backend startup process.
+    bucketsProvider.start();
 
     return bucketsProvider;
   }
@@ -58,6 +59,7 @@ export class S3BucketsProvider implements BucketsProvider {
   }
 
   async fetchBuckets(): Promise<void> {
+    this.logger.info('Fetching S3 buckets...');
     const bucketDetails: BucketDetails[] = [];
     const bucketCredentials =
       await this.credentialsProvider.getBucketCredentials();
@@ -125,6 +127,7 @@ export class S3BucketsProvider implements BucketsProvider {
 
     this.buckets = bucketDetails;
     this.bucketCreds = bucketCredentials;
+    this.logger.info(`Fetched ${this.buckets.length} S3 buckets`);
   }
 
   getAllBuckets(filter?: BucketDetailsFilters): string[] {
