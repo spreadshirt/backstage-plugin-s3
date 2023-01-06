@@ -31,13 +31,13 @@
     "postpack": "backstage-cli package postpack"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.21.1"
+    "@backstage/cli": "^0.22.0"
   },
   "files": [
     "dist"
   ],
   "dependencies": {
-    "@backstage/plugin-permission-common": "^0.7.1",
+    "@backstage/plugin-permission-common": "^0.7.2",
     "aws-sdk": "^2.840.0"
   }
 }
