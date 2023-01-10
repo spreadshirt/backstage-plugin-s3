@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-import { createServiceBuilder } from '@backstage/backend-common';
+import {
+  createServiceBuilder,
+  loadBackendConfig,
+} from '@backstage/backend-common';
+import { TaskScheduler } from '@backstage/backend-tasks';
 import { Server } from 'http';
 import { Logger } from 'winston';
-import { createRouter } from './router';
+import { createPluginPermissions, createRouter } from './router';
 
 export interface ServerOptions {
   port: number;
@@ -29,16 +33,34 @@ export async function startStandaloneServer(
   options: ServerOptions,
 ): Promise<Server> {
   const logger = options.logger.child({ service: 's3-viewer-backend' });
+  const config = await loadBackendConfig({ logger, argv: process.argv });
+  const taskScheduler = TaskScheduler.fromConfig(config, { logger });
+  const scheduler = taskScheduler.forPlugin('s3-viewer');
   logger.debug('Starting application server...');
+
+  const permissionRouter = await createPluginPermissions({
+    config,
+    logger,
+    scheduler,
+  });
+
   const router = await createRouter({
     logger,
+    config,
+    scheduler,
   });
 
   let service = createServiceBuilder(module)
     .setPort(options.port)
-    .addRouter('/s3-viewer', router);
+    .addRouter('/api/permission', permissionRouter)
+    .addRouter('/api/s3', router);
+
   if (options.enableCors) {
+    logger.info('CORS is enabled, limiting to localhost with port 3000');
     service = service.enableCors({ origin: 'http://localhost:3000' });
+  } else {
+    logger.info('CORS is disabled, allowing all origins');
+    service = service.enableCors({ origin: '*' });
   }
 
   return await service.start().catch(err => {

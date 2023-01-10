@@ -14,18 +14,67 @@
  * limitations under the License.
  */
 
-import { getVoidLogger } from '@backstage/backend-common';
+import {
+  DatabaseManager,
+  getVoidLogger,
+  PluginDatabaseManager,
+} from '@backstage/backend-common';
+import { TaskScheduler } from '@backstage/backend-tasks';
+import { ConfigReader } from '@backstage/config';
 import express from 'express';
 import request from 'supertest';
+import { Knex } from 'knex';
 
 import { createRouter } from './router';
 
 describe('createRouter', () => {
   let app: express.Express;
+  const logger = getVoidLogger();
 
   beforeAll(async () => {
+    const pluginDatabase: PluginDatabaseManager = {
+      getClient: () => {
+        return Promise.resolve({
+          migrate: {
+            latest: () => {},
+          },
+        }) as unknown as Promise<Knex>;
+      },
+    };
+    const databaseManager: Partial<DatabaseManager> = {
+      forPlugin: () => pluginDatabase,
+    };
+    const manager = databaseManager as DatabaseManager;
+
     const router = await createRouter({
-      logger: getVoidLogger(),
+      logger: logger,
+      config: new ConfigReader({
+        app: {
+          title: 'backstage example app',
+          baseUrl: 'http://localhost:3000',
+        },
+        backend: {
+          baseUrl: 'http://localhost:7007',
+          listen: { port: 7007 },
+          auth: {
+            keys: [
+              {
+                secret: 'a-secret-key',
+              },
+            ],
+          },
+        },
+        permission: { enabled: true },
+        s3: {
+          bucketLocatorMethods: [
+            {
+              type: 'config',
+              platforms: [],
+            },
+          ],
+        },
+      }),
+      scheduler: new TaskScheduler(manager, logger).forPlugin('s3-viewer'),
     });
     app = express().use(router);
   });

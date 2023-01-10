@@ -1,0 +1,24 @@
+version: '3'
+services:
+  ceph:
+    image: quay.io/ceph/daemon:latest-pacific
+    environment:
+      - RGW_FRONTEND_TYPE=beast
+      - RGW_FRONTEND_PORT=8080
+      - SREE_PORT=5001
+      - OSD_COUNT=2
+      - MON_IP=127.0.0.1
+      - CEPH_PUBLIC_NETWORK=0.0.0.0/0
+      - CLUSTER=ceph
+      - CEPH_DEMO_UID=demo
+      - CEPH_DEMO_ACCESS_KEY=70VkRWd3IHDxEafKZFX9 # Created with `tr -dc A-Za-z0-9 </dev/urandom | head -c 20 ; echo ''`
+      - CEPH_DEMO_SECRET_KEY=v0GerzwTw0cD2Dcq4m0aGeNzQVnpyzc0zW4Mc05A # Created with `tr -dc A-Za-z0-9 </dev/urandom | head -c 40 ; echo ''`
+      - CEPH_DEMO_BUCKET=foobar
+      - DATA_TO_SYNC=/etc/examples
+      - DATA_TO_SYNC_BUCKET=foobar
+    command: demo
+    volumes:
+      - ./examples/:/etc/examples/
+    hostname: ceph
+    ports:
+      - 8080:8080
