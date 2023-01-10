@@ -84,17 +84,13 @@ export class S3Builder {
 
     this.bucketsProvider =
       this.bucketsProvider ??
-      (await S3BucketsProvider.create(
+      S3BucketsProvider.create(
         logger,
         scheduler,
         credentialsProvider,
         this.statsProvider,
         this.refreshInterval,
-      ));
-
-    this.env.logger.info(
-      `Found ${this.bucketsProvider.getAllBuckets().length} S3 buckets`,
-    );
+      );
 
     this.client =
       this.client ??
