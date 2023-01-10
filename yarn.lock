@@ -1777,6 +1777,27 @@
     yaml "^2.0.0"
     zen-observable "^0.10.0"
 
+"@backstage/plugin-permission-backend@^0.5.14":
+  version "0.5.14"
+  resolved "https://registry.yarnpkg.com/@backstage/plugin-permission-backend/-/plugin-permission-backend-0.5.14.tgz#0409a8c178b9dc06c0be7bf263d5ddd5cd8074e4"
+  integrity sha512-5Bf1EuNIwdwJh2w5YAatShviztN1HfisFypR/qrY+drhwIzClgNVqIDmSi/tY8xMNEQLlBHl0tAj7lryQd+Nag==
+  dependencies:
+    "@backstage/backend-common" "^0.17.0"
+    "@backstage/config" "^1.0.5"
+    "@backstage/errors" "^1.1.4"
+    "@backstage/plugin-auth-node" "^0.2.8"
+    "@backstage/plugin-permission-common" "^0.7.2"
+    "@backstage/plugin-permission-node" "^0.7.2"
+    "@types/express" "*"
+    dataloader "^2.0.0"
+    express "^4.17.1"
+    express-promise-router "^4.1.0"
+    lodash "^4.17.21"
+    node-fetch "^2.6.7"
+    winston "^3.2.1"
+    yn "^4.0.0"
+    zod "~3.18.0"
+
 "@backstage/plugin-permission-common@^0.7.2":
   version "0.7.2"
   resolved "https://registry.yarnpkg.com/@backstage/plugin-permission-common/-/plugin-permission-common-0.7.2.tgz#d30531451876b1899b3726245ca7b6eb4270282a"
@@ -13999,7 +14020,7 @@ tsconfig-paths@^3.14.1:
     minimist "^1.2.6"
     strip-bom "^3.0.0"
 
-tslib@^1.11.1, tslib@^1.8.1, tslib@^1.9.0, tslib@^1.9.3:
+tslib@^1.11.1, tslib@^1.8.1, tslib@^1.9.0:
   version "1.14.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
