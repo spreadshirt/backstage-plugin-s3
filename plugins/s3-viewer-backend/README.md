@@ -1,6 +1,6 @@
 # @spreadshirt/backstage-plugin-s3-viewer-backend
 
-A backend for the s3-viewer. This plugin connects to the AWS S3 instances and fetches the data requested by the FrontEnd.
+A backend for the s3-viewer. This plugin connects to the AWS S3 instances and fetches the data requested by the frontend.
 
 ![S3 Viewer Plugin Overview](../../demo/examples/img1.png)
 
@@ -315,7 +315,7 @@ Once this setup is done, you will need to extend the permission policy to check 
   
 ```
 
-It's also possible to use conditional permissions. This allows the backend to filter elements depending on certain conditions. Right now it's possible to make conditional decisions on the bucket name and the bucket's owner. If a conditional permission is used, the backend will then apply a filter, so the FrontEnd won't display the buckets that are not matching the conditions.
+It's also possible to use conditional permissions. This allows the backend to filter elements depending on certain conditions. Right now it's possible to make conditional decisions on the bucket name and the bucket's owner. If a conditional permission is used, the backend will then apply a filter, so the frontend won't display the buckets that are not matching the conditions.
 
 In the following example, we are allowing all the users to **list** all the buckets with owner `team-one` or `team-two`, but then restricting the **read** access to the buckets that are only owned by `team-one` (therefore, no bucket information will be available and no keys will be displayed in the table). Finally, the other requests of type `S3_VIEWER_RESOURCE_TYPE` will be denied: 
 
