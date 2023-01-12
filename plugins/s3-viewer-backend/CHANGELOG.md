@@ -1,5 +1,12 @@
 # @spreadshirt/backstage-plugin-s3-viewer-backend
 
+## 0.2.2
+
+### Patch Changes
+
+- 1a1cc50: Speed up backend startup by not waiting for the `S3BucketsProvider` to fetch all the buckets when the `S3Builder.build()` method is called. Let it do it asynchronously.
+- 74f89f9: Implement isolated testing environment thanks to a docker container with `ceph` and add a `config.d.ts` for good practices.
+
 ## 0.2.1
 
 ### Patch Changes
