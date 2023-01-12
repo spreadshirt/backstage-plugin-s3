@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v3
         with:
           node-version: 16.x
 
@@ -24,6 +24,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
+          git checkout -b deps/upgrade-backstage
           git diff-index --quiet HEAD || git commit -m "chore(deps): Upgrade Backstage versions"
       - name: Test changes
         run: |
@@ -31,7 +32,10 @@ jobs:
           yarn ci
         env:
           CI: true
+        continue-on-error: true
 
       - name: Push changes
         run: |
-          git push
+          git push -o merge_request.create -o merge_request.draft \
+          -o merge_request.target=main -o merge_request.title="Upgrade Backstage versions" \
+          -o merge_request.description="Upgrade Backstage dependencies" -u origin deps/upgrade-backstage
