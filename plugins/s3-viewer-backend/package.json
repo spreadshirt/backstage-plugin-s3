@@ -34,6 +34,7 @@
     "@aws-sdk/protocol-http": "^3.127.0",
     "@aws-sdk/signature-v4": "^3.130.0",
     "@backstage/backend-common": "^0.18.1",
+    "@backstage/backend-plugin-api": "^0.3.1",
     "@backstage/backend-tasks": "^0.4.2",
     "@backstage/config": "^1.0.6",
     "@backstage/errors": "^1.1.4",
@@ -53,7 +54,6 @@
     "knex": "^2.0.0",
     "moment": "^2.29.4",
     "stream": "^0.0.2",
-    "winston": "^3.2.1",
     "yn": "^4.0.0",
     "zod": "~3.18.0"
   },

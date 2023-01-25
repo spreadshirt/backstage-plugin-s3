@@ -5,7 +5,7 @@ import {
   CredentialsProvider,
 } from '../types';
 import { BucketDetails } from '@spreadshirt/backstage-plugin-s3-viewer-common';
-import { Logger } from 'winston';
+import { LoggerService } from '@backstage/backend-plugin-api';
 import { S3 } from 'aws-sdk';
 import { PluginTaskScheduler } from '@backstage/backend-tasks';
 import { HumanDuration } from '@backstage/types';
@@ -16,7 +16,7 @@ export class S3BucketsProvider implements BucketsProvider {
   private bucketCreds: BucketCredentials[];
 
   constructor(
-    readonly logger: Logger,
+    readonly logger: LoggerService,
     readonly scheduler: PluginTaskScheduler,
     readonly credentialsProvider: CredentialsProvider,
     readonly statsProvider: BucketStatsProvider | undefined,
@@ -27,7 +27,7 @@ export class S3BucketsProvider implements BucketsProvider {
   }
 
   static create(
-    logger: Logger,
+    logger: LoggerService,
     scheduler: PluginTaskScheduler,
     credentialsProvider: CredentialsProvider,
     statsProvider: BucketStatsProvider | undefined,

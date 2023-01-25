@@ -1,5 +1,5 @@
 import { Config } from '@backstage/config';
-import { Logger } from 'winston';
+import { LoggerService } from '@backstage/backend-plugin-api';
 import { BucketCredentials, CredentialsProvider } from '../types';
 import { ConfigCredentialsProvider } from './ConfigCredentialsProvider';
 import { RadosGwCredentialsProvider } from './RadosGwCredentialsProvider';
@@ -24,7 +24,7 @@ class CombinedCredentialsProvider implements CredentialsProvider {
 
 export const getCombinedCredentialsProvider = (
   rootConfig: Config,
-  logger: Logger,
+  logger: LoggerService,
 ): CombinedCredentialsProvider => {
   const allowedBuckets: { [key: string]: string[] } = {};
   Object.entries(rootConfig.getOptional('s3.allowedBuckets') ?? {}).forEach(
