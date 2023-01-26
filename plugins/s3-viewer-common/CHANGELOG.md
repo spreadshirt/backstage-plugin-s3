@@ -1,5 +1,11 @@
 # @spreadshirt/backstage-plugin-s3-viewer-common
 
+## 0.2.2
+
+### Patch Changes
+
+- 860ef59: Upgrade backstage dependencies to version `1.10.1`
+
 ## 0.2.1
 
 ### Patch Changes
