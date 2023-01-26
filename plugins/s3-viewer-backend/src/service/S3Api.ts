@@ -7,10 +7,10 @@ import { S3 } from 'aws-sdk';
 import moment from 'moment';
 import { Readable } from 'stream';
 import { BucketsProvider } from '../types';
-import { PluginEndpointDiscovery } from '@backstage/backend-common';
+import { DiscoveryService } from '@backstage/backend-plugin-api';
 
 export interface S3ClientEnvironment {
-  discoveryApi: PluginEndpointDiscovery;
+  discoveryApi: DiscoveryService;
   bucketsProvider: BucketsProvider;
 }
 
@@ -58,7 +58,7 @@ export interface S3Api {
 }
 
 export class S3Client implements S3Api {
-  private discoveryApi: PluginEndpointDiscovery;
+  private discoveryApi: DiscoveryService;
   private bucketsProvider: BucketsProvider;
 
   constructor({ bucketsProvider, discoveryApi }: S3ClientEnvironment) {

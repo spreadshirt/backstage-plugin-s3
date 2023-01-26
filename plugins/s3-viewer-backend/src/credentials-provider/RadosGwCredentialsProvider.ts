@@ -4,7 +4,7 @@ import { Sha256 } from '@aws-crypto/sha256-browser';
 import { HttpRequest } from '@aws-sdk/protocol-http';
 import { BucketCredentials, CredentialsProvider, S3Platform } from '../types';
 import fetch from 'cross-fetch';
-import { Logger } from 'winston';
+import { LoggerService } from '@backstage/backend-plugin-api';
 
 type RadosGwAdminUserInfo = {
   keys: {
@@ -17,13 +17,13 @@ type RadosGwAdminUserInfo = {
 export class RadosGwCredentialsProvider implements CredentialsProvider {
   constructor(
     readonly platforms: S3Platform[],
-    readonly logger: Logger,
+    readonly logger: LoggerService,
     readonly allowedBuckets: { [key: string]: string[] },
   ) {}
 
   static fromConfig(
     config: Config,
-    logger: Logger,
+    logger: LoggerService,
     allowedBuckets: { [key: string]: string[] },
   ): RadosGwCredentialsProvider {
     const platforms: S3Platform[] = config

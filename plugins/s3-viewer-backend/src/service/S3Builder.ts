@@ -1,7 +1,6 @@
 import { Config } from '@backstage/config';
 import express from 'express';
 import Router from 'express-promise-router';
-import { Logger } from 'winston';
 import {
   BucketsProvider,
   BucketStatsProvider,
@@ -9,11 +8,12 @@ import {
 } from '../types';
 import { S3BucketsProvider } from './S3BucketsProvider';
 import { S3Client } from './S3Api';
+import { errorHandler } from '@backstage/backend-common';
 import {
-  errorHandler,
-  PluginEndpointDiscovery,
-  TokenManager,
-} from '@backstage/backend-common';
+  DiscoveryService,
+  LoggerService,
+  TokenManagerService,
+} from '@backstage/backend-plugin-api';
 import { PluginTaskScheduler } from '@backstage/backend-tasks';
 import { HumanDuration } from '@backstage/types';
 import {
@@ -40,13 +40,13 @@ import {
 } from '../permissions';
 
 export interface S3Environment {
-  logger: Logger;
+  logger: LoggerService;
   config: Config;
   scheduler: PluginTaskScheduler;
-  discovery: PluginEndpointDiscovery;
+  discovery: DiscoveryService;
   identity: IdentityApi;
   permissions: PermissionEvaluator;
-  tokenManager: TokenManager;
+  tokenManager: TokenManagerService;
 }
 
 export interface S3BuilderReturn {

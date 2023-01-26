@@ -15,15 +15,19 @@
  */
 
 import {
-  PluginEndpointDiscovery,
+  // TODO: Remove this function as soon as all plugins support new LoggerService
+  loggerToWinstonLogger,
   ServerTokenManager,
   SingleHostDiscovery,
-  TokenManager,
 } from '@backstage/backend-common';
 import { PluginTaskScheduler } from '@backstage/backend-tasks';
 import { Config } from '@backstage/config';
 import express from 'express';
-import { Logger } from 'winston';
+import {
+  DiscoveryService,
+  LoggerService,
+  TokenManagerService,
+} from '@backstage/backend-plugin-api';
 import { S3Builder } from './S3Builder';
 import {
   DefaultIdentityClient,
@@ -40,7 +44,7 @@ import {
 } from '@backstage/plugin-permission-common';
 
 export interface RouterOptions {
-  logger: Logger;
+  logger: LoggerService;
   config: Config;
   scheduler: PluginTaskScheduler;
 }
@@ -83,10 +87,10 @@ class TestPermissionPolicy implements PermissionPolicy {
 }
 
 export interface RouterPermissionOptions {
-  logger: Logger;
+  logger: LoggerService;
   config: Config;
-  discovery: PluginEndpointDiscovery;
-  tokenManager: TokenManager;
+  discovery: DiscoveryService;
+  tokenManager: TokenManagerService;
   identity: IdentityApi;
 }
 
@@ -102,7 +106,7 @@ export async function createPluginPermissions({
 
   return await createPermissionPlugin({
     config: config,
-    logger: logger,
+    logger: loggerToWinstonLogger(logger),
     discovery: discovery,
     policy: new TestPermissionPolicy(),
     identity: identity,

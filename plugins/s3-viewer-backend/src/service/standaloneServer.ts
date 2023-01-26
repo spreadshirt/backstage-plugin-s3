@@ -17,16 +17,18 @@
 import {
   createServiceBuilder,
   loadBackendConfig,
+  // TODO: Remove this function as soon as all plugins support new LoggerService
+  loggerToWinstonLogger,
 } from '@backstage/backend-common';
 import { TaskScheduler } from '@backstage/backend-tasks';
 import { Server } from 'http';
-import { Logger } from 'winston';
+import { LoggerService } from '@backstage/backend-plugin-api';
 import { createPluginPermissions, createRouter } from './router';
 
 export interface ServerOptions {
   port: number;
   enableCors: boolean;
-  logger: Logger;
+  logger: LoggerService;
 }
 
 export async function startStandaloneServer(
@@ -34,7 +36,9 @@ export async function startStandaloneServer(
 ): Promise<Server> {
   const logger = options.logger.child({ service: 's3-viewer-backend' });
   const config = await loadBackendConfig({ logger, argv: process.argv });
-  const taskScheduler = TaskScheduler.fromConfig(config, { logger });
+  const taskScheduler = TaskScheduler.fromConfig(config, {
+    logger: loggerToWinstonLogger(logger),
+  });
   const scheduler = taskScheduler.forPlugin('s3-viewer');
   logger.debug('Starting application server...');
 

@@ -1,18 +1,18 @@
 import { Config } from '@backstage/config';
 import { S3 } from 'aws-sdk';
-import { Logger } from 'winston';
+import { LoggerService } from '@backstage/backend-plugin-api';
 import { BucketCredentials, CredentialsProvider, S3Platform } from '../types';
 
 export class ConfigCredentialsProvider implements CredentialsProvider {
   constructor(
     readonly platforms: S3Platform[],
-    readonly logger: Logger,
+    readonly logger: LoggerService,
     readonly allowedBuckets: { [key: string]: string[] },
   ) {}
 
   static fromConfig(
     config: Config,
-    logger: Logger,
+    logger: LoggerService,
     allowedBuckets: { [key: string]: string[] },
   ): ConfigCredentialsProvider {
     const platforms: S3Platform[] = config
