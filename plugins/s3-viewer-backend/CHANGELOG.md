@@ -1,5 +1,18 @@
 # @spreadshirt/backstage-plugin-s3-viewer-backend
 
+## 0.2.3
+
+### Patch Changes
+
+- 860ef59: Upgrade backstage dependencies to version `1.10.1`
+
+  Prepare plugin to use some of the new BackendServices, if they are already in use. This applies to
+  the Discovery, Logger and TokenManager so far. For end-users nothing will change, it's just an
+  internal change.
+
+- Updated dependencies [860ef59]
+  - @spreadshirt/backstage-plugin-s3-viewer-common@0.2.2
+
 ## 0.2.2
 
 ### Patch Changes
