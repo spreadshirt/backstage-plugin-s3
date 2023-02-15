@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core';
 import { humanFileSize } from '../../utils';
 import {
-  Button,
+  LinkButton,
   Progress,
   StructuredMetadataTable,
 } from '@backstage/core-components';
@@ -147,7 +147,7 @@ export const S3ObjectViewer = ({
           justifyContent="center"
         >
           <Grid item xs={6}>
-            <Button
+            <LinkButton
               style={{ textDecoration: 'none' }}
               variant="outlined"
               title={`Download ${objectInfo.downloadName}`}
@@ -155,7 +155,7 @@ export const S3ObjectViewer = ({
               download={objectInfo.downloadName}
             >
               Download
-            </Button>
+            </LinkButton>
           </Grid>
         </Grid>
       </Grid>
