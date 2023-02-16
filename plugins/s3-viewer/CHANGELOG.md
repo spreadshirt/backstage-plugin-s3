@@ -1,5 +1,14 @@
 # @spreadshirt/backstage-plugin-s3-viewer
 
+## 0.2.3
+
+### Patch Changes
+
+- cf3bd09: Upgrade backstage dependencies to version 1.11.0
+- 355e3e5: Update deprecated Button to LinkButton
+- Updated dependencies [cf3bd09]
+  - @spreadshirt/backstage-plugin-s3-viewer-common@0.2.3
+
 ## 0.2.2
 
 ### Patch Changes
