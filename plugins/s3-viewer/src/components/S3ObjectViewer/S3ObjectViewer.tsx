@@ -58,7 +58,13 @@ export const S3Preview = ({ objectInfo }: S3PreviewProps) => {
         'image/x-icon',
         'image/jpg',
         'image/png',
-      ].includes(obj.contentType)
+      ].includes(obj.contentType) &&
+      // fall back to detecting based on file name if type is unknown
+      !(
+        ['', 'binary/octet-stream', 'application/octet-stream'].includes(
+          obj.contentType,
+        ) && obj.name.match(/\.(gif|ico|jpg|jpeg|png|svg|tiff)$/)
+      )
     ) {
       return false;
     }
