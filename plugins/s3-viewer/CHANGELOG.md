@@ -1,5 +1,11 @@
 # @spreadshirt/backstage-plugin-s3-viewer
 
+## 0.3.0
+
+### Minor Changes
+
+- c1f0403: Enable preview for more objects by falling back to file extension
+
 ## 0.2.4
 
 ### Patch Changes
