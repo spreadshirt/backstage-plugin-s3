@@ -31,7 +31,7 @@ To get started, follow these steps:
     export default async function createPlugin(
       env: PluginEnvironment,
     ): Promise<Router> {
-      const { router } = S3Builder.createBuilder({
+      const { router } = await S3Builder.createBuilder({
         config: env.config,
         logger: env.logger,
         scheduler: env.scheduler,
