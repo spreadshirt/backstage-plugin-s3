@@ -13,6 +13,11 @@ export interface Config {
              */
             endpoint: string;
             /**
+             * The region where the platform can be reached.
+             * @visibility backend
+             */
+            region: string;
+            /**
              * Optional name for the platform. If not set, defaults to the platform endpoint.
              * @visibility backend
              */
@@ -32,6 +37,11 @@ export interface Config {
              * @visibility backend
              */
             endpoint: string;
+            /**
+             * The region where the platform can be reached.
+             * @visibility backend
+             */
+            region: string;
             /**
              * Optional name for the platform. If not set, defaults to the platform endpoint.
              * @visibility backend

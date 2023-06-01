@@ -143,6 +143,10 @@ An array of platforms from where to retrieve the buckets.
 
 The endpoint is used to fetch the bucket information.
 
+`platforms.\*.region`
+
+The region where the platform is located. This is required since the AWS SDK v3.
+
 `platforms.\*.name` __(optional)__
 
 A name to identify the endpoint. This value will be used in the URL for the `s3-viewer`, so a simplified name would make navigation easier. If not present, the value will be equal to the endpoint.

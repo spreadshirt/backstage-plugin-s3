@@ -37,7 +37,7 @@
     "dist"
   ],
   "dependencies": {
-    "@backstage/plugin-permission-common": "^0.7.5",
-    "aws-sdk": "^2.840.0"
+    "@aws-sdk/client-s3": "^3.310.0",
+    "@backstage/plugin-permission-common": "^0.7.5"
   }
 }

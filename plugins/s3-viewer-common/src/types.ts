@@ -1,4 +1,4 @@
-import { S3 } from 'aws-sdk';
+import { LifecycleRule } from '@aws-sdk/client-s3';
 
 export type BucketStats = {
   objects: number;
@@ -10,7 +10,7 @@ export type BucketDetails = {
   endpointName: string;
   bucket: string;
   owner: string;
-  policy: S3.Rules;
+  policy: LifecycleRule[];
 } & BucketStats;
 
 export type KeyData = {

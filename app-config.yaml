@@ -19,3 +19,4 @@ s3:
           name: test
           accessKeyId: 70VkRWd3IHDxEafKZFX9 # Has to match `CEPH_DEMO_ACCESS_KEY` when using docker compose
           secretAccessKey: v0GerzwTw0cD2Dcq4m0aGeNzQVnpyzc0zW4Mc05A # Has to match `CEPH_DEMO_SECRET_KEY` when using docker compose
+          region: 'us-east-1'

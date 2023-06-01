@@ -1,5 +1,5 @@
 import { Config } from '@backstage/config';
-import { S3 } from 'aws-sdk';
+import { S3 } from '@aws-sdk/client-s3';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { BucketCredentials, CredentialsProvider, S3Platform } from '../types';
 
@@ -22,6 +22,7 @@ export class ConfigCredentialsProvider implements CredentialsProvider {
         return {
           endpoint: cfg.getString('endpoint'),
           endpointName: name,
+          region: cfg.getString('region'),
           credentials: {
             accessKeyId: cfg.getString('accessKeyId'),
             secretAccessKey: cfg.getString('secretAccessKey'),
@@ -41,12 +42,11 @@ export class ConfigCredentialsProvider implements CredentialsProvider {
             apiVersion: '2006-03-01',
             credentials: platform.credentials,
             endpoint: platform.endpoint,
-            s3ForcePathStyle: true,
+            region: platform.region,
+            forcePathStyle: true,
           });
 
-          const bucketList: S3.ListBucketsOutput = await s3Client
-            .listBuckets()
-            .promise();
+          const bucketList = await s3Client.listBuckets({});
 
           const buckets =
             bucketList.Buckets?.map(b => b.Name || '')
@@ -71,6 +71,7 @@ export class ConfigCredentialsProvider implements CredentialsProvider {
             credentials: platform.credentials,
             endpoint: platform.endpoint,
             endpointName: platform.endpointName,
+            region: platform.region,
           }));
           bucketCreds.push(...creds);
         } catch (err) {
