@@ -124,10 +124,14 @@ export class S3Client implements S3Api {
       }
     });
 
+    let totalObjects = bucketInfo?.objects ?? NaN;
+    if (totalObjects === 0) {
+      totalObjects = keys.length;
+    }
+
     return {
-      totalBucketObjects: bucketInfo?.objects ?? NaN,
+      totalBucketObjects: output.IsTruncated ? totalObjects + 1 : totalObjects,
       keys: keys,
-      keyCount: output.Contents?.length ?? pageSize,
       next: output.NextMarker,
     };
   }

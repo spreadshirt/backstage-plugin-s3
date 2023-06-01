@@ -149,7 +149,7 @@ export const S3ViewerContent = () => {
 
     const totalRows = queryPage * queryPageSize + res.keys.length;
     const totalCount =
-      totalRows % pageSize === 0 ? res.totalBucketObjects : totalRows;
+      totalRows % queryPageSize === 0 ? res.totalBucketObjects : totalRows;
 
     return {
       data: res.keys,

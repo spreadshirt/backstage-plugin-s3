@@ -21,7 +21,6 @@ export type KeyData = {
 export type ListBucketKeysResult = {
   totalBucketObjects: number;
   keys: KeyData[];
-  keyCount: number;
   next: string | undefined;
 };
 
