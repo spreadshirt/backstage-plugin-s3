@@ -1,5 +1,20 @@
 # @spreadshirt/backstage-plugin-s3-viewer-backend
 
+## 0.3.0
+
+### Minor Changes
+
+- e83665c: **BREAKING**: Migrated to AWS-SDK version 3. Now the platform config requires a new field called `region`. If not present, the plugin will fail on startup.
+
+### Patch Changes
+
+- 30f0a93: Fix small issue while paging keys and remove unused field in `ListBucketKeysResult`
+- 466d55f: Bump backstage dependencies to version `1.14.1` & align some internal `aws-sdk` dependencies
+- Updated dependencies [e83665c]
+- Updated dependencies [30f0a93]
+- Updated dependencies [466d55f]
+  - @spreadshirt/backstage-plugin-s3-viewer-common@0.3.0
+
 ## 0.2.6
 
 ### Patch Changes
