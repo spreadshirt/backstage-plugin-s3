@@ -7,6 +7,7 @@ import { BucketDetailsFilters } from './permissions';
 export type S3Platform = {
   endpoint: string;
   endpointName: string;
+  region: string;
   credentials: {
     accessKeyId: string;
     secretAccessKey: string;

@@ -15,10 +15,10 @@
  */
 
 import {
+  HostDiscovery,
   // TODO: Remove this function as soon as all plugins support new LoggerService
   loggerToWinstonLogger,
   ServerTokenManager,
-  SingleHostDiscovery,
 } from '@backstage/backend-common';
 import { PluginTaskScheduler } from '@backstage/backend-tasks';
 import { Config } from '@backstage/config';
@@ -54,7 +54,7 @@ export async function createRouter({
   config,
   scheduler,
 }: RouterOptions): Promise<express.Router> {
-  const discovery = SingleHostDiscovery.fromConfig(config);
+  const discovery = HostDiscovery.fromConfig(config);
   const identity = DefaultIdentityClient.create({
     discovery,
     issuer: await discovery.getExternalBaseUrl('auth'),
@@ -98,7 +98,7 @@ export async function createPluginPermissions({
   logger,
   config,
 }: RouterOptions): Promise<express.Router> {
-  const discovery = SingleHostDiscovery.fromConfig(config);
+  const discovery = HostDiscovery.fromConfig(config);
   const identity = DefaultIdentityClient.create({
     discovery,
     issuer: await discovery.getExternalBaseUrl('auth'),

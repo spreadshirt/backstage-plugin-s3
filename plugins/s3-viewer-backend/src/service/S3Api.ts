@@ -3,11 +3,12 @@ import {
   KeyData,
   ListBucketKeysResult,
 } from '@spreadshirt/backstage-plugin-s3-viewer-common';
-import { S3 } from 'aws-sdk';
+import { GetObjectCommand, S3 } from '@aws-sdk/client-s3';
 import moment from 'moment';
 import { Readable } from 'stream';
 import { BucketsProvider } from '../types';
 import { DiscoveryService } from '@backstage/backend-plugin-api';
+import { NotFoundError } from '@backstage/errors';
 
 export interface S3ClientEnvironment {
   discoveryApi: DiscoveryService;
@@ -79,7 +80,8 @@ export class S3Client implements S3Api {
         secretAccessKey: data.credentials.secretAccessKey,
       },
       endpoint: data.endpoint,
-      s3ForcePathStyle: true,
+      region: data.region,
+      forcePathStyle: true,
     });
 
     return s3Client;
@@ -95,15 +97,14 @@ export class S3Client implements S3Api {
   ): Promise<ListBucketKeysResult> {
     const s3Client = this.getS3Client(endpoint, bucket);
     const bucketInfo = this.bucketsProvider.getBucketInfo(endpoint, bucket);
-    const output: S3.ListObjectsV2Output = await s3Client
-      .listObjectsV2({
+    const output = await s3Client
+      .listObjects({
         Bucket: bucket,
         MaxKeys: pageSize,
-        StartAfter: continuationToken,
+        Marker: continuationToken,
         Prefix: folder + prefix,
         Delimiter: '/',
       })
-      .promise()
       .catch(e => {
         throw new Error(`Error listing keys: ${e.statusCode} ${e.code}`);
       });
@@ -112,7 +113,7 @@ export class S3Client implements S3Api {
       output.CommonPrefixes?.map(p => ({
         name: p.Prefix?.substring(folder.length) || '',
         isFolder: true,
-      })) || [];
+      })).filter(k => k.name !== '') || [];
 
     output.Contents?.forEach(c => {
       if (c.Key) {
@@ -123,11 +124,15 @@ export class S3Client implements S3Api {
       }
     });
 
+    let totalObjects = bucketInfo?.objects ?? NaN;
+    if (totalObjects === 0) {
+      totalObjects = keys.length;
+    }
+
     return {
-      totalBucketObjects: bucketInfo?.objects ?? NaN,
-      keys: keys.filter(k => k.name !== ''),
-      keyCount: output.KeyCount ?? pageSize,
-      next: output.NextContinuationToken,
+      totalBucketObjects: output.IsTruncated ? totalObjects + 1 : totalObjects,
+      keys: keys,
+      next: output.NextMarker,
     };
   }
 
@@ -137,12 +142,11 @@ export class S3Client implements S3Api {
     key: string,
   ): Promise<FetchObjectResult> {
     const s3Client = this.getS3Client(endpoint, bucket);
-    const output: S3.HeadObjectOutput = await s3Client
+    const output = await s3Client
       .headObject({
         Bucket: bucket,
         Key: key,
       })
-      .promise()
       .catch(e => {
         throw new Error(`Error fetching object: ${e.statusCode} ${e.code}`);
       });
@@ -167,7 +171,20 @@ export class S3Client implements S3Api {
     key: string,
   ): Promise<Readable> {
     const s3Client = this.getS3Client(endpoint, bucket);
-    return s3Client.getObject({ Bucket: bucket, Key: key }).createReadStream();
+    const { Body: body } = await s3Client.send(
+      new GetObjectCommand({
+        Bucket: bucket,
+        Key: key,
+      }),
+    );
+
+    if (!body) {
+      throw new NotFoundError(`Key "${key}" not found in bucket "${bucket}"`);
+    }
+    if (body instanceof Readable) {
+      return body;
+    }
+    throw new Error('Unexpected stream received');
   }
 
   /**

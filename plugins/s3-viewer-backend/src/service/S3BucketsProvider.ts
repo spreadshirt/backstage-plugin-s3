@@ -6,7 +6,7 @@ import {
 } from '../types';
 import { BucketDetails } from '@spreadshirt/backstage-plugin-s3-viewer-common';
 import { LoggerService } from '@backstage/backend-plugin-api';
-import { S3 } from 'aws-sdk';
+import { S3 } from '@aws-sdk/client-s3';
 import { PluginTaskScheduler } from '@backstage/backend-tasks';
 import { HumanDuration } from '@backstage/types';
 import { BucketDetailsFilters, matches } from '../permissions';
@@ -70,14 +70,11 @@ export class S3BucketsProvider implements BucketsProvider {
             apiVersion: '2006-03-01',
             credentials: creds.credentials,
             endpoint: creds.endpoint,
-            s3ForcePathStyle: true,
+            region: creds.region,
+            forcePathStyle: true,
           });
 
-          const owner: S3.GetBucketAclOutput = await s3Client
-            .getBucketAcl({
-              Bucket: creds.bucket,
-            })
-            .promise();
+          const owner = await s3Client.getBucketAcl({ Bucket: creds.bucket });
 
           const details: BucketDetails = {
             bucket: creds.bucket,
@@ -105,10 +102,9 @@ export class S3BucketsProvider implements BucketsProvider {
           }
 
           await s3Client
-            .getBucketLifecycle({
+            .getBucketLifecycleConfiguration({
               Bucket: creds.bucket,
             })
-            .promise()
             .then(value => (details.policy = value.Rules || []))
             .catch(
               // This catches an error if the lifecycle is not defined.

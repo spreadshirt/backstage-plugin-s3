@@ -33,6 +33,7 @@ export class RadosGwCredentialsProvider implements CredentialsProvider {
         return {
           endpoint: cfg.getString('endpoint'),
           endpointName: name,
+          region: cfg.getString('region'),
           credentials: {
             accessKeyId: cfg.getString('accessKeyId'),
             secretAccessKey: cfg.getString('secretAccessKey'),
@@ -50,7 +51,7 @@ export class RadosGwCredentialsProvider implements CredentialsProvider {
         try {
           const signer = new SignatureV4({
             credentials: platform.credentials,
-            region: 'eu-east-1',
+            region: platform.region,
             service: 's3',
             sha256: Sha256,
           });
@@ -97,6 +98,7 @@ export class RadosGwCredentialsProvider implements CredentialsProvider {
                 },
                 endpoint: platform.endpoint,
                 endpointName: platform.endpointName,
+                region: platform.region,
               });
             }),
           );
