@@ -31,9 +31,9 @@
   },
   "dependencies": {
     "@aws-crypto/sha256-browser": "^3.0.0",
-    "@aws-sdk/client-s3": "^3.310.0",
-    "@aws-sdk/protocol-http": "^3.337.0",
-    "@aws-sdk/signature-v4": "^3.337.0",
+    "@aws-sdk/client-s3": "^3.350.0",
+    "@aws-sdk/protocol-http": "^3.347.0",
+    "@aws-sdk/signature-v4": "^3.347.0",
     "@backstage/backend-common": "^0.19.0",
     "@backstage/backend-plugin-api": "^0.5.3",
     "@backstage/backend-tasks": "^0.5.3",
