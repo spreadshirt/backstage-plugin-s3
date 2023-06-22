@@ -1,5 +1,13 @@
 # @spreadshirt/backstage-plugin-s3-viewer-common
 
+## 0.3.1
+
+### Patch Changes
+
+- 9a3fcf3: Align aws-sdk dependencies with backstage 1.15.0
+- 1965d2c: Bump dependencies to Backstage 1.15.0
+- 1965d2c: Remove deprecated `BackstageTheme` and unnecessary package import
+
 ## 0.3.0
 
 ### Minor Changes
