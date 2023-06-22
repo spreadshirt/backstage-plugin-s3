@@ -12,13 +12,12 @@ import {
   Tooltip,
   Typography,
 } from '@material-ui/core';
-import { BackstageTheme } from '@backstage/theme';
 import { Progress } from '@backstage/core-components';
 import Alert from '@material-ui/lab/Alert';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 
-const useStyles = makeStyles((theme: BackstageTheme) =>
+const useStyles = makeStyles(theme =>
   createStyles({
     list: {
       maxHeight: '80vh',
