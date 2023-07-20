@@ -51,7 +51,7 @@
     "express": "^4.17.1",
     "express-promise-router": "^4.1.0",
     "jose": "^4.6.0",
-    "knex": "^2.0.0",
+    "knex": "^2.4.0",
     "moment": "^2.29.4",
     "stream": "^0.0.2",
     "yn": "^4.0.0",
