@@ -1,5 +1,17 @@
 # @spreadshirt/backstage-plugin-s3-viewer-backend
 
+## 0.3.2
+
+### Patch Changes
+
+- 5d7ad9b: Bump dependencies to backstage 1.16.0
+- d6a18e0: Security updates found by [dependabot](https://github.com/spreadshirt/backstage-plugin-s3/security/dependabot).
+  Fixed some criticals for `loader-utils`, `@xmldom/xmldom` and high alerts for
+  `yaml`, `webpack`, `knex`, `luxon`, `json5` or `minimatch`
+- Updated dependencies [5d7ad9b]
+- Updated dependencies [d6a18e0]
+  - @spreadshirt/backstage-plugin-s3-viewer-common@0.3.2
+
 ## 0.3.1
 
 ### Patch Changes
