@@ -7,7 +7,7 @@ import {
   CredentialsProvider,
 } from '../types';
 import { S3BucketsProvider } from './S3BucketsProvider';
-import { S3Client } from './S3Api';
+import { S3Api, S3Client } from './S3Api';
 import { errorHandler } from '@backstage/backend-common';
 import {
   DiscoveryService,
@@ -55,7 +55,7 @@ export interface S3BuilderReturn {
 
 export class S3Builder {
   private refreshInterval: HumanDuration | undefined = undefined;
-  private client?: S3Client;
+  private client?: S3Api;
   private credentialsProvider?: CredentialsProvider;
   private bucketsProvider?: BucketsProvider;
   private statsProvider?: BucketStatsProvider;
@@ -116,7 +116,7 @@ export class S3Builder {
    * @param client - The new S3 client
    * @returns
    */
-  public setClient(client: S3Client) {
+  public setClient(client: S3Api) {
     this.client = client;
     return this;
   }
@@ -276,7 +276,7 @@ export class S3Builder {
    * @param client - The S3 client used to list the secrets.
    * @returns The generated backend router
    */
-  protected buildRouter(client: S3Client): express.Router {
+  protected buildRouter(client: S3Api): express.Router {
     const router = Router();
     router.use(express.json());
     router.use(cookieParser());
