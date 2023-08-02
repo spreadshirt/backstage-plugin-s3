@@ -1,5 +1,11 @@
 # @spreadshirt/backstage-plugin-s3-viewer-backend
 
+## 0.4.0
+
+### Minor Changes
+
+- 7dfa4f9: Actually support custom S3 clients
+
 ## 0.3.2
 
 ### Patch Changes
