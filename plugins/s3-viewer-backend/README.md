@@ -187,6 +187,8 @@ First of all, the client used to communicate with the S3 buckets can be overwrit
   const { router } = await builder.build();
 ```
 
+In some cases you might need to use the internal `bucketsProvider` to fetch information for a bucket before making any request. In order to do that, the `S3Api` interface comes with an optional method `setBucketsProvider`. If defined in your client, the `build()` method will inject the `bucketsProvider` for you.
+
 ### Buckets Provider
 
 It is responsible for fetching all the bucket information for the obtained platforms and credentials, which were fetched by the `CredentialsProvider`. This interface is used in the router, so the data can be properly displayed later in the UI. This must implement the interface `BucketsProvider`. Use the method `setBucketsProvider` to override it:
