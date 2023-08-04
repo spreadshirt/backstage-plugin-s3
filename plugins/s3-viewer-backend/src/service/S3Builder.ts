@@ -99,6 +99,10 @@ export class S3Builder {
         discoveryApi: discovery,
       });
 
+    if (this.client.setBucketsProvider) {
+      this.client.setBucketsProvider(this.bucketsProvider);
+    }
+
     const router = this.buildRouter(this.client);
 
     return {

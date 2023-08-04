@@ -17,6 +17,12 @@ export interface S3ClientEnvironment {
 
 export interface S3Api {
   /**
+   * Sets the bucketsProvider, which might be needed to fetch credentials. This method
+   * is optional. Use it only if required.
+   * @param bucketsProvider The buckets provider used to get credentials for buckets
+   */
+  setBucketsProvider?(bucketsProvider: BucketsProvider): void;
+  /**
    * List the keys for a bucket.
    * @param endpoint The endpoint where the bucket is
    * @param bucket The bucket name
