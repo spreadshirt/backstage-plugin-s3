@@ -18,6 +18,11 @@ export type BucketCredentials = S3Platform & {
   bucket: string;
 };
 
+export type AllowedBuckets = {
+  platform: string;
+  buckets: string[];
+};
+
 export interface CredentialsProvider {
   /**
    * Iterates over the configured platforms and fetches the

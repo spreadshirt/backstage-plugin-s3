@@ -1,6 +1,10 @@
 import { Config } from '@backstage/config';
 import { LoggerService } from '@backstage/backend-plugin-api';
-import { BucketCredentials, CredentialsProvider } from '../types';
+import {
+  AllowedBuckets,
+  BucketCredentials,
+  CredentialsProvider,
+} from '../types';
 import { ConfigCredentialsProvider } from './ConfigCredentialsProvider';
 import { RadosGwCredentialsProvider } from './RadosGwCredentialsProvider';
 
@@ -26,11 +30,12 @@ export const getCombinedCredentialsProvider = (
   rootConfig: Config,
   logger: LoggerService,
 ): CombinedCredentialsProvider => {
-  const allowedBuckets: { [key: string]: string[] } = {};
-  Object.entries(rootConfig.getOptional('s3.allowedBuckets') ?? {}).forEach(
-    ([platform, buckets]) => {
-      allowedBuckets[platform] = buckets as string[];
-    },
+  const allowedBuckets: AllowedBuckets[] = [];
+  rootConfig.getOptionalConfigArray('s3.allowedBuckets')?.forEach(c =>
+    allowedBuckets.push({
+      platform: c.getString('platform'),
+      buckets: c.getStringArray('buckets'),
+    }),
   );
 
   const credentialsProvider = rootConfig
