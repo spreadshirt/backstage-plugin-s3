@@ -39,7 +39,7 @@
     "@changesets/cli": "^2.24.4",
     "@spotify/prettier-config": "^12.0.0",
     "@types/react": "^17.0.0",
-    "concurrently": "^6.0.0",
+    "concurrently": "^8.0.0",
     "jest-junit": "^13.0.0",
     "prettier": "^2.3.2",
     "react": "^17.0.0",
