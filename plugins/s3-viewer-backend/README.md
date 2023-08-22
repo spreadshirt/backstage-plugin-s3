@@ -77,16 +77,19 @@ s3:
       platforms:
         - endpoint: http://endpoint-one.com
           name: endpoint-one-name
+          region: us-east-1
           accessKeyId: ${ENDPOINT_ONE_ACCESS_KEY}
           secretAccessKey: ${ENDPOINT_ONE_SECRET_KEY}
         - endpoint: http://endpoint-two.com
           name: endpoint-two-name
+          region: us-east-1
           accessKeyId: ${ENDPOINT_TWO_ACCESS_KEY}
           secretAccessKey: ${ENDPOINT_TWO_SECRET_KEY}
     - type: radosgw-admin
       platforms:
         - endpoint: http://radosgw-endpoint.com
           name: radosgw-endpoint-name
+          region: us-east-1
           accessKeyId: ${RADOSGW_ACCESS_KEY}
           secretAccessKey: ${RADOSGW_SECRET_KEY}
   allowedBuckets:
