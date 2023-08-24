@@ -58,6 +58,18 @@ export interface Config {
      * An optional white-list of buckets per platform name.
      * @visibility backend
      */
-    allowedBuckets?: Record<string, Array<string>>;
+    allowedBuckets?: Array<{
+      /**
+       * The platform name
+       * @visibility backend
+       */
+      platform: string;
+      /**
+       * A list of bucket names that are allowed to be displayed in the platform.
+       * They can be defined with regex patterns as well.
+       * @visibility backend
+       */
+      buckets: Array<string>;
+    }>;
   };
 }

@@ -1,19 +1,24 @@
 import { Config } from '@backstage/config';
 import { S3 } from '@aws-sdk/client-s3';
 import { LoggerService } from '@backstage/backend-plugin-api';
-import { BucketCredentials, CredentialsProvider, S3Platform } from '../types';
+import {
+  AllowedBuckets,
+  BucketCredentials,
+  CredentialsProvider,
+  S3Platform,
+} from '../types';
 
 export class ConfigCredentialsProvider implements CredentialsProvider {
   constructor(
     readonly platforms: S3Platform[],
     readonly logger: LoggerService,
-    readonly allowedBuckets: { [key: string]: string[] },
+    readonly allowedBuckets: AllowedBuckets[],
   ) {}
 
   static fromConfig(
     config: Config,
     logger: LoggerService,
-    allowedBuckets: { [key: string]: string[] },
+    allowedBuckets: AllowedBuckets[],
   ): ConfigCredentialsProvider {
     const platforms: S3Platform[] = config
       .getConfigArray('platforms')
@@ -53,7 +58,9 @@ export class ConfigCredentialsProvider implements CredentialsProvider {
               .filter(b => b)
               .filter(b => {
                 const allowedBuckets =
-                  this.allowedBuckets[platform.endpointName] || [];
+                  this.allowedBuckets.find(
+                    a => a.platform === platform.endpointName,
+                  )?.buckets || [];
 
                 // If no allowedBuckets defined for the platform, all its buckets are allowed by default
                 if (allowedBuckets.length === 0) {

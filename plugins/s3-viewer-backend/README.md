@@ -90,11 +90,13 @@ s3:
           accessKeyId: ${RADOSGW_ACCESS_KEY}
           secretAccessKey: ${RADOSGW_SECRET_KEY}
   allowedBuckets:
-    endpoint-one-name:
-      - allowed-bucket-one
-      - allowed-bucket-two
-    radosgw-endpoint-name:
-      - other-allowed-bucket
+    - platform: endpoint-one-name
+      buckets:
+        - allowed-bucket-one
+        - allowed-bucket-two
+    - platform: radosgw-endpoint-name
+      buckets:
+        - other-allowed-bucket
 ```
 
 ### bucketLocatorMethods
