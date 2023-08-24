@@ -1,5 +1,39 @@
 # @spreadshirt/backstage-plugin-s3-viewer-backend
 
+## 0.6.0
+
+### Minor Changes
+
+- e70177b: **BREAKING**: The `allowedBuckets` configuration has changed. From now on, you must use a
+  configuration like the following:
+
+  ```yaml
+  s3:
+    bucketLocatorMethods:
+      - type: config
+        platforms:
+          - endpoint: <ENDPOINT>
+            name: test-platform
+            accessKeyId: <ACCESS_KEY>
+            secretAccessKey: <SECRET_KEY>
+            region: <REGION>
+    allowedBuckets:
+      - platform: test-platform
+        buckets:
+          - bucket-name-one
+          # ...
+  ```
+
+### Patch Changes
+
+- f094173: Export function `matches` and type `BucketDetailsFilters` from the permissions folder.
+
+  These 2 elements are needed to create a custom `BucketsProvider`.
+
+- 086b5aa: Bump Backstage to version 1.17.4
+- Updated dependencies [086b5aa]
+  - @spreadshirt/backstage-plugin-s3-viewer-common@0.3.3
+
 ## 0.5.0
 
 ### Minor Changes
