@@ -1,5 +1,13 @@
 # @spreadshirt/backstage-plugin-s3-viewer
 
+## 0.4.3
+
+### Patch Changes
+
+- 086b5aa: Bump Backstage to version 1.17.4
+- Updated dependencies [086b5aa]
+  - @spreadshirt/backstage-plugin-s3-viewer-common@0.3.3
+
 ## 0.4.2
 
 ### Patch Changes
