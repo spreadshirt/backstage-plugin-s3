@@ -6,7 +6,7 @@ import {
   S3Platform,
 } from '../types';
 import { Config } from '@backstage/config';
-import { S3 } from '@aws-sdk/client-s3';
+import { fetchBucketsForPlatform } from './utils';
 
 /**
  * This class uses IAM Roles (https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html). Therefore, no
@@ -44,35 +44,10 @@ export class IAMRoleCredentialsProvider implements CredentialsProvider {
     await Promise.all(
       this.platforms.map(async platform => {
         try {
-          const s3Client = new S3({
-            apiVersion: '2006-03-01',
-            endpoint: platform.endpoint,
-            region: platform.region,
-            forcePathStyle: true,
-          });
-
-          const bucketList = await s3Client.listBuckets({});
-
-          const buckets =
-            bucketList.Buckets?.map(b => b.Name || '')
-              .filter(b => b)
-              .filter(b => {
-                const allowedBuckets =
-                  this.allowedBuckets.find(
-                    a => a.platform === platform.endpointName,
-                  )?.buckets || [];
-
-                // If no allowedBuckets defined for the platform, all its buckets are allowed by default
-                if (allowedBuckets.length === 0) {
-                  return true;
-                }
-
-                return allowedBuckets.some(a => {
-                  // Add the start/end of regular expression, so no unexpected matches happen
-                  // Example: `test` should't match `test-one`, but `test.*` should.
-                  return b.match(`^${a}$`);
-                });
-              }) || [];
+          const buckets = await fetchBucketsForPlatform(
+            platform,
+            this.allowedBuckets,
+          );
           const creds: BucketCredentials[] = buckets.map(b => ({
             bucket: b,
             endpoint: platform.endpoint,
