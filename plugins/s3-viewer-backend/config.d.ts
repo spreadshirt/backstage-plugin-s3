@@ -53,6 +53,27 @@ export interface Config {
             secretAccessKey: string;
           }>;
         }
+      | {
+          /** @visibility backend */
+          type: 'iam-role';
+          platforms: Array<{
+            /**
+             * The endpoint where the radogw-admin can be reached.
+             * @visibility backend
+             */
+            endpoint: string;
+            /**
+             * The region where the platform can be reached.
+             * @visibility backend
+             */
+            region: string;
+            /**
+             * Optional name for the platform. If not set, defaults to the platform endpoint.
+             * @visibility backend
+             */
+            name?: string;
+          }>;
+        }
     >;
     /**
      * An optional white-list of buckets per platform name.

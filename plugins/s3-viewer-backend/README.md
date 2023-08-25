@@ -92,6 +92,11 @@ s3:
           region: us-east-1
           accessKeyId: ${RADOSGW_ACCESS_KEY}
           secretAccessKey: ${RADOSGW_SECRET_KEY}
+    - type: iam-role
+      platforms:
+        - endpoint: http://iam-endpoint.com
+          name: iam-endpoint-name
+          region: us-east-1
   allowedBuckets:
     - platform: endpoint-one-name
       buckets:
@@ -100,6 +105,9 @@ s3:
     - platform: radosgw-endpoint-name
       buckets:
         - other-allowed-bucket
+    - platform: iam-endpoint-name
+      buckets:
+        - another-bucket-name
 ```
 
 ### bucketLocatorMethods
@@ -110,6 +118,7 @@ Valid bucket locator methods are:
 
 - config
 - radosgw-admin
+- iam-role
 - custom `CredentialsProvider`
 
 `config`
@@ -119,6 +128,10 @@ With this method, the endpoints are defined in the configuration file and the bu
 `radosgw-admin`
 
 With this locator, the configuration file will contain the endpoint and the credentials for the [radosgw-admin API](https://docs.ceph.com/en/latest/radosgw/adminops/). Then, it will request all the buckets inside and fetch the corresponding credentials for each of them.
+
+`iam-role`:
+
+With this location, the configuration file will contain the endpoint and region needed to access the S3 buckets. In this case no credentials are needed because the [IAM roles](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html) are used instead.
 
 `custom CredentialsProvider`
 
@@ -138,7 +151,7 @@ It is also possible to create a new CredentialsProvider if that is required for 
   const { router } = await builder.build();
 ```
 
-Both `config` and `radosgw-admin` have the same parameters. They are all explained below:
+Both `config` and `radosgw-admin` have the same parameters. The `iam-role` have also the same parameters except the credentials. They are all explained below:
 
 `platforms`
 
@@ -158,11 +171,11 @@ A name to identify the endpoint. This value will be used in the URL for the `s3-
 
 `platforms.\*.accessKeyId`
 
-The accessKeyId is used to access the platform information or to make requests to radosgw-admin. Right now, it's more than enough to use a key with `read` permissions.
+The accessKeyId is used to access the platform information or to make requests to radosgw-admin. Right now, it's more than enough to use a key with `read` permissions. The `iam-role` provider doesn't need this parameter.
 
 `platforms.\*.secretAccessKey`
 
-The secretAccessKey is used to access the platform information or to make requests to radosgw-admin. Right now, it's more than enough to use a key with `read` permissions.
+The secretAccessKey is used to access the platform information or to make requests to radosgw-admin. Right now, it's more than enough to use a key with `read` permissions. The `iam-role` provider doesn't need this parameter.
 
 ### allowedBuckets
 

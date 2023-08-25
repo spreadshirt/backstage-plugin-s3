@@ -81,10 +81,7 @@ export class S3Client implements S3Api {
 
     const s3Client = new S3({
       apiVersion: '2006-03-01',
-      credentials: {
-        accessKeyId: data.credentials.accessKeyId,
-        secretAccessKey: data.credentials.secretAccessKey,
-      },
+      credentials: data.credentials,
       endpoint: data.endpoint,
       region: data.region,
       forcePathStyle: true,
