@@ -7,6 +7,7 @@ import {
 } from '../types';
 import { ConfigCredentialsProvider } from './ConfigCredentialsProvider';
 import { RadosGwCredentialsProvider } from './RadosGwCredentialsProvider';
+import { IAMRoleCredentialsProvider } from './IAMRoleCredentialsProvider';
 
 class CombinedCredentialsProvider implements CredentialsProvider {
   constructor(readonly credentialsProviders: CredentialsProvider[]) {}
@@ -51,6 +52,12 @@ export const getCombinedCredentialsProvider = (
           );
         case 'radosgw-admin':
           return RadosGwCredentialsProvider.fromConfig(
+            clusterLocatorMethod,
+            logger,
+            allowedBuckets,
+          );
+        case 'iam-role':
+          return IAMRoleCredentialsProvider.fromConfig(
             clusterLocatorMethod,
             logger,
             allowedBuckets,

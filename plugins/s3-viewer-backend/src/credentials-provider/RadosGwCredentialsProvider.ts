@@ -55,7 +55,7 @@ export class RadosGwCredentialsProvider implements CredentialsProvider {
       this.platforms.map(async platform => {
         try {
           const signer = new SignatureV4({
-            credentials: platform.credentials,
+            credentials: platform.credentials!,
             region: platform.region,
             service: 's3',
             sha256: Sha256,

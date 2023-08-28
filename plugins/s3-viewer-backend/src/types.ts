@@ -8,7 +8,7 @@ export type S3Platform = {
   endpoint: string;
   endpointName: string;
   region: string;
-  credentials: {
+  credentials?: {
     accessKeyId: string;
     secretAccessKey: string;
   };
