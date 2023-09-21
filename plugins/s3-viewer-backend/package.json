@@ -62,7 +62,6 @@
     "@backstage/test-utils": "^1.4.3",
     "@types/cookie-parser": "^1.4.3",
     "@types/jest": "*",
-    "@types/node": "*",
     "@types/supertest": "^2.0.8",
     "msw": "^1.0.0",
     "supertest": "^6.1.3"
