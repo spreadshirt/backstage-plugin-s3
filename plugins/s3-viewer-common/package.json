@@ -22,6 +22,7 @@
   "backstage": {
     "role": "common-library"
   },
+  "sideEffects": false,
   "scripts": {
     "build": "backstage-cli package build",
     "lint": "backstage-cli package lint",
@@ -31,13 +32,13 @@
     "postpack": "backstage-cli package postpack"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.22.12"
+    "@backstage/cli": "^0.22.13"
   },
   "files": [
     "dist"
   ],
   "dependencies": {
     "@aws-sdk/client-s3": "^3.350.0",
-    "@backstage/plugin-permission-common": "^0.7.7"
+    "@backstage/plugin-permission-common": "^0.7.8"
   }
 }
