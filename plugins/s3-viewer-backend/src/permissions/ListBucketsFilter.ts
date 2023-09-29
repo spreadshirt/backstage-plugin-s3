@@ -16,19 +16,8 @@
 
 import {
   BucketDetails,
-  BucketStats,
+  BucketDetailsFilters,
 } from '@spreadshirt/backstage-plugin-s3-viewer-common';
-
-export type BucketDetailsFilter = {
-  property: Exclude<keyof BucketDetails, keyof BucketStats | 'policy'>;
-  values: Array<string | undefined>;
-};
-
-export type BucketDetailsFilters =
-  | { anyOf: BucketDetailsFilters[] }
-  | { allOf: BucketDetailsFilters[] }
-  | { not: BucketDetailsFilters }
-  | BucketDetailsFilter;
 
 export const matches = (
   bucket: BucketDetails,

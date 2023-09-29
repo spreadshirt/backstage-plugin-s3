@@ -15,11 +15,9 @@
  */
 
 export * from './service';
-export * from './types';
 export * from './middleware';
 export {
   createS3ViewerBucketsConditionalDecision,
   s3ViewerBucketConditions,
   matches,
 } from './permissions';
-export type { BucketDetailsFilters } from './permissions';
