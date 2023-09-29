@@ -1,6 +1,10 @@
 import { Config } from '@backstage/config';
 import { LoggerService } from '@backstage/backend-plugin-api';
-import { AllowedBuckets, BucketCredentials, S3Platform } from '../types';
+import {
+  AllowedBuckets,
+  BucketCredentials,
+  S3Platform,
+} from '@spreadshirt/backstage-plugin-s3-viewer-common';
 import { CredentialsProvider } from '@spreadshirt/backstage-plugin-s3-viewer-node';
 import { fetchBucketsForPlatform } from './utils';
 

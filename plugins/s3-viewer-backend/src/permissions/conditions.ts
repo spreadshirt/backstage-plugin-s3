@@ -3,8 +3,10 @@ import {
   createConditionExports,
   createConditionTransformer,
 } from '@backstage/plugin-permission-node';
-import { S3_VIEWER_RESOURCE_TYPE } from '@spreadshirt/backstage-plugin-s3-viewer-common';
-import { BucketDetailsFilters } from './ListBucketsFilter';
+import {
+  BucketDetailsFilters,
+  S3_VIEWER_RESOURCE_TYPE,
+} from '@spreadshirt/backstage-plugin-s3-viewer-common';
 import { rules } from './rules';
 
 const { conditions, createConditionalDecision } = createConditionExports({

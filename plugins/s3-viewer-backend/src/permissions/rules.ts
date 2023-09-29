@@ -2,9 +2,9 @@ import { makeCreatePermissionRule } from '@backstage/plugin-permission-node';
 import {
   S3_VIEWER_RESOURCE_TYPE,
   BucketDetails,
+  BucketDetailsFilters,
 } from '@spreadshirt/backstage-plugin-s3-viewer-common';
 import { z } from 'zod';
-import { BucketDetailsFilters } from './ListBucketsFilter';
 
 const createS3ViewerBucketPermissionRule = makeCreatePermissionRule<
   BucketDetails,

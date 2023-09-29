@@ -30,15 +30,14 @@ import {
   PolicyDecision,
   QueryPermissionRequest,
 } from '@backstage/plugin-permission-common';
-import { permissions } from '@spreadshirt/backstage-plugin-s3-viewer-common';
+import {
+  BucketDetailsFilters,
+  permissions,
+} from '@spreadshirt/backstage-plugin-s3-viewer-common';
 import { getCombinedCredentialsProvider } from '../credentials-provider';
 import cookieParser from 'cookie-parser';
 import { noopMiddleware, s3Middleware } from '../middleware';
-import {
-  BucketDetailsFilters,
-  matches,
-  transformConditions,
-} from '../permissions';
+import { matches, transformConditions } from '../permissions';
 
 export interface S3Environment {
   logger: LoggerService;

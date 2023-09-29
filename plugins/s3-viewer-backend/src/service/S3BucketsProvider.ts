@@ -1,15 +1,18 @@
-import { BucketCredentials } from '../types';
 import {
   BucketStatsProvider,
   BucketsProvider,
   CredentialsProvider,
 } from '@spreadshirt/backstage-plugin-s3-viewer-node';
-import { BucketDetails } from '@spreadshirt/backstage-plugin-s3-viewer-common';
+import {
+  BucketCredentials,
+  BucketDetails,
+  BucketDetailsFilters,
+} from '@spreadshirt/backstage-plugin-s3-viewer-common';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { S3 } from '@aws-sdk/client-s3';
 import { PluginTaskScheduler } from '@backstage/backend-tasks';
 import { HumanDuration } from '@backstage/types';
-import { BucketDetailsFilters, matches } from '../permissions';
+import { matches } from '../permissions';
 
 export class S3BucketsProvider implements BucketsProvider {
   private buckets: BucketDetails[];

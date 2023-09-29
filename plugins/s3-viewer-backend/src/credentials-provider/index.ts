@@ -1,6 +1,9 @@
 import { Config } from '@backstage/config';
 import { LoggerService } from '@backstage/backend-plugin-api';
-import { AllowedBuckets, BucketCredentials } from '../types';
+import {
+  AllowedBuckets,
+  BucketCredentials,
+} from '@spreadshirt/backstage-plugin-s3-viewer-common';
 import { CredentialsProvider } from '@spreadshirt/backstage-plugin-s3-viewer-node';
 import { ConfigCredentialsProvider } from './ConfigCredentialsProvider';
 import { RadosGwCredentialsProvider } from './RadosGwCredentialsProvider';

@@ -1,5 +1,8 @@
 import { S3 } from '@aws-sdk/client-s3';
-import { AllowedBuckets, S3Platform } from '../types';
+import {
+  AllowedBuckets,
+  S3Platform,
+} from '@spreadshirt/backstage-plugin-s3-viewer-common';
 
 export async function fetchBucketsForPlatform(
   platform: S3Platform,
