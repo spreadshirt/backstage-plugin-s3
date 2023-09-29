@@ -2,12 +2,13 @@ import { Config } from '@backstage/config';
 import express from 'express';
 import Router from 'express-promise-router';
 import {
-  BucketsProvider,
   BucketStatsProvider,
+  BucketsProvider,
   CredentialsProvider,
-} from '../types';
+  S3Api,
+} from '@spreadshirt/backstage-plugin-s3-viewer-node';
 import { S3BucketsProvider } from './S3BucketsProvider';
-import { S3Api, S3Client } from './S3Api';
+import { S3Client } from './S3Api';
 import { errorHandler } from '@backstage/backend-common';
 import {
   DiscoveryService,

@@ -6,62 +6,16 @@ import {
 import { GetObjectCommand, S3 } from '@aws-sdk/client-s3';
 import moment from 'moment';
 import { Readable } from 'stream';
-import { BucketsProvider } from '../types';
+import {
+  BucketsProvider,
+  S3Api,
+} from '@spreadshirt/backstage-plugin-s3-viewer-node';
 import { DiscoveryService } from '@backstage/backend-plugin-api';
 import { NotFoundError } from '@backstage/errors';
 
 export interface S3ClientEnvironment {
   discoveryApi: DiscoveryService;
   bucketsProvider: BucketsProvider;
-}
-
-export interface S3Api {
-  /**
-   * Sets the bucketsProvider, which might be needed to fetch credentials. This method
-   * is optional. Use it only if required.
-   * @param bucketsProvider The buckets provider used to get credentials for buckets
-   */
-  setBucketsProvider?(bucketsProvider: BucketsProvider): void;
-  /**
-   * List the keys for a bucket.
-   * @param endpoint The endpoint where the bucket is
-   * @param bucket The bucket name
-   * @param continuationToken The continuation token to make pagination
-   * @param pageSize The page size, which can be changed in the UI
-   * @param folder The folder name where the keys are located
-   * @param prefix The prefix to filter the listed keys
-   */
-  listBucketKeys(
-    endpoint: string,
-    bucket: string,
-    continuationToken: string,
-    pageSize: number,
-    folder: string,
-    prefix: string,
-  ): Promise<ListBucketKeysResult>;
-  /**
-   * Makes a `HEAD` request to fetch the metadata for an object.
-   * @param endpoint The endpoint where the bucket is
-   * @param bucket The bucket name
-   * @param key The key to obtain the HEAD data
-   */
-  headObject(
-    endpoint: string,
-    bucket: string,
-    key: string,
-  ): Promise<FetchObjectResult>;
-  /**
-   * Returns a stream used to preview the file (if possible),
-   * and also used to download that file dynamically.
-   * @param endpoint The endpoint where the bucket is
-   * @param bucket The bucket name
-   * @param key The name of the key to fetch its data
-   */
-  streamObject(
-    endpoint: string,
-    bucket: string,
-    key: string,
-  ): Promise<Readable>;
 }
 
 export class S3Client implements S3Api {

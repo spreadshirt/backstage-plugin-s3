@@ -2,12 +2,8 @@ import { Config } from '@backstage/config';
 import { SignatureV4 } from '@aws-sdk/signature-v4';
 import { Sha256 } from '@aws-crypto/sha256-browser';
 import { HttpRequest } from '@aws-sdk/protocol-http';
-import {
-  AllowedBuckets,
-  BucketCredentials,
-  CredentialsProvider,
-  S3Platform,
-} from '../types';
+import { AllowedBuckets, BucketCredentials, S3Platform } from '../types';
+import { CredentialsProvider } from '@spreadshirt/backstage-plugin-s3-viewer-node';
 import fetch from 'cross-fetch';
 import { LoggerService } from '@backstage/backend-plugin-api';
 

@@ -1,9 +1,9 @@
+import { BucketCredentials } from '../types';
 import {
-  BucketCredentials,
-  BucketsProvider,
   BucketStatsProvider,
+  BucketsProvider,
   CredentialsProvider,
-} from '../types';
+} from '@spreadshirt/backstage-plugin-s3-viewer-node';
 import { BucketDetails } from '@spreadshirt/backstage-plugin-s3-viewer-common';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { S3 } from '@aws-sdk/client-s3';
