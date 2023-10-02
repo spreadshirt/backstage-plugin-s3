@@ -1,6 +1,14 @@
+import { TaskScheduleDefinitionConfig } from '@backstage/backend-tasks';
+
 /** Configuration for the S3 Viewer plugin */
 export interface Config {
   s3?: {
+    /**
+     * If defined, it sets the schedule used to refresh the list of buckets
+     * @visibility backend
+     * */
+    bucketRefreshSchedule: TaskScheduleDefinitionConfig | undefined;
+
     /** @visibility backend */
     bucketLocatorMethods: Array<
       | {
@@ -92,5 +100,11 @@ export interface Config {
        */
       buckets: Array<string>;
     }>;
+    /**
+     * If set to `true` the permissionMiddleware will be enabled. The default one will be used, but it can be customized.
+     * The permissionMiddleware is required if the permissions setup is used.
+     * @visibility backend
+     */
+    permissionMiddleware?: boolean;
   };
 }

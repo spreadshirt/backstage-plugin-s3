@@ -158,7 +158,7 @@ export class S3Client implements S3Api {
     bucket: string,
     key: string,
   ): Promise<string> {
-    const s3Url = await this.discoveryApi.getExternalBaseUrl('s3');
+    const s3Url = await this.discoveryApi.getExternalBaseUrl('s3-viewer');
     const url = new URL(
       `${s3Url}/stream/${encodeURIComponent(bucket)}/${encodeURIComponent(
         key,

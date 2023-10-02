@@ -21,3 +21,4 @@ export {
   s3ViewerBucketConditions,
   matches,
 } from './permissions';
+export { s3ViewerPlugin as default } from './service';
