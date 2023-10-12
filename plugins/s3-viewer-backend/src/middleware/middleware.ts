@@ -1,9 +1,12 @@
-import type { Config } from '@backstage/config';
 import { getBearerTokenFromAuthorizationHeader } from '@backstage/plugin-auth-node';
 import express from 'express';
 import { decodeJwt } from 'jose';
 import { URL } from 'url';
-import { S3Environment } from '../service';
+import {
+  IdentityService,
+  RootConfigService,
+  TokenManagerService,
+} from '@backstage/backend-plugin-api';
 
 // Based on the code in https://github.com/backstage/backstage/blob/master/contrib/docs/tutorials/authenticate-api-requests.md
 
@@ -41,7 +44,14 @@ export const noopMiddleware = () => {
   return s3Middleware;
 };
 
-export const s3Middleware = async (config: Config, appEnv: S3Environment) => {
+type S3MiddlewareProps = {
+  config: RootConfigService;
+  identity: IdentityService;
+  tokenManager: TokenManagerService;
+};
+
+export const s3Middleware = async (opts: S3MiddlewareProps) => {
+  const { config, identity, tokenManager } = opts;
   const baseUrl = config.getString('backend.baseUrl');
   const secure = baseUrl.startsWith('https://');
   const cookieDomain = new URL(baseUrl).hostname;
@@ -59,13 +69,13 @@ export const s3Middleware = async (config: Config, appEnv: S3Environment) => {
         return;
       }
       try {
-        const user = (await appEnv.identity.getIdentity({ request: req }))
-          ?.identity.userEntityRef;
+        const user = (await identity.getIdentity({ request: req }))?.identity
+          .userEntityRef;
         if (!req.headers.user) {
           req.headers.user = user;
         }
       } catch {
-        await appEnv.tokenManager.authenticate(token);
+        await tokenManager.authenticate(token);
       }
       if (!req.headers.authorization) {
         // Authorization header may be forwarded by plugin requests

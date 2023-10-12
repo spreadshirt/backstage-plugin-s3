@@ -206,15 +206,8 @@ export class S3Builder {
    * the default one will be used
    * @returns
    */
-  public async useMiddleware(
-    middleware?: (
-      config: Config,
-      appEnv: S3Environment,
-    ) => Promise<express.RequestHandler>,
-  ) {
-    this.s3Middleware = middleware
-      ? await middleware(this.env.config, this.env)
-      : await s3Middleware(this.env.config, this.env);
+  public async useMiddleware(middleware?: express.RequestHandler) {
+    this.s3Middleware = middleware ? middleware : await s3Middleware(this.env);
     return this;
   }
 

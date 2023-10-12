@@ -10,6 +10,7 @@ import {
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
 import { S3Builder } from './S3Builder';
+import express from 'express';
 
 export const s3ViewerPlugin = createBackendPlugin({
   pluginId: 's3-viewer',
@@ -18,6 +19,7 @@ export const s3ViewerPlugin = createBackendPlugin({
     let s3CredentialsProvider: CredentialsProvider;
     let s3BucketsProvider: BucketsProvider;
     let s3BucketStatsProvider: BucketStatsProvider;
+    let s3Middleware: express.RequestHandler;
 
     env.registerExtensionPoint(s3ViewerExtensionPoint, {
       setClient(client) {
@@ -43,6 +45,12 @@ export const s3ViewerPlugin = createBackendPlugin({
           throw new Error('A bucket stats provider has been already set');
         }
         s3BucketStatsProvider = bucketStatsProvider;
+      },
+      setPermissionMiddleware(middleware) {
+        if (s3Middleware !== undefined) {
+          throw new Error('A middleware has been already set');
+        }
+        s3Middleware = middleware;
       },
     });
 
@@ -73,7 +81,7 @@ export const s3ViewerPlugin = createBackendPlugin({
           builder = builder.setBucketStatsProvider(s3BucketStatsProvider);
         }
         if (deps.config.getOptionalBoolean('s3.permissionMiddleware')) {
-          builder = await builder.useMiddleware();
+          builder = await builder.useMiddleware(s3Middleware);
         }
 
         const { router } = await builder.build();
