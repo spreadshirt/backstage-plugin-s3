@@ -58,7 +58,7 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.23.0",
+    "@backstage/cli": "^0.23.1",
     "@backstage/test-utils": "^1.4.4",
     "@types/cookie-parser": "^1.4.3",
     "@types/jest": "*",
