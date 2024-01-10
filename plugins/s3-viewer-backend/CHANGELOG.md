@@ -1,5 +1,15 @@
 # @spreadshirt/backstage-plugin-s3-viewer-backend
 
+## 0.7.4
+
+### Patch Changes
+
+- 6a8666a: Add legacy flag for local development. This flag can be removed once the
+  migration to the new backend-system is done.
+- 133e6f1: Bump backstage dependencies to version 1.21.1
+- Updated dependencies [133e6f1]
+  - @spreadshirt/backstage-plugin-s3-viewer-common@0.3.7
+
 ## 0.7.3
 
 ### Patch Changes
