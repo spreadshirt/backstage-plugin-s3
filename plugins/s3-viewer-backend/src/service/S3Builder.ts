@@ -2,20 +2,24 @@ import { Config } from '@backstage/config';
 import express from 'express';
 import Router from 'express-promise-router';
 import {
-  BucketsProvider,
   BucketStatsProvider,
+  BucketsProvider,
   CredentialsProvider,
-} from '../types';
+  S3Api,
+} from '@spreadshirt/backstage-plugin-s3-viewer-node';
 import { S3BucketsProvider } from './S3BucketsProvider';
-import { S3Api, S3Client } from './S3Api';
+import { S3Client } from './S3Api';
 import { errorHandler } from '@backstage/backend-common';
 import {
   DiscoveryService,
   LoggerService,
   TokenManagerService,
 } from '@backstage/backend-plugin-api';
-import { PluginTaskScheduler } from '@backstage/backend-tasks';
-import { HumanDuration } from '@backstage/types';
+import {
+  PluginTaskScheduler,
+  TaskScheduleDefinition,
+  readTaskScheduleDefinitionFromConfig,
+} from '@backstage/backend-tasks';
 import {
   assertError,
   AuthenticationError,
@@ -29,15 +33,15 @@ import {
   PolicyDecision,
   QueryPermissionRequest,
 } from '@backstage/plugin-permission-common';
-import { permissions } from '@spreadshirt/backstage-plugin-s3-viewer-common';
+import {
+  BucketDetailsFilters,
+  permissions,
+} from '@spreadshirt/backstage-plugin-s3-viewer-common';
 import { getCombinedCredentialsProvider } from '../credentials-provider';
 import cookieParser from 'cookie-parser';
 import { noopMiddleware, s3Middleware } from '../middleware';
-import {
-  BucketDetailsFilters,
-  matches,
-  transformConditions,
-} from '../permissions';
+import { HumanDuration } from '@backstage/types';
+import { matches, transformConditions } from '../permissions';
 
 export interface S3Environment {
   logger: LoggerService;
@@ -54,7 +58,7 @@ export interface S3BuilderReturn {
 }
 
 export class S3Builder {
-  private refreshInterval: HumanDuration | undefined = undefined;
+  private refreshInterval: HumanDuration | undefined;
   private client?: S3Api;
   private credentialsProvider?: CredentialsProvider;
   private bucketsProvider?: BucketsProvider;
@@ -79,6 +83,20 @@ export class S3Builder {
       };
     }
 
+    // Temporarily maintain support for the `setRefreshInterval` method if the configuration
+    // is not used. Remove it in some of the next releases. Added a deprecation for now
+    const fallbackSchedule = this.refreshInterval
+      ? { frequency: this.refreshInterval, timeout: this.refreshInterval }
+      : undefined;
+
+    const schedule: TaskScheduleDefinition | undefined = config.has(
+      's3.bucketRefreshSchedule',
+    )
+      ? readTaskScheduleDefinitionFromConfig(
+          config.getConfig('s3.bucketRefreshSchedule'),
+        )
+      : fallbackSchedule;
+
     const credentialsProvider =
       this.credentialsProvider ?? this.buildCredentialsProvider();
 
@@ -89,7 +107,7 @@ export class S3Builder {
         scheduler,
         credentialsProvider,
         this.statsProvider,
-        this.refreshInterval,
+        schedule,
       );
 
     this.client =
@@ -165,8 +183,13 @@ export class S3Builder {
    *
    * @param refreshInterval - The refresh interval to reload buckets
    * @returns
+   * @deprecated Now the refresh interval is set via the app-config.yaml file.
+   * Define `s3.bucketRefreshSchedule` in your configuration file.
    */
   public setRefreshInterval(refreshInterval: HumanDuration) {
+    this.env.logger.warn(
+      "The method setRefreshInterval is deprecated. Please define the refresh interval via the config file in 's3.bucketRefreshSchedule' instead",
+    );
     this.refreshInterval = refreshInterval;
     return this;
   }
@@ -183,15 +206,8 @@ export class S3Builder {
    * the default one will be used
    * @returns
    */
-  public async useMiddleware(
-    middleware?: (
-      config: Config,
-      appEnv: S3Environment,
-    ) => Promise<express.RequestHandler>,
-  ) {
-    this.s3Middleware = middleware
-      ? await middleware(this.env.config, this.env)
-      : await s3Middleware(this.env.config, this.env);
+  public async useMiddleware(middleware?: express.RequestHandler) {
+    this.s3Middleware = middleware ? middleware : await s3Middleware(this.env);
     return this;
   }
 

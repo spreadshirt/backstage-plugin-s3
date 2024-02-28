@@ -1,15 +1,20 @@
 import {
-  BucketCredentials,
-  BucketsProvider,
   BucketStatsProvider,
+  BucketsProvider,
   CredentialsProvider,
-} from '../types';
-import { BucketDetails } from '@spreadshirt/backstage-plugin-s3-viewer-common';
+} from '@spreadshirt/backstage-plugin-s3-viewer-node';
+import {
+  BucketCredentials,
+  BucketDetails,
+  BucketDetailsFilters,
+} from '@spreadshirt/backstage-plugin-s3-viewer-common';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { S3 } from '@aws-sdk/client-s3';
-import { PluginTaskScheduler } from '@backstage/backend-tasks';
-import { HumanDuration } from '@backstage/types';
-import { BucketDetailsFilters, matches } from '../permissions';
+import {
+  PluginTaskScheduler,
+  TaskScheduleDefinition,
+} from '@backstage/backend-tasks';
+import { matches } from '../permissions';
 
 export class S3BucketsProvider implements BucketsProvider {
   private buckets: BucketDetails[];
@@ -20,7 +25,7 @@ export class S3BucketsProvider implements BucketsProvider {
     readonly scheduler: PluginTaskScheduler,
     readonly credentialsProvider: CredentialsProvider,
     readonly statsProvider: BucketStatsProvider | undefined,
-    readonly refreshInterval: HumanDuration | undefined,
+    readonly schedule: TaskScheduleDefinition | undefined,
   ) {
     this.buckets = [];
     this.bucketCreds = [];
@@ -31,14 +36,14 @@ export class S3BucketsProvider implements BucketsProvider {
     scheduler: PluginTaskScheduler,
     credentialsProvider: CredentialsProvider,
     statsProvider: BucketStatsProvider | undefined,
-    refreshInterval: HumanDuration | undefined,
+    schedule: TaskScheduleDefinition | undefined,
   ): S3BucketsProvider {
     const bucketsProvider = new S3BucketsProvider(
       logger,
       scheduler,
       credentialsProvider,
       statsProvider,
-      refreshInterval,
+      schedule,
     );
     // Don't wait for bucket fetch. This speeds up the backend startup process.
     bucketsProvider.start();
@@ -48,12 +53,14 @@ export class S3BucketsProvider implements BucketsProvider {
 
   async start(): Promise<void> {
     await this.fetchBuckets();
-    if (this.refreshInterval) {
+    if (this.schedule) {
       await this.scheduler.scheduleTask({
         id: 'refresh-s3-buckets',
         fn: async () => this.fetchBuckets(),
-        frequency: this.refreshInterval,
-        timeout: this.refreshInterval,
+        frequency: this.schedule.frequency,
+        timeout: this.schedule.timeout,
+        initialDelay: this.schedule.initialDelay,
+        scope: this.schedule.scope,
       });
     }
   }

@@ -42,17 +42,9 @@ export async function startStandaloneServer(
   const scheduler = taskScheduler.forPlugin('s3-viewer');
   logger.debug('Starting application server...');
 
-  const permissionRouter = await createPluginPermissions({
-    config,
-    logger,
-    scheduler,
-  });
+  const permissionRouter = await createPluginPermissions({ config, logger });
 
-  const router = await createRouter({
-    logger,
-    config,
-    scheduler,
-  });
+  const router = await createRouter({ logger, config, scheduler });
 
   let service = createServiceBuilder(module)
     .setPort(options.port)

@@ -5,9 +5,9 @@ import { HttpRequest } from '@aws-sdk/protocol-http';
 import {
   AllowedBuckets,
   BucketCredentials,
-  CredentialsProvider,
   S3Platform,
-} from '../types';
+} from '@spreadshirt/backstage-plugin-s3-viewer-common';
+import { CredentialsProvider } from '@spreadshirt/backstage-plugin-s3-viewer-node';
 import fetch from 'cross-fetch';
 import { LoggerService } from '@backstage/backend-plugin-api';
 

@@ -23,16 +23,9 @@ import {
 import { PluginTaskScheduler } from '@backstage/backend-tasks';
 import { Config } from '@backstage/config';
 import express from 'express';
-import {
-  DiscoveryService,
-  LoggerService,
-  TokenManagerService,
-} from '@backstage/backend-plugin-api';
+import { LoggerService } from '@backstage/backend-plugin-api';
 import { S3Builder } from './S3Builder';
-import {
-  DefaultIdentityClient,
-  IdentityApi,
-} from '@backstage/plugin-auth-node';
+import { DefaultIdentityClient } from '@backstage/plugin-auth-node';
 import {
   PermissionPolicy,
   ServerPermissionClient,
@@ -89,15 +82,12 @@ class TestPermissionPolicy implements PermissionPolicy {
 export interface RouterPermissionOptions {
   logger: LoggerService;
   config: Config;
-  discovery: DiscoveryService;
-  tokenManager: TokenManagerService;
-  identity: IdentityApi;
 }
 
 export async function createPluginPermissions({
   logger,
   config,
-}: RouterOptions): Promise<express.Router> {
+}: RouterPermissionOptions): Promise<express.Router> {
   const discovery = HostDiscovery.fromConfig(config);
   const identity = DefaultIdentityClient.create({
     discovery,

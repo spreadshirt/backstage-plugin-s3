@@ -66,6 +66,44 @@ To get started, follow these steps:
 
 3. Add the configuration in the `app-config.yaml` file. This is explained in detail in the next section.
 
+## New backend system
+
+The plugin also supports the [new backend system](https://backstage.io/docs/backend-system/). If you want to use the plugin add the following line in the `src/index.ts`:
+
+```typescript
+// In packages/backend/src/index.ts
+
+backend.add(import('@spreadshirt/backstage-plugin-s3-viewer-backend'));
+```
+
+This line will initialize the backend with all the default configurations. It is possible to customize it by adding a backend module to our app, by doing something like:
+
+```typescript
+import { s3ViewerExtensionPoint } from '@spreadshirt/plugin-s3-viewer-node';
+
+const s3ViewerExtensions = createBackendModule({
+  pluginId: 's3-viewer',
+  moduleId: 'extensions',
+  register(reg) {
+    reg.registerInit({
+      deps: {
+        extension: s3ViewerExtensionPoint,
+      },
+      async init({ extension }) {
+        /// ...
+      },
+    });
+  },
+});
+
+backend.add(s3ViewerExtensions());
+```
+
+The `extensions` type contains all the needed functions to override any of the elements that are defined in the next section.
+
+To enable the permissionMiddleware, which is needed when used together with the permissions setup, you can do it using the `app-config.yaml`
+by setting `s3.permissionMiddleware` to `true`.
+
 ## Configuration
 
 This plugin allows fetching the buckets from different endpoints and using different approaches. This is a full example entry in `app-config.yaml`:
@@ -108,6 +146,10 @@ s3:
     - platform: iam-endpoint-name
       buckets:
         - another-bucket-name
+  bucketRefreshSchedule:
+    frequency: { minutes: 30 }
+    timeout: { minutes: 1 }
+  permissionMiddleware: true
 ```
 
 ### bucketLocatorMethods
@@ -183,6 +225,14 @@ For security, when selecting the `radosgw-admin` mode, you need to specify a lis
 
 To achieve that you need to specify the __platform name__ and then an array of buckets to be allowed. You can add as much as you want. And if a platform is not defined here, by default all the buckets will be allowed.
 
+### bucketRefreshSchedule
+
+If set, the buckets provider will be executed with the defined schedule.
+
+### permissionMiddleware
+
+Used by the new backend system. This field is optional. If set to true, the permissionMiddleware will be enabled in the backend plugin.
+
 ## Customization
 
 Apart from the custom `CredentialsProvider`, it is also possible to make more changes to the plugin, so that it can match your internal requirements.
@@ -245,20 +295,13 @@ By default, the S3 API doesn't provide a straightforward way to fetch informatio
 
 ### Refresh Interval
 
-Finally, it might be useful to refresh the bucket information, so that this data is always up to date. By default, the refresh is disabled, and it has to be defined by the user. To use it, the user just needs to set the frequency of this update by using the `HumanDuration` type, as with the `scheduler` env.
+Finally, it might be useful to refresh the bucket information, so that this data is always up to date. By default the refresh is disabled and it has to be defined by the user. To use it, the user just needs to set the frequency directly in the configuration file. For example, to refresh the list of buckets every half hour and using a timeout of 1 minute:
 
-```typescript
-  const builder = S3Builder.createBuilder({
-    config: env.config,
-    logger: env.logger,
-    scheduler: env.scheduler,
-    discovery: env.discovery,
-    identity: env.identity,
-    permissions: env.permissions,
-    tokenManager: env.tokenManager,
-  }).setRefreshInternal({ minutes: 30 });
-
-  const { router } = await builder.build();
+```yaml
+s3:
+  bucketRefreshSchedule:
+    frequency: { minutes: 30 }
+    timeout: { minutes: 1 }
 ```
 
 ## Permissions Setup

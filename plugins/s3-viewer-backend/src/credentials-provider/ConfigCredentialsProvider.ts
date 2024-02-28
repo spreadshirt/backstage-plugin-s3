@@ -3,9 +3,9 @@ import { LoggerService } from '@backstage/backend-plugin-api';
 import {
   AllowedBuckets,
   BucketCredentials,
-  CredentialsProvider,
   S3Platform,
-} from '../types';
+} from '@spreadshirt/backstage-plugin-s3-viewer-common';
+import { CredentialsProvider } from '@spreadshirt/backstage-plugin-s3-viewer-node';
 import { fetchBucketsForPlatform } from './utils';
 
 export class ConfigCredentialsProvider implements CredentialsProvider {

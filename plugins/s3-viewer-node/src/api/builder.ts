@@ -1,27 +1,61 @@
 import {
+  BucketCredentials,
   BucketDetails,
+  BucketDetailsFilters,
   BucketStats,
+  FetchObjectResult,
+  ListBucketKeysResult,
 } from '@spreadshirt/backstage-plugin-s3-viewer-common';
-import { BucketDetailsFilters } from './permissions';
+import { Readable } from 'stream';
 
-export type S3Platform = {
-  endpoint: string;
-  endpointName: string;
-  region: string;
-  credentials?: {
-    accessKeyId: string;
-    secretAccessKey: string;
-  };
-};
-
-export type BucketCredentials = S3Platform & {
-  bucket: string;
-};
-
-export type AllowedBuckets = {
-  platform: string;
-  buckets: string[];
-};
+export interface S3Api {
+  /**
+   * Sets the bucketsProvider, which might be needed to fetch credentials. This method
+   * is optional. Use it only if required.
+   * @param bucketsProvider The buckets provider used to get credentials for buckets
+   */
+  setBucketsProvider?(bucketsProvider: BucketsProvider): void;
+  /**
+   * List the keys for a bucket.
+   * @param endpoint The endpoint where the bucket is
+   * @param bucket The bucket name
+   * @param continuationToken The continuation token to make pagination
+   * @param pageSize The page size, which can be changed in the UI
+   * @param folder The folder name where the keys are located
+   * @param prefix The prefix to filter the listed keys
+   */
+  listBucketKeys(
+    endpoint: string,
+    bucket: string,
+    continuationToken: string,
+    pageSize: number,
+    folder: string,
+    prefix: string,
+  ): Promise<ListBucketKeysResult>;
+  /**
+   * Makes a `HEAD` request to fetch the metadata for an object.
+   * @param endpoint The endpoint where the bucket is
+   * @param bucket The bucket name
+   * @param key The key to obtain the HEAD data
+   */
+  headObject(
+    endpoint: string,
+    bucket: string,
+    key: string,
+  ): Promise<FetchObjectResult>;
+  /**
+   * Returns a stream used to preview the file (if possible),
+   * and also used to download that file dynamically.
+   * @param endpoint The endpoint where the bucket is
+   * @param bucket The bucket name
+   * @param key The name of the key to fetch its data
+   */
+  streamObject(
+    endpoint: string,
+    bucket: string,
+    key: string,
+  ): Promise<Readable>;
+}
 
 export interface CredentialsProvider {
   /**

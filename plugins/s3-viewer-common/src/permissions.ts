@@ -2,6 +2,18 @@ import {
   createPermission,
   ResourcePermission,
 } from '@backstage/plugin-permission-common';
+import { BucketDetails, BucketStats } from './types';
+
+export type BucketDetailsFilter = {
+  property: Exclude<keyof BucketDetails, keyof BucketStats | 'policy'>;
+  values: Array<string | undefined>;
+};
+
+export type BucketDetailsFilters =
+  | { anyOf: BucketDetailsFilters[] }
+  | { allOf: BucketDetailsFilters[] }
+  | { not: BucketDetailsFilters }
+  | BucketDetailsFilter;
 
 export const S3_VIEWER_RESOURCE_TYPE = 's3-viewer.bucket';
 
