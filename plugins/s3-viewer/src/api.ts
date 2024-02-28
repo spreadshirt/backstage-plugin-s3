@@ -87,7 +87,7 @@ export class S3Client implements S3Api {
     path: string,
     query: { [key in string]: any },
   ): Promise<T> {
-    const apiUrl = await this.discoveryApi.getBaseUrl('s3');
+    const apiUrl = await this.discoveryApi.getBaseUrl('s3-viewer');
     const { token } = await this.identityApi.getCredentials();
 
     const response = await fetch(

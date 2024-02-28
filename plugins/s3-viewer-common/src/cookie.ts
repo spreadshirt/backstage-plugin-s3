@@ -30,7 +30,7 @@ export async function setTokenCookie(
   discoveryApi: DiscoveryApi,
   identityApi: IdentityApi,
 ) {
-  const url = `${await discoveryApi.getBaseUrl('s3')}/cookie`;
+  const url = `${await discoveryApi.getBaseUrl('s3-viewer')}/cookie`;
   const { token } = await identityApi.getCredentials();
   if (!token) {
     return;
