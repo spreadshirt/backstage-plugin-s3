@@ -1,5 +1,41 @@
 # @spreadshirt/backstage-plugin-s3-viewer-backend
 
+## 0.8.0
+
+### Minor Changes
+
+- d7091b6: Add support to the [new backend system](https://backstage.io/docs/backend-system/).
+
+  Follow the instructions in the [README.md](https://github.com/spreadshirt/backstage-plugin-s3/blob/main/plugins/s3-viewer-backend/README.md#new-backend-system)
+
+  **DEPRECATION**: The method `setRefreshInterval` has been deprecated in favor of the usage of the configuration file to schedule the refresh.
+  From now on, the schedule should be set using the `app-config.yaml` file. This method will be kept for some time as a fallback if the schedule
+  has not been set via the configuration file.
+
+- 5bc27f0: Support overriding the default middleware used in the s3 backend. **NOTE** that
+  the custom middleware will _only_ be used if the `s3.permissionMiddleware` is set to `true`.
+
+  Also loosen up a little bit how the middleware has to be defined. Before it was required
+  to receive a `Config` and the `appEnv`, but now it's up to the user to decide which parameters
+  they need. This might require some breaking changes in your code, but we don't expect many people
+  needing to use this customization.
+
+- 692b6ec: **BREAKING**: Some interfaces are now part of the `@spreadshirt/backstage-plugin-s3-viewer-node` package. If you were
+  using them, switch to this new package.
+- 84db8bf: **BREAKING**: Moved some types that were part of this package to `@spreadshirt/backstage-plugin-s3-viewer-common`.
+  If you were using any of these types, please import them using `@spreadshirt/backstage-plugin-s3-viewer-common`:
+  `BucketDetailsFilter`, `BucketDetailsFilters`, `S3Platform`, `BucketCredentials`, `AllowedBuckets`
+
+### Patch Changes
+
+- 0940010: Import new types from `@spreadshirt/backstage-plugin-s3-viewer-common`
+- Updated dependencies [c947924]
+- Updated dependencies [84db8bf]
+- Updated dependencies [5bc27f0]
+- Updated dependencies [58ccb15]
+  - @spreadshirt/backstage-plugin-s3-viewer-node@0.1.0
+  - @spreadshirt/backstage-plugin-s3-viewer-common@0.4.0
+
 ## 0.7.6
 
 ### Patch Changes
