@@ -1,5 +1,5 @@
 ---
-'@spreadshirt/plugin-s3-viewer-node': patch
+'@spreadshirt/backatage-plugin-s3-viewer-node': patch
 ---
 
 Add `setPermissionMiddleware` method to the extension point interface.

@@ -79,7 +79,7 @@ backend.add(import('@spreadshirt/backstage-plugin-s3-viewer-backend'));
 This line will initialize the backend with all the default configurations. It is possible to customize it by adding a backend module to our app, by doing something like:
 
 ```typescript
-import { s3ViewerExtensionPoint } from '@spreadshirt/plugin-s3-viewer-node';
+import { s3ViewerExtensionPoint } from '@spreadshirt/backstage-plugin-s3-viewer-node';
 
 const s3ViewerExtensions = createBackendModule({
   pluginId: 's3-viewer',
