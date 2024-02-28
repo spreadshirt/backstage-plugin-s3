@@ -1,5 +1,17 @@
 # @spreadshirt/backstage-plugin-s3-viewer-common
 
+## 0.4.0
+
+### Minor Changes
+
+- 84db8bf: **BREAKING**: Moved some types that were part of `@spreadshirt/backstage-plugin-s3-viewer-backend` to this package.
+  If you were using any of these types, please import them using `@spreadshirt/backstage-plugin-s3-viewer-common`:
+  `BucketDetailsFilter`, `BucketDetailsFilters`, `S3Platform`, `BucketCredentials`, `AllowedBuckets`
+
+### Patch Changes
+
+- 58ccb15: Make sure the new `s3-viewer` API endpoint is used for the cookie instead of the old `s3`
+
 ## 0.3.9
 
 ### Patch Changes

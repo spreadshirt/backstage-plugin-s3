@@ -1,5 +1,17 @@
 # @spreadshirt/backstage-plugin-s3-viewer
 
+## 0.5.0
+
+### Minor Changes
+
+- 58ccb15: Updated base API to the new backend plugin, which is `s3-viewer` instead of `s3`. No breaking changes expected.
+
+### Patch Changes
+
+- Updated dependencies [84db8bf]
+- Updated dependencies [58ccb15]
+  - @spreadshirt/backstage-plugin-s3-viewer-common@0.4.0
+
 ## 0.4.9
 
 ### Patch Changes
