@@ -8,7 +8,7 @@ The plugin provides:
 - A common package containing several types shared by frontend and backend.
 - A frontend page where the users can navigate through the different buckets and their objects. As well as previewing, downloading or getting object information.
 
-## Installation
+## Installation d
 
 Check the installation process for these plugins in the following links:
 
