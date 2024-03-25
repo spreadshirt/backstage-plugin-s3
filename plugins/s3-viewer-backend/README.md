@@ -101,9 +101,6 @@ backend.add(s3ViewerExtensions());
 
 The `extensions` type contains all the needed functions to override any of the elements that are defined in the next section.
 
-To enable the permissionMiddleware, which is needed when used together with the permissions setup, you can do it using the `app-config.yaml`
-by setting `s3.permissionMiddleware` to `true`.
-
 ## Configuration
 
 This plugin allows fetching the buckets from different endpoints and using different approaches. This is a full example entry in `app-config.yaml`:
@@ -149,7 +146,6 @@ s3:
   bucketRefreshSchedule:
     frequency: { minutes: 30 }
     timeout: { minutes: 1 }
-  permissionMiddleware: true
 ```
 
 ### bucketLocatorMethods
@@ -228,10 +224,6 @@ To achieve that you need to specify the __platform name__ and then an array of b
 ### bucketRefreshSchedule
 
 If set, the buckets provider will be executed with the defined schedule.
-
-### permissionMiddleware
-
-Used by the new backend system. This field is optional. If set to true, the permissionMiddleware will be enabled in the backend plugin.
 
 ## Customization
 
@@ -352,10 +344,6 @@ However, the preview and download of data from S3 require the Backstage `user-co
 
   const { router } = await builder.build();
   ```
-
-3. If needed, the `useMiddleware` function allows you to inject a custom middleware, in case you need to execute something else. By default, it will use a middleware like the one defined [here](https://github.com/backstage/backstage/blob/master/contrib/docs/tutorials/authenticate-api-requests.md).
-
-**NOTE**: The usage of the middleware is meant to be used in production environments (when `NODE_ENV` is set to `production`). If you're working in development with a `guest` user, please set this environment variable to another value (like `development`), so the authorization won't fail due to an invalid token.
 
 Once this setup is done, you will need to extend the permission policy to check for the available permissions and `ALLOW` or `DENY` access to any data you want. This step is completely up to the end user, as the way of obtaining these permissions might differ for every company. The following example would allow listing all the buckets and keys, but deny downloading and previewing the objects:
 
