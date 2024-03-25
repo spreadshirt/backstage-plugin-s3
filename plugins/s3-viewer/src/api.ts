@@ -1,7 +1,7 @@
 import {
   DiscoveryApi,
   createApiRef,
-  IdentityApi,
+  FetchApi,
 } from '@backstage/core-plugin-api';
 import {
   BucketDetails,
@@ -14,6 +14,11 @@ export const S3ApiRef = createApiRef<S3Api>({
 });
 
 export interface S3Api {
+  /**
+   * Sets the cookie used by the plugin to authenticate users and allow them
+   * to download and preview the data in S3.
+   */
+  setCookie(): Promise<void>;
   /**
    * List the keys for a bucket.
    * @param endpoint The endpoint where the bucket is
@@ -71,16 +76,16 @@ export interface S3Api {
 
 export class S3Client implements S3Api {
   discoveryApi: DiscoveryApi;
-  identityApi: IdentityApi;
+  fetchApi: FetchApi;
   constructor({
     discoveryApi,
-    identityApi,
+    fetchApi,
   }: {
     discoveryApi: DiscoveryApi;
-    identityApi: IdentityApi;
+    fetchApi: FetchApi;
   }) {
     this.discoveryApi = discoveryApi;
-    this.identityApi = identityApi;
+    this.fetchApi = fetchApi;
   }
 
   private async callApi<T>(
@@ -88,14 +93,11 @@ export class S3Client implements S3Api {
     query: { [key in string]: any },
   ): Promise<T> {
     const apiUrl = await this.discoveryApi.getBaseUrl('s3-viewer');
-    const { token } = await this.identityApi.getCredentials();
-
-    const response = await fetch(
+    const response = await this.fetchApi.fetch(
       `${apiUrl}/${path}?${new URLSearchParams(query).toString()}`,
       {
         headers: {
           Accept: 'application/json',
-          Authorization: `Bearer ${token}`,
         },
       },
     );
@@ -107,6 +109,11 @@ export class S3Client implements S3Api {
     }
 
     return (await response.json()) as T;
+  }
+
+  async setCookie(): Promise<void> {
+    const apiUrl = await this.discoveryApi.getBaseUrl('s3-viewer');
+    await this.fetchApi.fetch(`${apiUrl}/cookie`, { credentials: 'include' });
   }
 
   async listBucketKeys(
