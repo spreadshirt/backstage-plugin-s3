@@ -15,7 +15,6 @@
  */
 
 export * from './service';
-export * from './middleware';
 export {
   createS3ViewerBucketsConditionalDecision,
   s3ViewerBucketConditions,

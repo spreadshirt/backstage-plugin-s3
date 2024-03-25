@@ -100,11 +100,5 @@ export interface Config {
        */
       buckets: Array<string>;
     }>;
-    /**
-     * If set to `true` the permissionMiddleware will be enabled. The default one will be used, but it can be customized.
-     * The permissionMiddleware is required if the permissions setup is used.
-     * @visibility backend
-     */
-    permissionMiddleware?: boolean;
   };
 }
