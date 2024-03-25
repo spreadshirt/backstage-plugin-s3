@@ -56,13 +56,13 @@ export const s3ViewerPlugin = createBackendPlugin({
 
     env.registerInit({
       deps: {
+        auth: coreServices.auth,
         logger: coreServices.logger,
         config: coreServices.rootConfig,
         scheduler: coreServices.scheduler,
         discovery: coreServices.discovery,
-        identity: coreServices.identity,
         permissions: coreServices.permissions,
-        tokenManager: coreServices.tokenManager,
+        httpAuth: coreServices.httpAuth,
         httpRouter: coreServices.httpRouter,
       },
       async init(deps) {
@@ -86,6 +86,11 @@ export const s3ViewerPlugin = createBackendPlugin({
 
         const { router } = await builder.build();
         deps.httpRouter.use(router);
+
+        deps.httpRouter.addAuthPolicy({
+          path: '/stream',
+          allow: 'user-cookie',
+        });
       },
     });
   },
