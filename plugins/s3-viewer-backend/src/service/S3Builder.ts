@@ -11,22 +11,17 @@ import { S3BucketsProvider } from './S3BucketsProvider';
 import { S3Client } from './S3Api';
 import { errorHandler } from '@backstage/backend-common';
 import {
+  AuthService,
   DiscoveryService,
+  HttpAuthService,
   LoggerService,
-  TokenManagerService,
 } from '@backstage/backend-plugin-api';
 import {
   PluginTaskScheduler,
   TaskScheduleDefinition,
   readTaskScheduleDefinitionFromConfig,
 } from '@backstage/backend-tasks';
-import {
-  assertError,
-  AuthenticationError,
-  NotAllowedError,
-  NotFoundError,
-} from '@backstage/errors';
-import { IdentityApi } from '@backstage/plugin-auth-node';
+import { assertError, NotAllowedError, NotFoundError } from '@backstage/errors';
 import {
   AuthorizeResult,
   PermissionEvaluator,
@@ -44,13 +39,13 @@ import { HumanDuration } from '@backstage/types';
 import { matches, transformConditions } from '../permissions';
 
 export interface S3Environment {
+  auth: AuthService;
   logger: LoggerService;
   config: Config;
   scheduler: PluginTaskScheduler;
   discovery: DiscoveryService;
-  identity: IdentityApi;
   permissions: PermissionEvaluator;
-  tokenManager: TokenManagerService;
+  httpAuth: HttpAuthService;
 }
 
 export interface S3BuilderReturn {
@@ -193,7 +188,6 @@ export class S3Builder {
     this.refreshInterval = refreshInterval;
     return this;
   }
-
   /**
    * Sets the middleware to be used in the s3 backend. By default it's a no-op middleware.
    * Used to authenticate the requests from the frontend, specially the streaming ones,
@@ -226,16 +220,14 @@ export class S3Builder {
   ): Promise<{
     decision: PolicyDecision;
   }> {
-    let token: string | undefined = undefined;
-    if (process.env.NODE_ENV === 'production') {
-      const user = await this.env.identity.getIdentity({ request });
-      if (!user) {
-        throw new AuthenticationError(
-          "Missing 'Authorization' header in request",
-        );
-      }
-      token = user.token;
-    }
+    const credentials = await this.env.httpAuth.credentials(request, {
+      allowLimitedAccess: true,
+    });
+
+    const { token } = await this.env.auth.getPluginRequestToken({
+      onBehalfOf: credentials,
+      targetPluginId: 's3-viewer',
+    });
 
     const decision = (
       await this.env.permissions.authorizeConditional([permission], { token })
@@ -305,8 +297,16 @@ export class S3Builder {
       res.json({ status: 'ok' });
     });
 
-    router.get('/cookie', this.s3Middleware, (_req, res) => {
-      res.status(200).send('Setting S3 cookie');
+    router.get('/cookie', this.s3Middleware, async (req, res) => {
+      const credentials = await this.env.httpAuth.credentials(req, {
+        allowLimitedAccess: true,
+        allow: ['user'],
+      });
+
+      const { expiresAt } = await this.env.httpAuth.issueUserCookie(res, {
+        credentials,
+      });
+      res.status(200).json({ expiresAt: expiresAt.toISOString() });
     });
 
     router.get('/buckets', this.s3Middleware, async (req, res) => {

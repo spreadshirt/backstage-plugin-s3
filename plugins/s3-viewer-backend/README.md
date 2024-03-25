@@ -32,13 +32,13 @@ To get started, follow these steps:
       env: PluginEnvironment,
     ): Promise<Router> {
       const { router } = await S3Builder.createBuilder({
+        auth: env.auth,
         config: env.config,
         logger: env.logger,
         scheduler: env.scheduler,
         discovery: env.discovery,
-        identity: env.identity,
         permissions: env.permissions,
-        tokenManager: env.tokenManager,
+        httpAuth: env.httpAuth,
       }).build();
       return router;
     }
@@ -181,13 +181,13 @@ It is also possible to create a new CredentialsProvider if that is required for 
 
 ```typescript
   const builder = S3Builder.createBuilder({
+    auth: env.auth,
     config: env.config,
     logger: env.logger,
     scheduler: env.scheduler,
     discovery: env.discovery,
-    identity: env.identity,
     permissions: env.permissions,
-    tokenManager: env.tokenManager,
+    httpAuth: env.httpAuth,
   }).setCredentialsProvider(new CustomCredentialsProvider());
 
   const { router } = await builder.build();
@@ -243,13 +243,13 @@ First of all, the client used to communicate with the S3 buckets can be overwrit
 
 ```typescript
   const builder = S3Builder.createBuilder({
+    auth: env.auth,
     config: env.config,
     logger: env.logger,
     scheduler: env.scheduler,
     discovery: env.discovery,
-    identity: env.identity,
     permissions: env.permissions,
-    tokenManager: env.tokenManager,
+    httpAuth: env.httpAuth,
   }).setClient(new CustomS3Client());
 
   const { router } = await builder.build();
@@ -263,13 +263,13 @@ It is responsible for fetching all the bucket information for the obtained platf
 
 ```typescript
   const builder = S3Builder.createBuilder({
+    auth: env.auth,
     config: env.config,
     logger: env.logger,
     scheduler: env.scheduler,
     discovery: env.discovery,
-    identity: env.identity,
     permissions: env.permissions,
-    tokenManager: env.tokenManager,
+    httpAuth: env.httpAuth,
   }).setBucketsProvider(new CustomBucketsProvider());
 
   const { router } = await builder.build();
@@ -281,13 +281,13 @@ By default, the S3 API doesn't provide a straightforward way to fetch informatio
 
 ```typescript
   const builder = S3Builder.createBuilder({
+    auth: env.auth,
     config: env.config,
     logger: env.logger,
     scheduler: env.scheduler,
     discovery: env.discovery,
-    identity: env.identity,
     permissions: env.permissions,
-    tokenManager: env.tokenManager,
+    httpAuth: env.httpAuth,
   }).setBucketStatsProvider(new CustomBucketStatsProvider());
 
   const { router } = await builder.build();
@@ -341,13 +341,13 @@ However, the preview and download of data from S3 require the Backstage `user-co
 2. Then, enable this feature in the backend. For that, add this function before the `build()` step:
   ```typescript
   const builder = S3Builder.createBuilder({
+    auth: env.auth,
     config: env.config,
     logger: env.logger,
     scheduler: env.scheduler,
     discovery: env.discovery,
-    identity: env.identity,
     permissions: env.permissions,
-    tokenManager: env.tokenManager,
+    httpAuth: env.httpAuth,
   }).useMiddleware();
 
   const { router } = await builder.build();

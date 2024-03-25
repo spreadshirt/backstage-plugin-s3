@@ -15,15 +15,16 @@
  */
 
 import {
+  HostDiscovery,
+  ServerTokenManager,
   createServiceBuilder,
   loadBackendConfig,
-  // TODO: Remove this function as soon as all plugins support new LoggerService
-  loggerToWinstonLogger,
 } from '@backstage/backend-common';
 import { TaskScheduler } from '@backstage/backend-tasks';
 import { Server } from 'http';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { createPluginPermissions, createRouter } from './router';
+import { ServerPermissionClient } from '@backstage/plugin-permission-node';
 
 export interface ServerOptions {
   port: number;
@@ -34,22 +35,36 @@ export interface ServerOptions {
 export async function startStandaloneServer(
   options: ServerOptions,
 ): Promise<Server> {
-  const logger = options.logger.child({ service: 's3-viewer-backend' });
+  const logger = options.logger.child({ service: 's3-viewer' });
   const config = await loadBackendConfig({ logger, argv: process.argv });
-  const taskScheduler = TaskScheduler.fromConfig(config, {
-    logger: loggerToWinstonLogger(logger),
-  });
+  const taskScheduler = TaskScheduler.fromConfig(config, {});
   const scheduler = taskScheduler.forPlugin('s3-viewer');
   logger.debug('Starting application server...');
 
+  const discovery = HostDiscovery.fromConfig(config);
+  const tokenManager = ServerTokenManager.fromConfig(config, {
+    logger,
+  });
+
   const permissionRouter = await createPluginPermissions({ config, logger });
 
-  const router = await createRouter({ logger, config, scheduler });
+  const permissions = ServerPermissionClient.fromConfig(config, {
+    discovery,
+    tokenManager,
+  });
+
+  const router = await createRouter({
+    logger,
+    config,
+    scheduler,
+    discovery,
+    permissions,
+  });
 
   let service = createServiceBuilder(module)
     .setPort(options.port)
     .addRouter('/api/permission', permissionRouter)
-    .addRouter('/api/s3', router);
+    .addRouter('/api/s3-viewer', router);
 
   if (options.enableCors) {
     logger.info('CORS is enabled, limiting to localhost with port 3000');
