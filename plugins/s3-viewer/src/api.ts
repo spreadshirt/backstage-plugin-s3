@@ -113,6 +113,8 @@ export class S3Client implements S3Api {
 
   async setCookie(): Promise<void> {
     const apiUrl = await this.discoveryApi.getBaseUrl('s3-viewer');
+    // The `credentials` is needed to be set here, otherwise the cookie
+    // is not properly used by the `/stream` endpoint.
     await this.fetchApi.fetch(`${apiUrl}/cookie`, { credentials: 'include' });
   }
 

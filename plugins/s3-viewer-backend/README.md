@@ -306,27 +306,28 @@ s3:
 
 ## Permissions Setup
 
-The information present in the S3 buckets can be dangerous to be shared with all the Backstage users. Therefore, the permissions setup is needed. To make it work, every request to this plugin needs to have an `Authorization` header or a cookie called `s3_viewer_token`. Due to the current design, some requests cannot add the header properly, so the way to solve this issue is to enable a middleware. First, note that the [service-to-service auth](https://backstage.io/docs/auth/service-to-service-auth) is needed. Then, a few steps need to be followed to fully support this feature:
+The information present in the S3 buckets can be dangerous to be shared with all the Backstage users. Therefore, the permissions setup is needed. To make it work, every request to this plugin needs to be authenticated. Most cases are already handled by the authentication service provided by Backstage. However, the preview and download of data from S3 don't
+work properly unless a cookie is forced to be set up. For that, you'll need to extend the sign in to make sure the cookie is set for the s3-viewer:
 
 1. Customize the `SignInPage` to add a token as soon as a user is logged in:
   ```typescript
   // In packages/app/src/App.tsx
   // ...
-  import { setTokenCookie } from '@spreadshirt/backstage-plugin-s3-viewer-common';
+  import { S3ApiRef } from '@spreadshirt/backstage-plugin-s3-viewer';
 
   const app = createApp({
     // ...
 
     components: {
       SignInPage: props => {
-        const discoveryApi = useApi(discoveryApiRef);
+        const s3ViewerApi = useApi(S3ApiRef);
         return (
          <SignInPage // Or ProxiedSignInPage
             {...props}
             providers={['guest', 'custom', ...providers]}
             onSignInSuccess={async (identityApi: IdentityApi) => {
-              await setTokenCookie(discoveryApi, identityApi);
               props.onSignInSuccess(identityApi);
+              await s3ViewerApi.setCookie();
             }}
           />
         );
