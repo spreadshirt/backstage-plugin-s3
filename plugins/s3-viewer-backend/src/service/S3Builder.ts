@@ -15,6 +15,7 @@ import {
   DiscoveryService,
   HttpAuthService,
   LoggerService,
+  PermissionsService,
 } from '@backstage/backend-plugin-api';
 import {
   PluginTaskScheduler,
@@ -24,7 +25,6 @@ import {
 import { assertError, NotAllowedError, NotFoundError } from '@backstage/errors';
 import {
   AuthorizeResult,
-  PermissionEvaluator,
   PolicyDecision,
   QueryPermissionRequest,
 } from '@backstage/plugin-permission-common';
@@ -43,7 +43,7 @@ export interface S3Environment {
   config: Config;
   scheduler: PluginTaskScheduler;
   discovery: DiscoveryService;
-  permissions: PermissionEvaluator;
+  permissions: PermissionsService;
   httpAuth: HttpAuthService;
 }
 
@@ -206,13 +206,10 @@ export class S3Builder {
       allowLimitedAccess: true,
     });
 
-    const { token } = await this.env.auth.getPluginRequestToken({
-      onBehalfOf: credentials,
-      targetPluginId: 's3-viewer',
-    });
-
     const decision = (
-      await this.env.permissions.authorizeConditional([permission], { token })
+      await this.env.permissions.authorizeConditional([permission], {
+        credentials,
+      })
     )[0];
 
     if (decision.result === AuthorizeResult.DENY) {
