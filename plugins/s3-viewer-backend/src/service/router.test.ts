@@ -17,13 +17,17 @@
 import {
   DatabaseManager,
   getVoidLogger,
+  HostDiscovery,
   PluginDatabaseManager,
+  ServerTokenManager,
 } from '@backstage/backend-common';
 import { TaskScheduler } from '@backstage/backend-tasks';
 import { ConfigReader } from '@backstage/config';
 import express from 'express';
 import request from 'supertest';
 import { Knex } from 'knex';
+import { mockServices } from '@backstage/backend-test-utils';
+import { ServerPermissionClient } from '@backstage/plugin-permission-node';
 
 import { createRouter } from './router';
 
@@ -46,35 +50,51 @@ describe('createRouter', () => {
     };
     const manager = databaseManager as DatabaseManager;
 
-    const router = await createRouter({
-      logger: logger,
-      config: new ConfigReader({
-        app: {
-          title: 'backstage example app',
-          baseUrl: 'http://localhost:3000',
-        },
-        backend: {
-          baseUrl: 'http://localhost:7007',
-          listen: { port: 7007 },
-          auth: {
-            keys: [
-              {
-                secret: 'a-secret-key',
-              },
-            ],
-          },
-        },
-        permission: { enabled: true },
-        s3: {
-          bucketLocatorMethods: [
+    const config = new ConfigReader({
+      app: {
+        title: 'backstage example app',
+        baseUrl: 'http://localhost:3000',
+      },
+      backend: {
+        baseUrl: 'http://localhost:7007',
+        listen: { port: 7007 },
+        auth: {
+          keys: [
             {
-              type: 'config',
-              platforms: [],
+              secret: 'a-secret-key',
             },
           ],
         },
-      }),
+      },
+      permission: { enabled: true },
+      s3: {
+        bucketLocatorMethods: [
+          {
+            type: 'config',
+            platforms: [],
+          },
+        ],
+      },
+    });
+
+    const discovery = HostDiscovery.fromConfig(config);
+    const tokenManager = ServerTokenManager.fromConfig(config, {
+      logger,
+    });
+
+    const permissions = ServerPermissionClient.fromConfig(config, {
+      discovery,
+      tokenManager,
+    });
+
+    const router = await createRouter({
+      logger,
+      config,
       scheduler: new TaskScheduler(manager, logger).forPlugin('s3-viewer'),
+      auth: mockServices.auth(),
+      httpAuth: mockServices.httpAuth(),
+      discovery,
+      permissions,
     });
     app = express().use(router);
   });
