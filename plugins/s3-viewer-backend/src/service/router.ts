@@ -16,16 +16,21 @@
 
 import {
   HostDiscovery,
+  createLegacyAuthAdapters,
   // TODO: Remove this function as soon as all plugins support new LoggerService
   loggerToWinstonLogger,
-  ServerTokenManager,
 } from '@backstage/backend-common';
 import { PluginTaskScheduler } from '@backstage/backend-tasks';
 import { Config } from '@backstage/config';
 import express from 'express';
-import { LoggerService } from '@backstage/backend-plugin-api';
+import {
+  AuthService,
+  DiscoveryService,
+  HttpAuthService,
+  LoggerService,
+  RootConfigService,
+} from '@backstage/backend-plugin-api';
 import { S3Builder } from './S3Builder';
-import { DefaultIdentityClient } from '@backstage/plugin-auth-node';
 import {
   PermissionPolicy,
   ServerPermissionClient,
@@ -38,36 +43,23 @@ import {
 
 export interface RouterOptions {
   logger: LoggerService;
-  config: Config;
+  config: RootConfigService;
   scheduler: PluginTaskScheduler;
+  permissions: ServerPermissionClient;
+  discovery: DiscoveryService;
+  auth?: AuthService;
+  httpAuth?: HttpAuthService;
 }
 
-export async function createRouter({
-  logger,
-  config,
-  scheduler,
-}: RouterOptions): Promise<express.Router> {
-  const discovery = HostDiscovery.fromConfig(config);
-  const identity = DefaultIdentityClient.create({
-    discovery,
-    issuer: await discovery.getExternalBaseUrl('auth'),
-  });
-  const tokenManager = ServerTokenManager.fromConfig(config, {
-    logger,
-  });
-  const permissions = ServerPermissionClient.fromConfig(config, {
-    discovery,
-    tokenManager,
-  });
+export async function createRouter(
+  options: RouterOptions,
+): Promise<express.Router> {
+  const { auth, httpAuth } = createLegacyAuthAdapters(options);
 
   const { router } = await S3Builder.createBuilder({
-    config,
-    logger,
-    scheduler,
-    discovery,
-    identity,
-    permissions,
-    tokenManager,
+    ...options,
+    auth,
+    httpAuth,
   }).build();
 
   return router;
@@ -89,16 +81,10 @@ export async function createPluginPermissions({
   config,
 }: RouterPermissionOptions): Promise<express.Router> {
   const discovery = HostDiscovery.fromConfig(config);
-  const identity = DefaultIdentityClient.create({
-    discovery,
-    issuer: await discovery.getExternalBaseUrl('auth'),
-  });
-
   return await createPermissionPlugin({
     config: config,
     logger: loggerToWinstonLogger(logger),
     discovery: discovery,
     policy: new TestPermissionPolicy(),
-    identity: identity,
   });
 }

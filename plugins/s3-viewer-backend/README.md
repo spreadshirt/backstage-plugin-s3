@@ -32,13 +32,13 @@ To get started, follow these steps:
       env: PluginEnvironment,
     ): Promise<Router> {
       const { router } = await S3Builder.createBuilder({
+        auth: env.auth,
         config: env.config,
         logger: env.logger,
         scheduler: env.scheduler,
         discovery: env.discovery,
-        identity: env.identity,
         permissions: env.permissions,
-        tokenManager: env.tokenManager,
+        httpAuth: env.httpAuth,
       }).build();
       return router;
     }
@@ -60,7 +60,7 @@ To get started, follow these steps:
     @@ -63,6 +65,7 @@ async function main() {
        const apiRouter = Router();
        apiRouter.use('/catalog', await catalog(catalogEnv));
-    +  apiRouter.use('/s3', await s3(s3Env));
+    +  apiRouter.use('/s3-viewer', await s3(s3Env));
        apiRouter.use('/scaffolder', await scaffolder(scaffolderEnv));
     ```
 
@@ -100,9 +100,6 @@ backend.add(s3ViewerExtensions());
 ```
 
 The `extensions` type contains all the needed functions to override any of the elements that are defined in the next section.
-
-To enable the permissionMiddleware, which is needed when used together with the permissions setup, you can do it using the `app-config.yaml`
-by setting `s3.permissionMiddleware` to `true`.
 
 ## Configuration
 
@@ -149,7 +146,6 @@ s3:
   bucketRefreshSchedule:
     frequency: { minutes: 30 }
     timeout: { minutes: 1 }
-  permissionMiddleware: true
 ```
 
 ### bucketLocatorMethods
@@ -181,13 +177,13 @@ It is also possible to create a new CredentialsProvider if that is required for 
 
 ```typescript
   const builder = S3Builder.createBuilder({
+    auth: env.auth,
     config: env.config,
     logger: env.logger,
     scheduler: env.scheduler,
     discovery: env.discovery,
-    identity: env.identity,
     permissions: env.permissions,
-    tokenManager: env.tokenManager,
+    httpAuth: env.httpAuth,
   }).setCredentialsProvider(new CustomCredentialsProvider());
 
   const { router } = await builder.build();
@@ -229,10 +225,6 @@ To achieve that you need to specify the __platform name__ and then an array of b
 
 If set, the buckets provider will be executed with the defined schedule.
 
-### permissionMiddleware
-
-Used by the new backend system. This field is optional. If set to true, the permissionMiddleware will be enabled in the backend plugin.
-
 ## Customization
 
 Apart from the custom `CredentialsProvider`, it is also possible to make more changes to the plugin, so that it can match your internal requirements.
@@ -243,13 +235,13 @@ First of all, the client used to communicate with the S3 buckets can be overwrit
 
 ```typescript
   const builder = S3Builder.createBuilder({
+    auth: env.auth,
     config: env.config,
     logger: env.logger,
     scheduler: env.scheduler,
     discovery: env.discovery,
-    identity: env.identity,
     permissions: env.permissions,
-    tokenManager: env.tokenManager,
+    httpAuth: env.httpAuth,
   }).setClient(new CustomS3Client());
 
   const { router } = await builder.build();
@@ -263,13 +255,13 @@ It is responsible for fetching all the bucket information for the obtained platf
 
 ```typescript
   const builder = S3Builder.createBuilder({
+    auth: env.auth,
     config: env.config,
     logger: env.logger,
     scheduler: env.scheduler,
     discovery: env.discovery,
-    identity: env.identity,
     permissions: env.permissions,
-    tokenManager: env.tokenManager,
+    httpAuth: env.httpAuth,
   }).setBucketsProvider(new CustomBucketsProvider());
 
   const { router } = await builder.build();
@@ -281,13 +273,13 @@ By default, the S3 API doesn't provide a straightforward way to fetch informatio
 
 ```typescript
   const builder = S3Builder.createBuilder({
+    auth: env.auth,
     config: env.config,
     logger: env.logger,
     scheduler: env.scheduler,
     discovery: env.discovery,
-    identity: env.identity,
     permissions: env.permissions,
-    tokenManager: env.tokenManager,
+    httpAuth: env.httpAuth,
   }).setBucketStatsProvider(new CustomBucketStatsProvider());
 
   const { router } = await builder.build();
@@ -306,27 +298,28 @@ s3:
 
 ## Permissions Setup
 
-The information present in the S3 buckets can be dangerous to be shared with all the Backstage users. Therefore, the permissions setup is needed. To make it work, every request to this plugin needs to have an `Authorization` header or a cookie called `s3_viewer_token`. Due to the current design, some requests cannot add the header properly, so the way to solve this issue is to enable a middleware. First, note that the [service-to-service auth](https://backstage.io/docs/auth/service-to-service-auth) is needed. Then, a few steps need to be followed to fully support this feature:
+The information present in the S3 buckets can be dangerous to be shared with all the Backstage users. Therefore, the permissions setup is needed. To make it work every request to this plugin needs to be authenticated. Most cases are already handled by the authentication service provided by Backstage. 
+However, the preview and download of data from S3 require the Backstage `user-cookie` to be set as the requests come directly from browser interactions (`img` element and downloads) and those can't set the token using the fetchApi. The sign in has to be extended to make sure the cookie is set for the s3-viewer:
 
 1. Customize the `SignInPage` to add a token as soon as a user is logged in:
   ```typescript
   // In packages/app/src/App.tsx
   // ...
-  import { setTokenCookie } from '@spreadshirt/backstage-plugin-s3-viewer-common';
+  import { S3ApiRef } from '@spreadshirt/backstage-plugin-s3-viewer';
 
   const app = createApp({
     // ...
 
     components: {
       SignInPage: props => {
-        const discoveryApi = useApi(discoveryApiRef);
+        const s3ViewerApi = useApi(S3ApiRef);
         return (
          <SignInPage // Or ProxiedSignInPage
             {...props}
             providers={['guest', 'custom', ...providers]}
             onSignInSuccess={async (identityApi: IdentityApi) => {
-              await setTokenCookie(discoveryApi, identityApi);
               props.onSignInSuccess(identityApi);
+              await s3ViewerApi.setCookie();
             }}
           />
         );
@@ -340,21 +333,17 @@ The information present in the S3 buckets can be dangerous to be shared with all
 2. Then, enable this feature in the backend. For that, add this function before the `build()` step:
   ```typescript
   const builder = S3Builder.createBuilder({
+    auth: env.auth,
     config: env.config,
     logger: env.logger,
     scheduler: env.scheduler,
     discovery: env.discovery,
-    identity: env.identity,
     permissions: env.permissions,
-    tokenManager: env.tokenManager,
+    httpAuth: env.httpAuth,
   }).useMiddleware();
 
   const { router } = await builder.build();
   ```
-
-3. If needed, the `useMiddleware` function allows you to inject a custom middleware, in case you need to execute something else. By default, it will use a middleware like the one defined [here](https://github.com/backstage/backstage/blob/master/contrib/docs/tutorials/authenticate-api-requests.md).
-
-**NOTE**: The usage of the middleware is meant to be used in production environments (when `NODE_ENV` is set to `production`). If you're working in development with a `guest` user, please set this environment variable to another value (like `development`), so the authorization won't fail due to an invalid token.
 
 Once this setup is done, you will need to extend the permission policy to check for the available permissions and `ALLOW` or `DENY` access to any data you want. This step is completely up to the end user, as the way of obtaining these permissions might differ for every company. The following example would allow listing all the buckets and keys, but deny downloading and previewing the objects:
 

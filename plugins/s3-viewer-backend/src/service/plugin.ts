@@ -10,7 +10,6 @@ import {
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
 import { S3Builder } from './S3Builder';
-import express from 'express';
 
 export const s3ViewerPlugin = createBackendPlugin({
   pluginId: 's3-viewer',
@@ -19,7 +18,6 @@ export const s3ViewerPlugin = createBackendPlugin({
     let s3CredentialsProvider: CredentialsProvider;
     let s3BucketsProvider: BucketsProvider;
     let s3BucketStatsProvider: BucketStatsProvider;
-    let s3Middleware: express.RequestHandler;
 
     env.registerExtensionPoint(s3ViewerExtensionPoint, {
       setClient(client) {
@@ -46,23 +44,17 @@ export const s3ViewerPlugin = createBackendPlugin({
         }
         s3BucketStatsProvider = bucketStatsProvider;
       },
-      setPermissionMiddleware(middleware) {
-        if (s3Middleware !== undefined) {
-          throw new Error('A middleware has been already set');
-        }
-        s3Middleware = middleware;
-      },
     });
 
     env.registerInit({
       deps: {
+        auth: coreServices.auth,
         logger: coreServices.logger,
         config: coreServices.rootConfig,
         scheduler: coreServices.scheduler,
         discovery: coreServices.discovery,
-        identity: coreServices.identity,
         permissions: coreServices.permissions,
-        tokenManager: coreServices.tokenManager,
+        httpAuth: coreServices.httpAuth,
         httpRouter: coreServices.httpRouter,
       },
       async init(deps) {
@@ -80,12 +72,16 @@ export const s3ViewerPlugin = createBackendPlugin({
         if (s3BucketStatsProvider) {
           builder = builder.setBucketStatsProvider(s3BucketStatsProvider);
         }
-        if (deps.config.getOptionalBoolean('s3.permissionMiddleware')) {
-          builder = await builder.useMiddleware(s3Middleware);
-        }
 
         const { router } = await builder.build();
         deps.httpRouter.use(router);
+
+        // Allow access with Backstage user-cookie as some requests happen client-side
+        // from a `img` and `button` elements, which can't set the token via fetchApi.
+        deps.httpRouter.addAuthPolicy({
+          path: '/stream',
+          allow: 'user-cookie',
+        });
       },
     });
   },
