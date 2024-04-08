@@ -1,5 +1,38 @@
 # @spreadshirt/backstage-plugin-s3-viewer-backend
 
+## 0.9.0
+
+### Minor Changes
+
+- c843d39: **BREAKING**: Migrate backend plugin to use the new auth service.
+
+  No changes are required if running in the new backend system.
+
+  In case you're still using the old backend system you'll need to make sure the
+  new `auth` and `httpAuth` are sent, while the `identity` and `tokenManager` are not needed any longer.
+
+- 444ccef: **BREAKING**: Replace `setTokenCookie` with new method integrated into the S3Api `setCookie()`.
+
+  Due to the new authentication backend provided by Backstage in the version 1.24.0, we
+  can now use this endpoint and simplify the whole setup.
+
+- 926d0c9: **BREAKING**: Remove the `middleware` from the s3-viewer.
+
+  With the newly authentication backend system, the middleware is not needed any longer,
+  so it can be completely removed instead of keeping it here. _NOTE_ that using this
+  `s3-viewer` version will require you to be up-to-date with the latest Backstage version as well.
+
+### Patch Changes
+
+- de0b7d8: Fix typo in the documentation
+- 8cab3c0: Bump backstage dependencies to version 1.25.0
+- 275d24c: Use new `PermissionsService` type in the backend instead of the deprecated `PermissionEvaluator`
+- Updated dependencies [8cab3c0]
+- Updated dependencies [444ccef]
+- Updated dependencies [926d0c9]
+  - @spreadshirt/backstage-plugin-s3-viewer-common@0.5.0
+  - @spreadshirt/backstage-plugin-s3-viewer-node@0.2.0
+
 ## 0.8.0
 
 ### Minor Changes

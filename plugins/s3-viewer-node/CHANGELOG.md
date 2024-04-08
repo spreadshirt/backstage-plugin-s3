@@ -1,5 +1,22 @@
 # @spreadshirt/backstage-plugin-s3-viewer-node
 
+## 0.2.0
+
+### Minor Changes
+
+- 926d0c9: **BREAKING**: Remove the `middleware` from the s3-viewer.
+
+  With the newly authentication backend system, the middleware is not needed any longer,
+  so it can be completely removed instead of keeping it here. _NOTE_ that using this
+  `s3-viewer` version will require you to be up-to-date with the latest Backstage version as well.
+
+### Patch Changes
+
+- 8cab3c0: Bump backstage dependencies to version 1.25.0
+- Updated dependencies [8cab3c0]
+- Updated dependencies [444ccef]
+  - @spreadshirt/backstage-plugin-s3-viewer-common@0.5.0
+
 ## 0.1.0
 
 ### Minor Changes

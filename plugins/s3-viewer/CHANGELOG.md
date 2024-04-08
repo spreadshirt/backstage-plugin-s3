@@ -1,5 +1,16 @@
 # @spreadshirt/backstage-plugin-s3-viewer
 
+## 0.5.1
+
+### Patch Changes
+
+- 8cab3c0: Bump backstage dependencies to version 1.25.0
+- 3b2cf4d: Added new method to the s3-viewer API, which will be responsible of setting up
+  the cookie required to download or preview data in the UI.
+- Updated dependencies [8cab3c0]
+- Updated dependencies [444ccef]
+  - @spreadshirt/backstage-plugin-s3-viewer-common@0.5.0
+
 ## 0.5.0
 
 ### Minor Changes
