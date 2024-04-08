@@ -60,7 +60,7 @@ To get started, follow these steps:
     @@ -63,6 +65,7 @@ async function main() {
        const apiRouter = Router();
        apiRouter.use('/catalog', await catalog(catalogEnv));
-    +  apiRouter.use('/s3', await s3(s3Env));
+    +  apiRouter.use('/s3-viewer', await s3(s3Env));
        apiRouter.use('/scaffolder', await scaffolder(scaffolderEnv));
     ```
 
