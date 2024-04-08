@@ -1,5 +1,18 @@
 # @spreadshirt/backstage-plugin-s3-viewer-common
 
+## 0.5.0
+
+### Minor Changes
+
+- 444ccef: **BREAKING**: Replace `setTokenCookie` with new method integrated into the S3Api `setCookie()`.
+
+  Due to the new authentication backend provided by Backstage in the version 1.24.0, we
+  can now use this endpoint and simplify the whole setup.
+
+### Patch Changes
+
+- 8cab3c0: Bump backstage dependencies to version 1.25.0
+
 ## 0.4.0
 
 ### Minor Changes
