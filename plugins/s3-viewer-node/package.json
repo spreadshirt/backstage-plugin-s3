@@ -39,7 +39,7 @@
     "@backstage/backend-plugin-api": "^0.6.17",
     "@spreadshirt/backstage-plugin-s3-viewer-common": "^0.5.1",
     "@types/express": "*",
-    "express": "^4.17.1",
+    "express": "^4.19.2",
     "stream": "^0.0.2"
   }
 }
