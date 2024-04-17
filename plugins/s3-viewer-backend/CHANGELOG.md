@@ -1,5 +1,15 @@
 # @spreadshirt/backstage-plugin-s3-viewer-backend
 
+## 0.9.1
+
+### Patch Changes
+
+- 5676413: Use the `LoggerService` instead of the winstonLogger helper method, since the upstream plugins support the new service type now
+- 76eda39: Bump backstage dependencies to version 1.26.0
+- Updated dependencies [76eda39]
+  - @spreadshirt/backstage-plugin-s3-viewer-common@0.5.1
+  - @spreadshirt/backstage-plugin-s3-viewer-node@0.2.1
+
 ## 0.9.0
 
 ### Minor Changes
