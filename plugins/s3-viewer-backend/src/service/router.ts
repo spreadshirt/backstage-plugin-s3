@@ -17,8 +17,6 @@
 import {
   HostDiscovery,
   createLegacyAuthAdapters,
-  // TODO: Remove this function as soon as all plugins support new LoggerService
-  loggerToWinstonLogger,
 } from '@backstage/backend-common';
 import { PluginTaskScheduler } from '@backstage/backend-tasks';
 import { Config } from '@backstage/config';
@@ -81,10 +79,6 @@ export async function createPluginPermissions({
   config,
 }: RouterPermissionOptions): Promise<express.Router> {
   const discovery = HostDiscovery.fromConfig(config);
-  return await createPermissionPlugin({
-    config: config,
-    logger: loggerToWinstonLogger(logger),
-    discovery: discovery,
-    policy: new TestPermissionPolicy(),
-  });
+  const policy = new TestPermissionPolicy();
+  return await createPermissionPlugin({ config, logger, discovery, policy });
 }
