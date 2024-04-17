@@ -1,5 +1,14 @@
 # @spreadshirt/backstage-plugin-s3-viewer
 
+## 0.5.2
+
+### Patch Changes
+
+- 76eda39: Bump backstage dependencies to version 1.26.0
+- 5676413: Align some `@testing-library/*` dependencies with upstream
+- Updated dependencies [76eda39]
+  - @spreadshirt/backstage-plugin-s3-viewer-common@0.5.1
+
 ## 0.5.1
 
 ### Patch Changes
