@@ -30,13 +30,13 @@
     "postpack": "backstage-cli package postpack"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.3"
+    "@backstage/cli": "^0.26.5"
   },
   "files": [
     "dist"
   ],
   "dependencies": {
-    "@backstage/backend-plugin-api": "^0.6.17",
+    "@backstage/backend-plugin-api": "^0.6.18",
     "@spreadshirt/backstage-plugin-s3-viewer-common": "^0.5.1",
     "@types/express": "*",
     "express": "^4.17.1",
