@@ -17,10 +17,17 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/spreadshirt/backstage-plugin-s3",
-    "directory": "plugins/backstage-plugin-s3-viewer-common"
+    "directory": "plugins/s3-viewer-common"
   },
   "backstage": {
-    "role": "common-library"
+    "role": "common-library",
+    "pluginId": "s3-viewer",
+    "pluginPackages": [
+      "@spreadshirt/backstage-plugin-s3-viewer",
+      "@spreadshirt/backstage-plugin-s3-viewer-backend",
+      "@spreadshirt/backstage-plugin-s3-viewer-common",
+      "@spreadshirt/backstage-plugin-s3-viewer-node"
+    ]
   },
   "sideEffects": false,
   "scripts": {
