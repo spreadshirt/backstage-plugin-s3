@@ -19,7 +19,14 @@
     "directory": "plugins/s3-viewer-node"
   },
   "backstage": {
-    "role": "node-library"
+    "role": "node-library",
+    "pluginId": "s3-viewer",
+    "pluginPackages": [
+      "@spreadshirt/backstage-plugin-s3-viewer",
+      "@spreadshirt/backstage-plugin-s3-viewer-backend",
+      "@spreadshirt/backstage-plugin-s3-viewer-common",
+      "@spreadshirt/backstage-plugin-s3-viewer-node"
+    ]
   },
   "scripts": {
     "build": "backstage-cli package build",
