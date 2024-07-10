@@ -1,5 +1,11 @@
 # @spreadshirt/backstage-plugin-s3-viewer-common
 
+## 0.5.4
+
+### Patch Changes
+
+- 2598ba2: Fix backstage package metadata
+
 ## 0.5.3
 
 ### Patch Changes
