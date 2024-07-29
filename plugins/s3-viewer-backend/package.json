@@ -57,7 +57,7 @@
     "@types/express": "*",
     "cookie-parser": "^1.4.5",
     "cross-fetch": "^4.0.0",
-    "express": "^4.17.1",
+    "express": "^4.19.2",
     "express-promise-router": "^4.1.0",
     "knex": "^3.0.0",
     "moment": "^2.29.4",
