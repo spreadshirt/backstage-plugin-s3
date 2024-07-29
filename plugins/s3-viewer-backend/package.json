@@ -37,10 +37,8 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@aws-crypto/sha256-browser": "^3.0.0",
-    "@aws-sdk/client-s3": "^3.350.0",
-    "@aws-sdk/protocol-http": "^3.347.0",
-    "@aws-sdk/signature-v4": "^3.347.0",
+    "@aws-crypto/sha256-browser": "^5.2.0",
+    "@aws-sdk/client-s3": "^3.360.0",
     "@backstage/backend-common": "^0.23.3",
     "@backstage/backend-defaults": "^0.4.1",
     "@backstage/backend-plugin-api": "^0.7.0",
@@ -52,6 +50,8 @@
     "@backstage/plugin-permission-common": "^0.8.0",
     "@backstage/plugin-permission-node": "^0.8.0",
     "@backstage/types": "^1.1.1",
+    "@smithy/protocol-http": "^4.1.0",
+    "@smithy/signature-v4": "^4.1.0",
     "@spreadshirt/backstage-plugin-s3-viewer-common": "^0.5.4",
     "@spreadshirt/backstage-plugin-s3-viewer-node": "0.2.4",
     "@types/express": "*",
