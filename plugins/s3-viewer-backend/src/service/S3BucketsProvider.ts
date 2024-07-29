@@ -8,12 +8,12 @@ import {
   BucketDetails,
   BucketDetailsFilters,
 } from '@spreadshirt/backstage-plugin-s3-viewer-common';
-import { LoggerService } from '@backstage/backend-plugin-api';
-import { S3 } from '@aws-sdk/client-s3';
 import {
-  PluginTaskScheduler,
-  TaskScheduleDefinition,
-} from '@backstage/backend-tasks';
+  LoggerService,
+  SchedulerService,
+  SchedulerServiceTaskScheduleDefinition,
+} from '@backstage/backend-plugin-api';
+import { S3 } from '@aws-sdk/client-s3';
 import { matches } from '../permissions';
 
 export class S3BucketsProvider implements BucketsProvider {
@@ -22,10 +22,10 @@ export class S3BucketsProvider implements BucketsProvider {
 
   constructor(
     readonly logger: LoggerService,
-    readonly scheduler: PluginTaskScheduler,
+    readonly scheduler: SchedulerService,
     readonly credentialsProvider: CredentialsProvider,
     readonly statsProvider: BucketStatsProvider | undefined,
-    readonly schedule: TaskScheduleDefinition | undefined,
+    readonly schedule: SchedulerServiceTaskScheduleDefinition | undefined,
   ) {
     this.buckets = [];
     this.bucketCreds = [];
@@ -33,10 +33,10 @@ export class S3BucketsProvider implements BucketsProvider {
 
   static create(
     logger: LoggerService,
-    scheduler: PluginTaskScheduler,
+    scheduler: SchedulerService,
     credentialsProvider: CredentialsProvider,
     statsProvider: BucketStatsProvider | undefined,
-    schedule: TaskScheduleDefinition | undefined,
+    schedule: SchedulerServiceTaskScheduleDefinition | undefined,
   ): S3BucketsProvider {
     const bucketsProvider = new S3BucketsProvider(
       logger,

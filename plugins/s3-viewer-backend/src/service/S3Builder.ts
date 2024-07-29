@@ -9,19 +9,17 @@ import {
 } from '@spreadshirt/backstage-plugin-s3-viewer-node';
 import { S3BucketsProvider } from './S3BucketsProvider';
 import { S3Client } from './S3Api';
-import { errorHandler } from '@backstage/backend-common';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 import {
   AuthService,
   DiscoveryService,
   HttpAuthService,
   LoggerService,
   PermissionsService,
+  readSchedulerServiceTaskScheduleDefinitionFromConfig,
+  SchedulerService,
+  SchedulerServiceTaskScheduleDefinition,
 } from '@backstage/backend-plugin-api';
-import {
-  PluginTaskScheduler,
-  TaskScheduleDefinition,
-  readTaskScheduleDefinitionFromConfig,
-} from '@backstage/backend-tasks';
 import { assertError, NotAllowedError, NotFoundError } from '@backstage/errors';
 import {
   AuthorizeResult,
@@ -41,7 +39,7 @@ export interface S3Environment {
   auth: AuthService;
   logger: LoggerService;
   config: Config;
-  scheduler: PluginTaskScheduler;
+  scheduler: SchedulerService;
   discovery: DiscoveryService;
   permissions: PermissionsService;
   httpAuth: HttpAuthService;
@@ -82,13 +80,12 @@ export class S3Builder {
       ? { frequency: this.refreshInterval, timeout: this.refreshInterval }
       : undefined;
 
-    const schedule: TaskScheduleDefinition | undefined = config.has(
-      's3.bucketRefreshSchedule',
-    )
-      ? readTaskScheduleDefinitionFromConfig(
-          config.getConfig('s3.bucketRefreshSchedule'),
-        )
-      : fallbackSchedule;
+    const schedule: SchedulerServiceTaskScheduleDefinition | undefined =
+      config.has('s3.bucketRefreshSchedule')
+        ? readSchedulerServiceTaskScheduleDefinitionFromConfig(
+            config.getConfig('s3.bucketRefreshSchedule'),
+          )
+        : fallbackSchedule;
 
     const credentialsProvider =
       this.credentialsProvider ?? this.buildCredentialsProvider();
@@ -420,7 +417,7 @@ export class S3Builder {
       body.on('end', () => res.send());
     });
 
-    router.use(errorHandler());
+    router.use(MiddlewareFactory.create(this.env).error());
 
     return router;
   }
