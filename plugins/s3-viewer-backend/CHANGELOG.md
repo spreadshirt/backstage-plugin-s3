@@ -1,5 +1,17 @@
 # @spreadshirt/backstage-plugin-s3-viewer-backend
 
+## 0.9.5
+
+### Patch Changes
+
+- b8e88a4: Bump `aws-sdk` dependencies to newer versions
+- b4e3d65: Bump backstage dependencies to version `1.29.2`
+- 58e068a: Fix some of the deprecations from the last Backstage version
+- Updated dependencies [b8e88a4]
+- Updated dependencies [b4e3d65]
+  - @spreadshirt/backstage-plugin-s3-viewer-common@0.5.5
+  - @spreadshirt/backstage-plugin-s3-viewer-node@0.2.5
+
 ## 0.9.4
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @spreadshirt/backstage-plugin-s3-viewer-common
 
+## 0.5.5
+
+### Patch Changes
+
+- b8e88a4: Bump `aws-sdk` dependencies to newer versions
+- b4e3d65: Bump backstage dependencies to version `1.29.2`
+
 ## 0.5.4
 
 ### Patch Changes
