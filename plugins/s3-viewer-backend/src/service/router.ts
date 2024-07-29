@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-import {
-  HostDiscovery,
-  createLegacyAuthAdapters,
-} from '@backstage/backend-common';
-import { PluginTaskScheduler } from '@backstage/backend-tasks';
+import { createLegacyAuthAdapters } from '@backstage/backend-common';
+import { HostDiscovery } from '@backstage/backend-defaults/discovery';
 import { Config } from '@backstage/config';
 import express from 'express';
 import {
@@ -26,13 +23,12 @@ import {
   DiscoveryService,
   HttpAuthService,
   LoggerService,
+  PermissionsService,
   RootConfigService,
+  SchedulerService,
 } from '@backstage/backend-plugin-api';
 import { S3Builder } from './S3Builder';
-import {
-  PermissionPolicy,
-  ServerPermissionClient,
-} from '@backstage/plugin-permission-node';
+import { PermissionPolicy } from '@backstage/plugin-permission-node';
 import { createRouter as createPermissionPlugin } from '@backstage/plugin-permission-backend';
 import {
   AuthorizeResult,
@@ -42,8 +38,8 @@ import {
 export interface RouterOptions {
   logger: LoggerService;
   config: RootConfigService;
-  scheduler: PluginTaskScheduler;
-  permissions: ServerPermissionClient;
+  scheduler: SchedulerService;
+  permissions: PermissionsService;
   discovery: DiscoveryService;
   auth?: AuthService;
   httpAuth?: HttpAuthService;

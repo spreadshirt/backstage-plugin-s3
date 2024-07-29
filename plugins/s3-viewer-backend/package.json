@@ -42,6 +42,7 @@
     "@aws-sdk/protocol-http": "^3.347.0",
     "@aws-sdk/signature-v4": "^3.347.0",
     "@backstage/backend-common": "^0.23.3",
+    "@backstage/backend-defaults": "^0.4.1",
     "@backstage/backend-plugin-api": "^0.7.0",
     "@backstage/backend-tasks": "^0.5.27",
     "@backstage/config": "^1.2.0",

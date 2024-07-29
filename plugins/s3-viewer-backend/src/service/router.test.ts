@@ -14,87 +14,53 @@
  * limitations under the License.
  */
 
-import {
-  DatabaseManager,
-  getVoidLogger,
-  HostDiscovery,
-  PluginDatabaseManager,
-  ServerTokenManager,
-} from '@backstage/backend-common';
-import { TaskScheduler } from '@backstage/backend-tasks';
-import { ConfigReader } from '@backstage/config';
 import express from 'express';
 import request from 'supertest';
-import { Knex } from 'knex';
 import { mockServices } from '@backstage/backend-test-utils';
-import { ServerPermissionClient } from '@backstage/plugin-permission-node';
 
 import { createRouter } from './router';
 
 describe('createRouter', () => {
   let app: express.Express;
-  const logger = getVoidLogger();
 
   beforeAll(async () => {
-    const pluginDatabase: PluginDatabaseManager = {
-      getClient: () => {
-        return Promise.resolve({
-          migrate: {
-            latest: () => {},
+    const config = mockServices.rootConfig({
+      data: {
+        app: {
+          title: 'backstage example app',
+          baseUrl: 'http://localhost:3000',
+        },
+        backend: {
+          baseUrl: 'http://localhost:7007',
+          listen: { port: 7007 },
+          auth: {
+            keys: [
+              {
+                secret: 'a-secret-key',
+              },
+            ],
           },
-        }) as unknown as Promise<Knex>;
-      },
-    };
-    const databaseManager: Partial<DatabaseManager> = {
-      forPlugin: () => pluginDatabase,
-    };
-    const manager = databaseManager as DatabaseManager;
-
-    const config = new ConfigReader({
-      app: {
-        title: 'backstage example app',
-        baseUrl: 'http://localhost:3000',
-      },
-      backend: {
-        baseUrl: 'http://localhost:7007',
-        listen: { port: 7007 },
-        auth: {
-          keys: [
+        },
+        permission: { enabled: true },
+        s3: {
+          bucketLocatorMethods: [
             {
-              secret: 'a-secret-key',
+              type: 'config',
+              platforms: [],
             },
           ],
         },
       },
-      permission: { enabled: true },
-      s3: {
-        bucketLocatorMethods: [
-          {
-            type: 'config',
-            platforms: [],
-          },
-        ],
-      },
-    });
-
-    const discovery = HostDiscovery.fromConfig(config);
-    const tokenManager = ServerTokenManager.fromConfig(config, {
-      logger,
-    });
-
-    const permissions = ServerPermissionClient.fromConfig(config, {
-      discovery,
-      tokenManager,
     });
 
     const router = await createRouter({
-      logger,
+      logger: mockServices.logger.mock(),
       config,
-      scheduler: new TaskScheduler(manager, logger).forPlugin('s3-viewer'),
+      scheduler: mockServices.scheduler.mock(),
       auth: mockServices.auth(),
       httpAuth: mockServices.httpAuth(),
-      discovery,
-      permissions,
+      discovery: mockServices.discovery.mock(),
+      permissions: mockServices.permissions.mock(),
     });
     app = express().use(router);
   });

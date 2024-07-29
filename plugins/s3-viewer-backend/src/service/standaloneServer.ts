@@ -15,11 +15,11 @@
  */
 
 import {
-  HostDiscovery,
   ServerTokenManager,
   createServiceBuilder,
   loadBackendConfig,
 } from '@backstage/backend-common';
+import { HostDiscovery } from '@backstage/backend-defaults/discovery';
 import { TaskScheduler } from '@backstage/backend-tasks';
 import { Server } from 'http';
 import { LoggerService } from '@backstage/backend-plugin-api';
