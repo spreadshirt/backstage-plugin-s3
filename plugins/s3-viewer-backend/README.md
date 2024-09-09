@@ -14,6 +14,8 @@ It also includes a permission integration, to restrict access to certain data wi
 
 ## Getting started
 
+> :warning: **This setup is deprecated and will be removed in a future release. Please, use the [new backend system instead](#new-backend-system).**
+
 To get started, follow these steps:
 
 1. Install the plugin by running this command:
