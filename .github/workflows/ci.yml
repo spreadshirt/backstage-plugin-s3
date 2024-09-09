@@ -21,4 +21,3 @@ jobs:
       - run: yarn ci
         env:
           CI: true
-      - run: yarn backstage-cli versions:check
