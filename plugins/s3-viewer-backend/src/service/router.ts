@@ -45,6 +45,10 @@ export interface RouterOptions {
   httpAuth?: HttpAuthService;
 }
 
+/**
+ * @deprecated Use the new backend system instead
+ * @public
+ */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
