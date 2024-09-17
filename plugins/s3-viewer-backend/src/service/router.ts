@@ -35,6 +35,10 @@ import {
   PolicyDecision,
 } from '@backstage/plugin-permission-common';
 
+/**
+ * @deprecated Use the new backend system instead: https://github.com/spreadshirt/backstage-plugin-s3/tree/main/plugins/s3-viewer-backend#new-backend-system
+ * @public
+ */
 export interface RouterOptions {
   logger: LoggerService;
   config: RootConfigService;
@@ -45,6 +49,10 @@ export interface RouterOptions {
   httpAuth?: HttpAuthService;
 }
 
+/**
+ * @deprecated Use the new backend system instead: https://github.com/spreadshirt/backstage-plugin-s3/tree/main/plugins/s3-viewer-backend#new-backend-system
+ * @public
+ */
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {

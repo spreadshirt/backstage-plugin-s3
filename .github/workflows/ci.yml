@@ -21,4 +21,5 @@ jobs:
       - run: yarn ci
         env:
           CI: true
-      - run: yarn backstage-cli versions:check
+      # TODO: Migrate to yarn-3 and use `yarn dedupe`, which is the suggested alternative
+      # - run: yarn backstage-cli versions:check

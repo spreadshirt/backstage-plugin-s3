@@ -1,4 +1,4 @@
-import { TaskScheduleDefinitionConfig } from '@backstage/backend-tasks';
+import { SchedulerServiceTaskScheduleDefinitionConfig } from '@backstage/backend-plugin-api';
 
 /** Configuration for the S3 Viewer plugin */
 export interface Config {
@@ -7,7 +7,9 @@ export interface Config {
      * If defined, it sets the schedule used to refresh the list of buckets
      * @visibility backend
      * */
-    bucketRefreshSchedule: TaskScheduleDefinitionConfig | undefined;
+    bucketRefreshSchedule:
+      | SchedulerServiceTaskScheduleDefinitionConfig
+      | undefined;
 
     /** @visibility backend */
     bucketLocatorMethods: Array<
