@@ -1,5 +1,24 @@
 # @spreadshirt/backstage-plugin-s3-viewer-backend
 
+## 0.9.6
+
+### Patch Changes
+
+- 9d522dc: Replace some deprecations caused by the removal of the backend-tasks plugin and deprecate old backend system.
+  Please, remove any usage of `RouterOptions` and `createRouter`.
+
+  The old backend system methods will be completely removed in the next release, so none of the deprecations
+  caused by these functions are going to be addressed.
+
+  More info about this process [in this issue](https://github.com/backstage/community-plugins/issues/1176).
+
+  To set up the backend using the new backend system, follow [this documentation](https://github.com/spreadshirt/backstage-plugin-s3/tree/main/plugins/s3-viewer-backend#new-backend-system).
+
+- aad8768: Bump Backstage dependencies to version 1.30.4
+- Updated dependencies [aad8768]
+  - @spreadshirt/backstage-plugin-s3-viewer-common@0.5.6
+  - @spreadshirt/backstage-plugin-s3-viewer-node@0.2.6
+
 ## 0.9.5
 
 ### Patch Changes
