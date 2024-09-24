@@ -38,11 +38,11 @@
   "devDependencies": {
     "@backstage/cli": "^0.27.1",
     "@changesets/cli": "^2.24.4",
-    "@spotify/prettier-config": "^12.0.0",
+    "@spotify/prettier-config": "^15.0.0",
     "@types/react": "^18.0.2",
     "concurrently": "^8.0.0",
     "jest-junit": "^13.0.0",
-    "prettier": "^2.3.2",
+    "prettier": "^2.4.1",
     "react": "^18.0.2",
     "react-dom": "^18.0.2",
     "react-router-dom": "^6.3.0"
