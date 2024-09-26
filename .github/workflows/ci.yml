@@ -11,14 +11,22 @@ jobs:
   build:
     name: Run Unit Tests
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
     steps:
-      - uses: actions/checkout@v3
-      - name: Install Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
         with:
-          node-version: 20.x
-      - run: yarn install
-      - run: yarn ci
-        env:
-          CI: true
-      - run: yarn dedupe
+          fetch-depth: '0'
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'yarn'
+      - run: yarn install --immutable
+      - run: yarn lint
+      - run: yarn prettier:check
+      - run: yarn fix --check
+      - run: yarn tsc
+      - run: yarn build:all
+      - run: yarn test:all
