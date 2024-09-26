@@ -1,6 +1,6 @@
 {
   "name": "@spreadshirt/backstage-plugin-s3-viewer-backend",
-  "version": "0.9.6",
+  "version": "0.9.7",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
@@ -52,8 +52,8 @@
     "@backstage/types": "^1.1.1",
     "@smithy/protocol-http": "^4.1.0",
     "@smithy/signature-v4": "^4.1.0",
-    "@spreadshirt/backstage-plugin-s3-viewer-common": "^0.5.6",
-    "@spreadshirt/backstage-plugin-s3-viewer-node": "0.2.6",
+    "@spreadshirt/backstage-plugin-s3-viewer-common": "^0.5.7",
+    "@spreadshirt/backstage-plugin-s3-viewer-node": "0.2.7",
     "@types/express": "*",
     "cookie-parser": "^1.4.5",
     "cross-fetch": "^4.0.0",
