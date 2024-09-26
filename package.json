@@ -26,7 +26,7 @@
     "test:all": "backstage-cli repo test --coverage",
     "fix": "backstage-cli repo fix --publish",
     "lint": "backstage-cli repo lint",
-    "ci": "yarn install && tsc && yarn build:all && backstage-cli test --no-watch && yarn lint",
+    "ci": "yarn install --immutable && tsc && yarn build:all && backstage-cli test --no-watch && yarn lint",
     "start:frontend": "yarn workspace @spreadshirt/backstage-plugin-s3-viewer start",
     "start:backend": "yarn workspace @spreadshirt/backstage-plugin-s3-viewer-backend start",
     "start": "concurrently \"yarn start:backend\" \"yarn start:frontend\"",
