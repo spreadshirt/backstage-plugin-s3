@@ -1,15 +1,24 @@
-# Stub app config needed to run with yarn start
 app:
-  title: backstage example app
+  title: S3 Viewer Example App
   baseUrl: http://localhost:3000
 
 backend:
   baseUrl: http://localhost:7007
   listen:
     port: 7007
+  csp:
+    connect-src: ["'self'", 'http:', 'https:']
+  cors:
+    origin: http://localhost:3000
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+  database:
+    client: better-sqlite3
+    connection: ':memory:'
 
-permission:
-  enabled: true
+auth:
+  providers:
+    guest: {}
 
 s3:
   bucketLocatorMethods:
@@ -24,3 +33,13 @@ s3:
     - platform: test
       buckets:
         - foobar
+
+catalog:
+  import:
+    entityFilename: catalog-info.yaml
+    pullRequestBranchName: backstage-integration
+  locations:
+    - type: file
+      target: ../../examples/org.yaml
+      rules:
+        - allow: [User, Group]
