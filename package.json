@@ -13,10 +13,12 @@
   "private": true,
   "workspaces": {
     "packages": [
+      "packages/**",
       "plugins/**"
     ]
   },
   "scripts": {
+    "dev": "yarn workspaces foreach -A --include backend --include app --parallel -v -i run start",
     "tsc": "tsc",
     "tsc:full": "backstage-cli repo clean && tsc --skipLibCheck false --incremental false",
     "build:backend": "yarn workspace backend build",

@@ -14,63 +14,7 @@ It also includes a permission integration, to restrict access to certain data wi
 
 ## Getting started
 
-> :warning: **This setup is deprecated and will be removed in a future release. Please, use the [new backend system instead](#new-backend-system).**
-
-To get started, follow these steps:
-
-1. Install the plugin by running this command:
-    ```bash
-    # From your Backstage root directory
-    yarn add --cwd packages/backend @spreadshirt/backstage-plugin-s3-viewer-backend
-    ```
-
-2. Create a file in `src/plugins/s3.ts` and add a reference to it in `src/index.ts`:
-    ```typescript
-    // In packages/backend/src/plugins/s3.ts
-    import { S3Builder } from '@spreadshirt/backstage-plugin-s3-viewer-backend';
-    import { Router } from 'express';
-    import { PluginEnvironment } from '../types';
-    export default async function createPlugin(
-      env: PluginEnvironment,
-    ): Promise<Router> {
-      const { router } = await S3Builder.createBuilder({
-        auth: env.auth,
-        config: env.config,
-        logger: env.logger,
-        scheduler: env.scheduler,
-        discovery: env.discovery,
-        permissions: env.permissions,
-        httpAuth: env.httpAuth,
-      }).build();
-      return router;
-    }
-    ```
-
-    ```diff
-    diff --git a/packages/backend/src/index.ts b/packages/backend/src/index.ts
-    index f2b14b2..2c64f47 100644
-    --- a/packages/backend/src/index.ts
-    +++ b/packages/backend/src/index.ts
-    @@ -22,6 +22,7 @@ import { Config } from '@backstage/config';
-     import app from './plugins/app';
-    +import s3 from './plugins/s3';
-     import scaffolder from './plugins/scaffolder';
-    @@ -56,6 +57,7 @@ async function main() {
-       const authEnv = useHotMemoize(module, () => createEnv('auth'));
-    +  const s3Env = useHotMemoize(module, () => createEnv('s3'));
-       const proxyEnv = useHotMemoize(module, () => createEnv('proxy'));
-    @@ -63,6 +65,7 @@ async function main() {
-       const apiRouter = Router();
-       apiRouter.use('/catalog', await catalog(catalogEnv));
-    +  apiRouter.use('/s3-viewer', await s3(s3Env));
-       apiRouter.use('/scaffolder', await scaffolder(scaffolderEnv));
-    ```
-
-3. Add the configuration in the `app-config.yaml` file. This is explained in detail in the next section.
-
-## New backend system
-
-The plugin also supports the [new backend system](https://backstage.io/docs/backend-system/). If you want to use the plugin add the following line in the `src/index.ts`:
+If you want to use the plugin add the following line in the `src/index.ts`:
 
 ```typescript
 // In packages/backend/src/index.ts
