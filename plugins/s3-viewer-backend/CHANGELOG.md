@@ -1,5 +1,28 @@
 # @spreadshirt/backstage-plugin-s3-viewer-backend
 
+## 0.10.0
+
+### Minor Changes
+
+- 5b89c04: **BREAKING**: Removed old backend system methods and test suite, which was already deprecated and not maintained. A proper solution will be provided later on.
+
+  To install the plugin refer to the [updated documentation](https://github.com/spreadshirt/backstage-plugin-s3/tree/main/plugins/s3-viewer#getting-started)
+
+### Patch Changes
+
+- 7fc3ecc: Fix local dependencies for our plugins. This has been done by using the
+  [following script](https://github.com/backstage/backstage/blob/master/scripts/verify-local-dependencies.js) available
+  in the main Backstage repo.
+
+  This is also the way the community-plugin workspaces work, so it's good to follow their setup too.
+
+- c6b6505: Bump Backstage dependencies to version 1.32.2
+- 5b89c04: Fix yarn add command in the documentation
+- Updated dependencies [7fc3ecc]
+- Updated dependencies [c6b6505]
+  - @spreadshirt/backstage-plugin-s3-viewer-node@0.2.8
+  - @spreadshirt/backstage-plugin-s3-viewer-common@0.5.8
+
 ## 0.9.7
 
 ### Patch Changes
