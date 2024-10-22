@@ -1,5 +1,19 @@
 # @spreadshirt/backstage-plugin-s3-viewer-node
 
+## 0.2.8
+
+### Patch Changes
+
+- 7fc3ecc: Fix local dependencies for our plugins. This has been done by using the
+  [following script](https://github.com/backstage/backstage/blob/master/scripts/verify-local-dependencies.js) available
+  in the main Backstage repo.
+
+  This is also the way the community-plugin workspaces work, so it's good to follow their setup too.
+
+- c6b6505: Bump Backstage dependencies to version 1.32.2
+- Updated dependencies [c6b6505]
+  - @spreadshirt/backstage-plugin-s3-viewer-common@0.5.8
+
 ## 0.2.7
 
 ### Patch Changes

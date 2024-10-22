@@ -1,5 +1,20 @@
 # @spreadshirt/backstage-plugin-s3-viewer
 
+## 0.5.9
+
+### Patch Changes
+
+- 7fc3ecc: Fix local dependencies for our plugins. This has been done by using the
+  [following script](https://github.com/backstage/backstage/blob/master/scripts/verify-local-dependencies.js) available
+  in the main Backstage repo.
+
+  This is also the way the community-plugin workspaces work, so it's good to follow their setup too.
+
+- c6b6505: Bump Backstage dependencies to version 1.32.2
+- 5b89c04: Fix yarn add command in the documentation
+- Updated dependencies [c6b6505]
+  - @spreadshirt/backstage-plugin-s3-viewer-common@0.5.8
+
 ## 0.5.8
 
 ### Patch Changes
