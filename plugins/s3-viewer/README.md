@@ -18,7 +18,7 @@ To get started, follow these steps:
 1. Install the plugin by running this command:
     ```bash
     # From your Backstage root directory
-    yarn add --cwd packages/app @spreadshirt/backstage-plugin-s3-viewer
+    yarn --cwd add packages/app @spreadshirt/backstage-plugin-s3-viewer
     ```
 
 2. Add the new route to the app by adding the following line:

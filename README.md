@@ -27,10 +27,10 @@ It's also possible to test the s3-viewer plugin in an isolated mode. For that, y
 
 ```sh
     # From the root of the repository
-    docker-compose -f demo/docker-compose.yaml up
+    docker compose -f demo/docker-compose.yaml up
     
     # Wait until the bucket is created and the files synced, then:
-    yarn start
+    yarn dev
 ```
 
 After executing these two commands, a new window in your browser will be opened and you will be able to use the s3-viewer frontend and backend plugins altogether. You should see a platform with a name `test` and a bucket inside called `foobar`. This bucket will contain the data from [`./demo/examples`](./demo/examples/) inside.
