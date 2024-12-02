@@ -1,5 +1,15 @@
 # app
 
+## 0.1.1
+
+### Patch Changes
+
+- 56350c5: Fix release process due to 'workspace' references not being resolved.
+  To do that, the previous setup using the exact version in the `package.json`
+  has been brought back.
+- Updated dependencies [56350c5]
+  - @spreadshirt/backstage-plugin-s3-viewer@0.5.10
+
 ## 0.1.0
 
 ### Minor Changes

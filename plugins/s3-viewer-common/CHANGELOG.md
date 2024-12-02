@@ -1,5 +1,13 @@
 # @spreadshirt/backstage-plugin-s3-viewer-common
 
+## 0.5.9
+
+### Patch Changes
+
+- 56350c5: Fix release process due to 'workspace' references not being resolved.
+  To do that, the previous setup using the exact version in the `package.json`
+  has been brought back.
+
 ## 0.5.8
 
 ### Patch Changes
