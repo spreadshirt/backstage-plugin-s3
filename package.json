@@ -38,7 +38,7 @@
     "npm:release": "yarn install && tsc && yarn build:all && changeset publish"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.29.2",
+    "@backstage/cli": "^0.29.5",
     "@changesets/cli": "^2.27.9",
     "@spotify/prettier-config": "^15.0.0",
     "concurrently": "^8.0.0",

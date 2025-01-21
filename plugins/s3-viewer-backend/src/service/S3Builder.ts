@@ -9,7 +9,6 @@ import {
 } from '@spreadshirt/backstage-plugin-s3-viewer-node';
 import { S3BucketsProvider } from './S3BucketsProvider';
 import { S3Client } from './S3Api';
-import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 import {
   AuthService,
   DiscoveryService,
@@ -416,8 +415,6 @@ export class S3Builder {
       body.on('data', data => res.write(data));
       body.on('end', () => res.send());
     });
-
-    router.use(MiddlewareFactory.create(this.env).error());
 
     return router;
   }
