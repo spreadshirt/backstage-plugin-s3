@@ -20742,8 +20742,8 @@ __metadata:
   linkType: hard
 
 "jsonpath-plus@npm:^10.0.0":
-  version: 10.2.0
-  resolution: "jsonpath-plus@npm:10.2.0"
+  version: 10.3.0
+  resolution: "jsonpath-plus@npm:10.3.0"
   dependencies:
     "@jsep-plugin/assignment": "npm:^1.3.0"
     "@jsep-plugin/regex": "npm:^1.0.4"
@@ -20751,7 +20751,7 @@ __metadata:
   bin:
     jsonpath: bin/jsonpath-cli.js
     jsonpath-plus: bin/jsonpath-cli.js
-  checksum: 10c0/46480781a0a0b5347dc592fd69ef7ff0fa5a5e322a3f1f23997319e77ee937762366d722facafcc5e8d16101e9cdf1ae14df1f1777b2933990aadd0cdb20d8f5
+  checksum: 10c0/f5ff53078ecab98e8afd1dcdb4488e528653fa5a03a32d671f52db1ae9c3236e6e072d75e1949a80929fd21b07603924a586f829b40ad35993fa0247fa4f7506
   languageName: node
   linkType: hard
 
@@ -24112,9 +24112,9 @@ __metadata:
   linkType: hard
 
 "path-to-regexp@npm:^6.2.0":
-  version: 6.2.1
-  resolution: "path-to-regexp@npm:6.2.1"
-  checksum: 10c0/7a73811ca703e5c199e5b50b9649ab8f6f7b458a37f7dff9ea338815203f5b1f95fe8cb24d4fdfe2eab5d67ce43562d92534330babca35cdf3231f966adb9360
+  version: 6.3.0
+  resolution: "path-to-regexp@npm:6.3.0"
+  checksum: 10c0/73b67f4638b41cde56254e6354e46ae3a2ebc08279583f6af3d96fe4664fc75788f74ed0d18ca44fa4a98491b69434f9eee73b97bb5314bd1b5adb700f5c18d6
   languageName: node
   linkType: hard
 
@@ -26971,11 +26971,11 @@ __metadata:
   linkType: hard
 
 "serialize-javascript@npm:^6.0.1":
-  version: 6.0.1
-  resolution: "serialize-javascript@npm:6.0.1"
+  version: 6.0.2
+  resolution: "serialize-javascript@npm:6.0.2"
   dependencies:
     randombytes: "npm:^2.1.0"
-  checksum: 10c0/1af427f4fee3fee051f54ffe15f77068cff78a3c96d20f5c1178d20630d3ab122d8350e639d5e13cde8111ef9db9439b871305ffb185e24be0a2149cec230988
+  checksum: 10c0/2dd09ef4b65a1289ba24a788b1423a035581bef60817bea1f01eda8e3bda623f86357665fe7ac1b50f6d4f583f97db9615b3f07b2a2e8cbcb75033965f771dd2
   languageName: node
   linkType: hard
 
@@ -30305,13 +30305,13 @@ __metadata:
   linkType: hard
 
 "xml-crypto@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "xml-crypto@npm:6.0.0"
+  version: 6.0.1
+  resolution: "xml-crypto@npm:6.0.1"
   dependencies:
     "@xmldom/is-dom-node": "npm:^1.0.1"
     "@xmldom/xmldom": "npm:^0.8.10"
     xpath: "npm:^0.0.33"
-  checksum: 10c0/1a9d8be4cc7a4c618fa413b8ef30f11cda9ae81f20bc03e84c51f6c61383168a9915f8c3a26061e2053e58807b76d3a13726338f7bc0d8c45285fbb1da296293
+  checksum: 10c0/608121007ddc50e7e0e23c1305af1dba5e449ff79ab3d0ecfb034a8072896f47bc082d377d7ef13c4ee82137f64cd1b5dde1d2f8eecea59fda55a04c1b080d0a
   languageName: node
   linkType: hard
 
