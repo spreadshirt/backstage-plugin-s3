@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import useAsync from 'react-use/lib/useAsync';
 import { useApi } from '@backstage/core-plugin-api';
 import { S3ApiRef } from '../../api';
@@ -91,7 +91,7 @@ export const S3BucketTreePicker = ({
     <List dense className={classes.list}>
       {Object.entries(bucketsByEndpoint).map(
         ([endpointName, buckets], idxOne) => (
-          <React.Fragment key={idxOne}>
+          <Fragment key={idxOne}>
             <ListItem
               className={classes.endpoint}
               onClick={() => handleCollapseClick(endpointName)}
@@ -123,7 +123,7 @@ export const S3BucketTreePicker = ({
                 ))}
               </List>
             </Collapse>
-          </React.Fragment>
+          </Fragment>
         ),
       )}
     </List>
