@@ -18,7 +18,7 @@
     ]
   },
   "scripts": {
-    "dev": "yarn workspaces foreach -A --include backend --include app --parallel -v -i run start",
+    "start": "backstage-cli repo start",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck true --incremental false",
     "build:all": "backstage-cli repo build --all",
@@ -29,8 +29,6 @@
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
     "ci": "yarn install && tsc && yarn build:all && yarn test && yarn lint",
-    "start": "yarn workspace app start",
-    "start-backend": "yarn workspace backend start",
     "release": "changeset version && yarn prettier --write 'plugins/*/{package.json,CHANGELOG.md}' '.changeset/*.json' && yarn install",
     "publish-release": "changeset publish",
     "prettier:check": "prettier --check .",

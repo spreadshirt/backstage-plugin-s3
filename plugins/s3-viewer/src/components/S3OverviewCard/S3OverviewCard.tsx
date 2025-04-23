@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CardTab, TabbedCard } from '@backstage/core-components';
 import {
   BucketDetails,

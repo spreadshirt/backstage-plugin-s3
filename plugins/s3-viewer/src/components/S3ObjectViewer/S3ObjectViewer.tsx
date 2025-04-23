@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FetchObjectResult } from '@spreadshirt/backstage-plugin-s3-viewer-common';
 import {
   createStyles,
