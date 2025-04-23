@@ -1,4 +1,3 @@
-import React from 'react';
 import { Navigate, Route } from 'react-router-dom';
 import { CatalogEntityPage, CatalogIndexPage } from '@backstage/plugin-catalog';
 import { UserSettingsPage } from '@backstage/plugin-user-settings';

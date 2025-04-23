@@ -1,5 +1,23 @@
 # app
 
+## 0.1.5
+
+### Patch Changes
+
+- b9cb0be: Remove usage of the React imports, which is not needed any longer
+- 8d33528: Bump Backstage dependencies to version 1.38.1
+- Updated dependencies [b9cb0be]
+- Updated dependencies [8d33528]
+  - @spreadshirt/backstage-plugin-s3-viewer@0.5.14
+
+## 0.1.4
+
+### Patch Changes
+
+- bdcc773: Bump backstage dependencies to version 1.37.0
+- Updated dependencies [bdcc773]
+  - @spreadshirt/backstage-plugin-s3-viewer@0.5.13
+
 ## 0.1.3
 
 ### Patch Changes

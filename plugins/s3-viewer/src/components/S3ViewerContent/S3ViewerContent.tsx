@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import useAsync from 'react-use/lib/useAsync';
 import { Content, Table, TableColumn } from '@backstage/core-components';
 import { useApi, useRouteRefParams } from '@backstage/core-plugin-api';

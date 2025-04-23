@@ -1,4 +1,3 @@
-import React from 'react';
 import Alert from '@material-ui/lab/Alert';
 import { BucketDetails } from '@spreadshirt/backstage-plugin-s3-viewer-common';
 import { humanFileSize } from '../../utils';
