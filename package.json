@@ -33,7 +33,8 @@
     "publish-release": "changeset publish",
     "prettier:check": "prettier --check .",
     "prettier:fix": "prettier --write .",
-    "npm:release": "yarn install && tsc && yarn build:all && changeset publish"
+    "npm:release": "yarn install && tsc && yarn build:all && changeset publish",
+    "postinstall": "yarn build:all"
   },
   "devDependencies": {
     "@backstage/cli": "^0.32.0",
