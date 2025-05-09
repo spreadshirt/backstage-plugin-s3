@@ -2,12 +2,14 @@ import {
   createApiFactory,
   createComponentExtension,
   createPlugin,
+  createRoutableExtension,
   discoveryApiRef,
   fetchApiRef,
 } from '@backstage/core-plugin-api';
 import { S3Client, S3ApiRef } from './api';
 
 import { rootRouteRef } from './routes';
+import { useEntity } from '@backstage/plugin-catalog-react';
 
 export const s3ViewerPlugin = createPlugin({
   id: 's3-viewer',
@@ -27,10 +29,10 @@ export const s3ViewerPlugin = createPlugin({
 });
 
 export const S3ViewerPage = s3ViewerPlugin.provide(
-  createComponentExtension({
+  createRoutableExtension({
     name: 'S3ViewerPage',
-    component: {
-      lazy: () => import('./components/Router').then(m => m.Router),
-    },
+    component: () =>
+      import('./components/S3ViewerPage/S3ViewerPage').then(m => m.S3ViewerPage),
+    mountPoint: rootRouteRef,
   }),
 );

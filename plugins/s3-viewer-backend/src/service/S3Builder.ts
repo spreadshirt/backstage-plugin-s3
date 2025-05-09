@@ -319,8 +319,28 @@ export class S3Builder {
         permission: permissions.s3BucketList,
       });
 
-      const filter = this.getBucketFilter(decision);
-      const groupedBuckets = this.bucketsProvider?.getGroupedBuckets(filter);
+      const { bucketName } = req.query;
+
+      const permissionFilter = this.getBucketFilter(decision);
+
+      const paramFilters: BucketDetailsFilters[] = [];
+
+      if (bucketName) {
+        paramFilters.push({
+          property: 'bucket',
+          values: [bucketName.toString()],
+        });
+      }
+
+      const finalFilter: BucketDetailsFilters = {
+        allOf: [
+          ...(paramFilters.length ? [{ allOf: paramFilters }] : []),
+          ...(permissionFilter ? [permissionFilter] : []),
+        ],
+      };
+
+      const groupedBuckets =
+        this.bucketsProvider?.getGroupedBuckets(finalFilter);
       if (!groupedBuckets) {
         throw new NotFoundError();
       }

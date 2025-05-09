@@ -1,3 +1,6 @@
+import { S3_VIEWER_BUCKET } from "./constant";
+import { Entity } from '@backstage/catalog-model';
+
 /**
  * Converts a number of bytes into a human readable text.
  *
@@ -73,4 +76,12 @@ export function getFolderFromUrlDir(dir: string | null): string {
 
   const folder = dir.split('/').slice(0, -1).join('/');
   return folder ? `${folder}/` : folder;
+}
+
+export const isS3ViewerBucketAvailable = (entity: Entity): boolean =>
+  Boolean(entity.metadata.annotations?.[S3_VIEWER_BUCKET]);
+
+export function extractBucketAndPath(input: string): { bucket: string; path: string } {
+  const [bucket, path = ''] = input.split(':');
+  return { bucket, path };
 }

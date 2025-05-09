@@ -22,20 +22,6 @@ const useStyles = makeStyles(() =>
   }),
 );
 
-const updateSearchParams = (
-  newBucket: string,
-  newEndpoint: string,
-  newPath: string,
-) => {
-  let url = `/s3-viewer`;
-  if (newBucket && newEndpoint) {
-    url += `/${newEndpoint}/${newBucket}`;
-    if (newPath) {
-      url += `/${newPath}`;
-    }
-  }
-  window.history.pushState(null, '', url);
-};
 
 type LocationInfo = {
   endpoint: string;
@@ -44,7 +30,15 @@ type LocationInfo = {
   folder: string;
 };
 
-export const S3ViewerContent = () => {
+type S3ViewerContentProps = {
+  bucketName?: string;
+  pathFolder?: string;
+};
+
+export const S3ViewerContent = ({
+  bucketName,
+  pathFolder,
+}: S3ViewerContentProps) => {
   const s3Api = useApi(S3ApiRef);
   const classes = useStyles();
   const tableRef = useRef<any>();
@@ -87,11 +81,6 @@ export const S3ViewerContent = () => {
               setToken(['']);
               tableRef.current?.onQueryChange();
             }
-            updateSearchParams(
-              locationInfo.bucket,
-              locationInfo.endpoint,
-              locationInfo.folder + row.name,
-            );
           }}
           style={{ cursor: 'pointer' }}
         >
@@ -138,7 +127,7 @@ export const S3ViewerContent = () => {
       token[queryPage],
       queryPageSize,
       locationInfo.folder,
-      querySearch,
+      locationInfo.folder ? querySearch : pathFolder,
     );
 
     const newToken = [...token];
@@ -170,7 +159,6 @@ export const S3ViewerContent = () => {
       key: locationInfo.key,
       folder: folderNew,
     });
-    updateSearchParams(locationInfo.bucket, locationInfo.endpoint, folderNew);
     tableRef.current?.onQueryChange();
   };
 
@@ -182,7 +170,6 @@ export const S3ViewerContent = () => {
         key: '',
         folder: '',
       });
-      updateSearchParams(newBucket, newEndpoint, '');
       setToken(['']);
       tableRef.current?.onQueryChange();
     },
@@ -209,6 +196,8 @@ export const S3ViewerContent = () => {
         <Grid container spacing={1}>
           <Grid item xs={2}>
             <S3BucketTreePicker
+              bucketName={bucketName}
+              pathFolder={pathFolder}
               state={{ ...locationInfo }}
               updateTreeViewValues={updateTreeViewValues}
             />

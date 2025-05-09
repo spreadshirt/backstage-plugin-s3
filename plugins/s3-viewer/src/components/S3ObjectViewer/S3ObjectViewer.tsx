@@ -1,12 +1,22 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { FetchObjectResult } from '@spreadshirt/backstage-plugin-s3-viewer-common';
 import {
+  Box,
+  Button,
   createStyles,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Divider,
   Grid,
+  IconButton,
   makeStyles,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
+import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
 import { humanFileSize } from '../../utils';
 import {
   LinkButton,
@@ -14,6 +24,7 @@ import {
   StructuredMetadataTable,
 } from '@backstage/core-components';
 import Alert from '@material-ui/lab/Alert';
+import CloseIcon from '@mui/icons-material/Close';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -76,8 +87,78 @@ export const S3Preview = ({ objectInfo }: S3PreviewProps) => {
     isPreviewAvailable(objectInfo),
   );
 
+  const [showVideo, setShowVideo] = useState(false);
+
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
+  if (objectInfo?.contentType === 'video/mp4') {
+    return (
+      <>
+        <Box>
+          <Button
+            variant="contained"
+            onClick={() => setShowVideo(true)}
+            startIcon={<OndemandVideoIcon />}
+          >
+            Play Video
+          </Button>
+        </Box>
+
+        <Dialog
+          open={showVideo}
+          onClose={() => setShowVideo(false)}
+          fullScreen={fullScreen}
+          maxWidth="md"
+          fullWidth
+        >
+          <DialogTitle>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <span>Video Preview</span>
+              <IconButton
+                aria-label="close"
+                onClick={() => setShowVideo(false)}
+              >
+                <CloseIcon />
+              </IconButton>
+            </Box>
+          </DialogTitle>
+
+          <DialogContent dividers>
+            <Box
+              component="video"
+              controls
+              autoPlay
+              sx={{
+                width: '100%',
+                borderRadius: 2,
+                backgroundColor: 'black',
+              }}
+            >
+              <source src={objectInfo.downloadUrl} type="video/mp4" />
+              Your browser does not support the video tag.
+            </Box>
+
+            <Box mt={2}>
+              <Typography variant="body2" color="textSecondary">
+                File name: {objectInfo.name}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                Content type: {objectInfo.contentType}
+              </Typography>
+            </Box>
+          </DialogContent>
+        </Dialog>
+      </>
+    );
+  }
+
   if (!isPreviewAvailable(objectInfo) || !objectInfo) {
-    return <></>;
+    return <Typography variant="body2">no preview available</Typography>;
   }
 
   return (

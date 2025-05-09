@@ -16,6 +16,7 @@ import { Progress } from '@backstage/core-components';
 import Alert from '@material-ui/lab/Alert';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
+import { BucketGroupRequest } from '../../types';
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -37,11 +38,15 @@ type S3BucketTreePickerProps = {
     endpoint: string;
     bucket: string;
   };
+  bucketName?: string,
+  pathFolder?: string,
   updateTreeViewValues: (newBucket: string, newEndpoint: string) => void;
 };
 
 export const S3BucketTreePicker = ({
   state = { bucket: '', endpoint: '' },
+  bucketName,
+  pathFolder,
   updateTreeViewValues,
 }: S3BucketTreePickerProps) => {
   const s3Api = useApi(S3ApiRef);
@@ -67,7 +72,7 @@ export const S3BucketTreePicker = ({
     loading,
     error,
   } = useAsync(async () => {
-    const groupedBuckets = await s3Api.getGroupedBuckets();
+    const groupedBuckets = await s3Api.getGroupedBuckets({ bucketName});
     const endpoints = Object.keys(groupedBuckets);
     if (!open && endpoints.length > 0) {
       setOpen(endpoints[0]);

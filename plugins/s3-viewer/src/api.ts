@@ -8,6 +8,7 @@ import {
   FetchObjectResult,
   ListBucketKeysResult,
 } from '@spreadshirt/backstage-plugin-s3-viewer-common';
+import { BucketGroupRequest } from './types';
 
 export const S3ApiRef = createApiRef<S3Api>({
   id: 'plugin.s3.service',
@@ -46,7 +47,9 @@ export interface S3Api {
    * Returns all the bucket names grouped by the endpoint where
    * they are located. Used for the tree view in the UI.
    */
-  getGroupedBuckets(): Promise<Record<string, string[]>>;
+  getGroupedBuckets(
+    request?: BucketGroupRequest,
+  ): Promise<Record<string, string[]>>;
 
   /**
    * Returns all the bucket names found for a certain endpoint.
@@ -151,10 +154,12 @@ export class S3Client implements S3Api {
     return result;
   }
 
-  async getGroupedBuckets(): Promise<Record<string, string[]>> {
+  async getGroupedBuckets(
+    request?: BucketGroupRequest,
+  ): Promise<Record<string, string[]>> {
     const result = await this.callApi<Record<string, string[]>>(
       'buckets/grouped',
-      {},
+      request ?? {},
     );
     return result;
   }
