@@ -1,6 +1,6 @@
 {
   "name": "backend",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "main": "dist/index.cjs.js",
   "types": "src/index.ts",
   "private": true,
@@ -35,7 +35,7 @@
     "@backstage/plugin-permission-common": "^0.9.0",
     "@backstage/plugin-permission-node": "^0.10.0",
     "@backstage/plugin-user-settings-backend": "^0.3.2",
-    "@spreadshirt/backstage-plugin-s3-viewer-backend": "^0.10.5",
+    "@spreadshirt/backstage-plugin-s3-viewer-backend": "^0.10.6",
     "app": "link:../app",
     "better-sqlite3": "^9.0.0",
     "node-gyp": "^9.0.0"
