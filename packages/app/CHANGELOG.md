@@ -1,5 +1,13 @@
 # app
 
+## 0.1.7
+
+### Patch Changes
+
+- d7123a3: Bump all dependencies to Backstage 1.40.1
+- Updated dependencies [d7123a3]
+  - @spreadshirt/backstage-plugin-s3-viewer@0.5.16
+
 ## 0.1.6
 
 ### Patch Changes
