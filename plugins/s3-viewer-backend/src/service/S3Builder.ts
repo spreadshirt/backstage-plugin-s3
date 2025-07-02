@@ -289,7 +289,7 @@ export class S3Builder {
         allow: ['service'],
       });
 
-      this.bucketsProvider.fetchBuckets();
+      this.bucketsProvider?.fetchBuckets();
       res.status(200).json({});
     });
 
