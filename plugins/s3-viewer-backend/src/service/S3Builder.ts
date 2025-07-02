@@ -284,6 +284,19 @@ export class S3Builder {
       res.status(200).json({ expiresAt: expiresAt.toISOString() });
     });
 
+    router.get('/refresh', async (req, res) => {
+      const credentials = await this.env.httpAuth.credentials(req, {
+        allow: ['service'],
+      });
+
+      if (!credentials) {
+        throw new NotAllowedError('Unauthorized: missing credentials');
+      }
+
+      this.bucketsProvider.fetchBuckets();
+      res.status(200).json({});
+    });
+
     router.get('/buckets', async (req, res) => {
       const { decision } = await this.evaluateRequest(req, {
         permission: permissions.s3BucketList,
