@@ -289,10 +289,6 @@ export class S3Builder {
         allow: ['service'],
       });
 
-      if (!credentials) {
-        throw new NotAllowedError('Unauthorized: missing credentials');
-      }
-
       this.bucketsProvider.fetchBuckets();
       res.status(200).json({});
     });
