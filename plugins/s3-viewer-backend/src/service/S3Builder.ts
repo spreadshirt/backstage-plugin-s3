@@ -408,6 +408,9 @@ export class S3Builder {
       if (object.contentLength) {
         res.setHeader('Content-Length', object.contentLength);
       }
+      if (object.contentEncoding) {
+        res.setHeader('Content-Encoding', object.contentEncoding);
+      }
 
       const body = await client.streamObject(endpoint as string, bucket, key);
       body.on('error', err => {

@@ -117,6 +117,7 @@ export class S3Client implements S3Api {
         'unknown',
       contentLength: output.ContentLength,
       contentType: output.ContentType || '',
+      contentEncoding: output.ContentEncoding,
       downloadName: key.split('/').pop() || key,
       downloadUrl: await this.getDownloadUrl(endpoint, bucket, key),
     };
