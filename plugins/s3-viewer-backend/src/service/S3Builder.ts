@@ -284,6 +284,15 @@ export class S3Builder {
       res.status(200).json({ expiresAt: expiresAt.toISOString() });
     });
 
+    router.post('/buckets/refresh', async (req, res) => {
+      await this.env.httpAuth.credentials(req, {
+        allow: ['service'],
+      });
+
+      this.bucketsProvider?.fetchBuckets();
+      res.status(200).json({});
+    });
+
     router.get('/buckets', async (req, res) => {
       const { decision } = await this.evaluateRequest(req, {
         permission: permissions.s3BucketList,
