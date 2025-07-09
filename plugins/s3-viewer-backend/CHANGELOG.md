@@ -1,5 +1,16 @@
 # @spreadshirt/backstage-plugin-s3-viewer-backend
 
+## 0.11.0
+
+### Minor Changes
+
+- adfee42: HTML files are now served as webpages rather than downloads
+- a901ad3: Feat add bucket refresh api capability for service plugin tokens
+
+### Patch Changes
+
+- 8867bee: Honor objects' Content-Encoding, if any.
+
 ## 0.10.7
 
 ### Patch Changes
