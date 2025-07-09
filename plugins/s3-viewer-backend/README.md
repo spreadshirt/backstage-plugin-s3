@@ -241,6 +241,42 @@ s3:
     frequency: { minutes: 30 }
     timeout: { minutes: 1 }
 ```
+### Refresh API
+
+To execute an adhoc refresh call rather than specific schedules a `POST` API is now available.
+
+This requires a `service` token as discussed in [Backstage Service to Service Auth](https://backstage.io/docs/auth/service-to-service-auth/)
+
+
+#### Examples:
+
+[Static Access Token](https://backstage.io/docs/auth/service-to-service-auth/#static-tokens)
+```yaml
+backend:
+  auth:
+    externalAccess:
+      - type: static
+        options:
+          token: ${S3_API_REFRESH_TOKEN} 
+          # Can generate with node -p 'require("crypto").randomBytes(24).toString("base64")'
+          subject: s3-viewier-api-test-token
+        accessRestrictions:
+          - plugin: s3-viewer
+```
+[Plugin to Plugin Auth](https://backstage.io/docs/auth/service-to-service-auth/#standard-plugin-to-plugin-auth)
+
+```ts
+const { token } = await auth.getPluginRequestToken({
+  onBehalfOf: await auth.getOwnServiceCredentials(),
+  targetPluginId: 's3-viewer', 
+});
+```
+
+To verify it's working:
+
+`curl -X POST http://localhost:7007/api/s3-viewer/buckets/refresh -v -H "Authorization: Bearer ${S3_API_REFRESH_TOKEN}"`
+
+
 
 ## Permissions Setup
 
