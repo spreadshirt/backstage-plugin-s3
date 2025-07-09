@@ -29,6 +29,7 @@ export type FetchObjectResult = {
   bucket: string;
   etag: string;
   contentType: string;
+  contentEncoding?: string;
   contentLength?: number;
   lastModified: string;
   downloadName: string;
