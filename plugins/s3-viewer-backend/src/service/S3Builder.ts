@@ -284,8 +284,8 @@ export class S3Builder {
       res.status(200).json({ expiresAt: expiresAt.toISOString() });
     });
 
-    router.get('/refresh', async (req, res) => {
-      const credentials = await this.env.httpAuth.credentials(req, {
+    router.post('/buckets/refresh', async (req, res) => {
+      await this.env.httpAuth.credentials(req, {
         allow: ['service'],
       });
 
