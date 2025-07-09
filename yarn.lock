@@ -8869,7 +8869,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@spreadshirt/backstage-plugin-s3-viewer-backend@npm:^0.10.7, @spreadshirt/backstage-plugin-s3-viewer-backend@workspace:plugins/s3-viewer-backend":
+"@spreadshirt/backstage-plugin-s3-viewer-backend@npm:^0.11.0, @spreadshirt/backstage-plugin-s3-viewer-backend@workspace:plugins/s3-viewer-backend":
   version: 0.0.0-use.local
   resolution: "@spreadshirt/backstage-plugin-s3-viewer-backend@workspace:plugins/s3-viewer-backend"
   dependencies:
@@ -12360,7 +12360,7 @@ __metadata:
     "@backstage/plugin-permission-common": "npm:^0.9.0"
     "@backstage/plugin-permission-node": "npm:^0.10.1"
     "@backstage/plugin-user-settings-backend": "npm:^0.3.3"
-    "@spreadshirt/backstage-plugin-s3-viewer-backend": "npm:^0.10.7"
+    "@spreadshirt/backstage-plugin-s3-viewer-backend": "npm:^0.11.0"
     "@types/express": "npm:^4.17.6"
     app: "link:../app"
     better-sqlite3: "npm:^9.0.0"

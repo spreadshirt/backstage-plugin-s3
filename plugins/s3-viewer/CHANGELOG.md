@@ -1,5 +1,11 @@
 # @spreadshirt/backstage-plugin-s3-viewer
 
+## 0.5.17
+
+### Patch Changes
+
+- 4333fa2: Don't unconditionally add "download" property to "Download" links
+
 ## 0.5.16
 
 ### Patch Changes

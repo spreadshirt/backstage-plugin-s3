@@ -158,7 +158,6 @@ export const S3ObjectViewer = ({
               variant="outlined"
               title={`Download ${objectInfo.downloadName}`}
               to={objectInfo.downloadUrl}
-              download={objectInfo.downloadName}
             >
               Download
             </LinkButton>

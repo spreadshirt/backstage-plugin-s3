@@ -406,13 +406,19 @@ export class S3Builder {
 
       const object = await client.headObject(endpoint as string, bucket, key);
       res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
-      res.setHeader(
-        'Content-Disposition',
-        `attachment; filename="${object.downloadName}"`,
-      );
+      // Enable viewing html as web pages, while downloading other file types.
+      if (object.contentType.trim().startsWith('text/html')) {
+        res.setHeader(
+          'Content-Disposition',
+          `attachment; filename="${object.downloadName}"`,
+        );
+      }
       res.setHeader('Content-Type', object.contentType);
       if (object.contentLength) {
         res.setHeader('Content-Length', object.contentLength);
+      }
+      if (object.contentEncoding) {
+        res.setHeader('Content-Encoding', object.contentEncoding);
       }
 
       const body = await client.streamObject(endpoint as string, bucket, key);
