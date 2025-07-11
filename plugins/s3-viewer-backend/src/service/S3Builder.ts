@@ -407,7 +407,7 @@ export class S3Builder {
       const object = await client.headObject(endpoint as string, bucket, key);
       res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
       // Enable viewing html as web pages, while downloading other file types.
-      if (object.contentType.trim().startsWith('text/html')) {
+      if (!object.contentType.trim().startsWith('text/html')) {
         res.setHeader(
           'Content-Disposition',
           `attachment; filename="${object.downloadName}"`,
