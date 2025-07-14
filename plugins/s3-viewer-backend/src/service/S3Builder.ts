@@ -394,13 +394,12 @@ export class S3Builder {
       res.json(object);
     });
 
-    router.get('/stream/:bucket/:key', async (req, res) => {
+    router.get('/stream/:endpoint/:bucket/:key(*)', async (req, res) => {
       const { decision } = await this.evaluateRequest(req, {
         permission: permissions.s3ObjectDownload,
       });
 
-      const { bucket, key } = req.params;
-      const { endpoint } = req.query;
+      const { endpoint, bucket, key } = req.params;
 
       this.requireBucketPermission(endpoint as string, bucket, decision);
 
