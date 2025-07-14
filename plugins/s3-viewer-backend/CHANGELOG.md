@@ -1,5 +1,11 @@
 # @spreadshirt/backstage-plugin-s3-viewer-backend
 
+## 0.11.1
+
+### Patch Changes
+
+- ac0f5bd: Fix logic in HTML content type check. It was previously reversed
+
 ## 0.11.0
 
 ### Minor Changes
