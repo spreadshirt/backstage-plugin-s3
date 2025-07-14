@@ -147,9 +147,13 @@ export const S3ViewerContent = () => {
       setToken(newToken);
     }
 
-    const totalRows = queryPage * queryPageSize + res.keys.length;
-    const totalCount =
-      totalRows % queryPageSize === 0 ? res.totalBucketObjects : totalRows;
+    // Because the S3 API does not return the total count of objects, fake the count
+    let totalCount = 100000;
+
+    // Update total count if this is the last page to prevent going to an invalid page.
+    if (res.keys.length < queryPageSize) {
+      totalCount = queryPage * queryPageSize + res.keys.length;
+    }
 
     return {
       data: res.keys,
