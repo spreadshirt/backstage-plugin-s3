@@ -160,10 +160,11 @@ export class S3Client implements S3Api {
     key: string,
   ): Promise<string> {
     const s3Url = await this.discoveryApi.getExternalBaseUrl('s3-viewer');
+    // Do NOT encode slashes in the key. If you do, relative imports in HTML files won't work
     const url = new URL(
-      `${s3Url}/stream/${encodeURIComponent(bucket)}/${encodeURIComponent(
-        key,
-      )}?${new URLSearchParams({ endpoint })}`,
+      `${s3Url}/stream/${encodeURIComponent(endpoint)}/${encodeURIComponent(
+        bucket,
+      )}/${encodeURIComponent(key).replace(/%2F/g, '/')}`,
     );
     return url.toString();
   }
