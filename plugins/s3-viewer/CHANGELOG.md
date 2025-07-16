@@ -1,5 +1,11 @@
 # @spreadshirt/backstage-plugin-s3-viewer
 
+## 0.6.0
+
+### Minor Changes
+
+- 14bb739: Use a fake total object count to allow pagination to the last page
+
 ## 0.5.17
 
 ### Patch Changes
