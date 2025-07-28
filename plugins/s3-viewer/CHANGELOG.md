@@ -1,5 +1,14 @@
 # @spreadshirt/backstage-plugin-s3-viewer
 
+## 0.6.1
+
+### Patch Changes
+
+- 4e5df8a: Bump `msw` package to major version 2.0.0
+- 84a41aa: Bump Backstage to version `1.41.1`
+- Updated dependencies [84a41aa]
+  - @spreadshirt/backstage-plugin-s3-viewer-common@0.5.16
+
 ## 0.6.0
 
 ### Minor Changes
