@@ -4,7 +4,7 @@ import {
   ListBucketKeysResult,
 } from '@spreadshirt/backstage-plugin-s3-viewer-common';
 import { GetObjectCommand, S3 } from '@aws-sdk/client-s3';
-import moment from 'moment';
+import { DateTime } from 'luxon';
 import { Readable } from 'stream';
 import {
   BucketsProvider,
@@ -112,9 +112,11 @@ export class S3Client implements S3Api {
       name: key,
       bucket: bucket,
       etag: output.ETag?.replace(/"+/g, '') || '',
-      lastModified:
-        moment(output.LastModified).utc().format('YYYY-MM-DD HH:mm:ss') ||
-        'unknown',
+      lastModified: output.LastModified
+        ? DateTime.fromJSDate(output.LastModified)
+            .toUTC()
+            .toFormat('yyyy-MM-dd HH:mm:ss')
+        : 'unknown',
       contentLength: output.ContentLength,
       contentType: output.ContentType || '',
       contentEncoding: output.ContentEncoding,
