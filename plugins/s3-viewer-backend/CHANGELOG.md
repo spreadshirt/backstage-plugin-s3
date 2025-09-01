@@ -1,5 +1,18 @@
 # @spreadshirt/backstage-plugin-s3-viewer-backend
 
+## 0.12.2
+
+### Patch Changes
+
+- a566a35: Bump Backstage to latest version `1.42.3`
+- 865c417: Align some packages with upstream versions
+- bc57836: Replace `momentjs` with `luxon`
+- e5c4d9d: Fix security issues by bumping several dependencies (`jsonpath-plus`, `cipher-base`, `nimma`, `sha.js`)
+- Updated dependencies [a566a35]
+- Updated dependencies [e5c4d9d]
+  - @spreadshirt/backstage-plugin-s3-viewer-common@0.5.17
+  - @spreadshirt/backstage-plugin-s3-viewer-node@0.2.17
+
 ## 0.12.1
 
 ### Patch Changes

@@ -1,5 +1,15 @@
 # @spreadshirt/backstage-plugin-s3-viewer-node
 
+## 0.2.17
+
+### Patch Changes
+
+- a566a35: Bump Backstage to latest version `1.42.3`
+- e5c4d9d: Fix security issues by bumping several dependencies (`jsonpath-plus`, `cipher-base`, `nimma`, `sha.js`)
+- Updated dependencies [a566a35]
+- Updated dependencies [e5c4d9d]
+  - @spreadshirt/backstage-plugin-s3-viewer-common@0.5.17
+
 ## 0.2.16
 
 ### Patch Changes
