@@ -8124,7 +8124,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@spreadshirt/backstage-plugin-s3-viewer-backend@npm:^0.12.1, @spreadshirt/backstage-plugin-s3-viewer-backend@workspace:plugins/s3-viewer-backend":
+"@spreadshirt/backstage-plugin-s3-viewer-backend@npm:^0.12.2, @spreadshirt/backstage-plugin-s3-viewer-backend@workspace:plugins/s3-viewer-backend":
   version: 0.0.0-use.local
   resolution: "@spreadshirt/backstage-plugin-s3-viewer-backend@workspace:plugins/s3-viewer-backend"
   dependencies:
@@ -8143,8 +8143,8 @@ __metadata:
     "@backstage/types": "npm:^1.2.1"
     "@smithy/protocol-http": "npm:^4.1.0"
     "@smithy/signature-v4": "npm:^4.1.0"
-    "@spreadshirt/backstage-plugin-s3-viewer-common": "npm:^0.5.16"
-    "@spreadshirt/backstage-plugin-s3-viewer-node": "npm:^0.2.16"
+    "@spreadshirt/backstage-plugin-s3-viewer-common": "npm:^0.5.17"
+    "@spreadshirt/backstage-plugin-s3-viewer-node": "npm:^0.2.17"
     "@types/cookie-parser": "npm:^1.4.3"
     "@types/express": "npm:*"
     "@types/jest": "npm:*"
@@ -8163,7 +8163,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@spreadshirt/backstage-plugin-s3-viewer-common@npm:^0.5.16, @spreadshirt/backstage-plugin-s3-viewer-common@workspace:plugins/s3-viewer-common":
+"@spreadshirt/backstage-plugin-s3-viewer-common@npm:^0.5.17, @spreadshirt/backstage-plugin-s3-viewer-common@workspace:plugins/s3-viewer-common":
   version: 0.0.0-use.local
   resolution: "@spreadshirt/backstage-plugin-s3-viewer-common@workspace:plugins/s3-viewer-common"
   dependencies:
@@ -8173,20 +8173,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@spreadshirt/backstage-plugin-s3-viewer-node@npm:^0.2.16, @spreadshirt/backstage-plugin-s3-viewer-node@workspace:plugins/s3-viewer-node":
+"@spreadshirt/backstage-plugin-s3-viewer-node@npm:^0.2.17, @spreadshirt/backstage-plugin-s3-viewer-node@workspace:plugins/s3-viewer-node":
   version: 0.0.0-use.local
   resolution: "@spreadshirt/backstage-plugin-s3-viewer-node@workspace:plugins/s3-viewer-node"
   dependencies:
     "@backstage/backend-plugin-api": "npm:^1.4.2"
     "@backstage/cli": "npm:^0.34.0"
-    "@spreadshirt/backstage-plugin-s3-viewer-common": "npm:^0.5.16"
+    "@spreadshirt/backstage-plugin-s3-viewer-common": "npm:^0.5.17"
     "@types/express": "npm:*"
     express: "npm:^4.17.1"
     stream: "npm:^0.0.2"
   languageName: unknown
   linkType: soft
 
-"@spreadshirt/backstage-plugin-s3-viewer@npm:^0.6.1, @spreadshirt/backstage-plugin-s3-viewer@workspace:plugins/s3-viewer":
+"@spreadshirt/backstage-plugin-s3-viewer@npm:^0.6.2, @spreadshirt/backstage-plugin-s3-viewer@workspace:plugins/s3-viewer":
   version: 0.0.0-use.local
   resolution: "@spreadshirt/backstage-plugin-s3-viewer@workspace:plugins/s3-viewer"
   dependencies:
@@ -8199,7 +8199,7 @@ __metadata:
     "@material-ui/core": "npm:^4.12.2"
     "@material-ui/icons": "npm:^4.9.1"
     "@material-ui/lab": "npm:^4.0.0-alpha.61"
-    "@spreadshirt/backstage-plugin-s3-viewer-common": "npm:^0.5.16"
+    "@spreadshirt/backstage-plugin-s3-viewer-common": "npm:^0.5.17"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^16.0.0"
     "@testing-library/user-event": "npm:^14.0.0"
@@ -10623,7 +10623,7 @@ __metadata:
     "@material-ui/core": "npm:^4.12.2"
     "@material-ui/icons": "npm:^4.9.1"
     "@playwright/test": "npm:^1.32.3"
-    "@spreadshirt/backstage-plugin-s3-viewer": "npm:^0.6.1"
+    "@spreadshirt/backstage-plugin-s3-viewer": "npm:^0.6.2"
     "@testing-library/dom": "npm:^9.0.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^16.0.0"
@@ -11210,7 +11210,7 @@ __metadata:
     "@backstage/plugin-permission-common": "npm:^0.9.1"
     "@backstage/plugin-permission-node": "npm:^0.10.3"
     "@backstage/plugin-user-settings-backend": "npm:^0.3.5"
-    "@spreadshirt/backstage-plugin-s3-viewer-backend": "npm:^0.12.1"
+    "@spreadshirt/backstage-plugin-s3-viewer-backend": "npm:^0.12.2"
     "@types/express": "npm:^4.17.6"
     app: "link:../app"
     better-sqlite3: "npm:^9.0.0"
