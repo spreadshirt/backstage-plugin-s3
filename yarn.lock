@@ -8196,6 +8196,7 @@ __metadata:
   dependencies:
     "@backstage/backend-plugin-api": "npm:^1.4.3"
     "@backstage/cli": "npm:^0.34.3"
+    "@backstage/plugin-permission-node": "npm:^0.10.4"
     "@spreadshirt/backstage-plugin-s3-viewer-common": "npm:^0.5.18"
     "@types/express": "npm:*"
     express: "npm:^4.17.1"
