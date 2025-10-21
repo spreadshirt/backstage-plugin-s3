@@ -53,6 +53,7 @@ This plugin allows fetching the buckets from different endpoints and using diffe
 
 ```yaml
 s3:
+  showBucketDetails: true # Optional default (true)
   bucketLocatorMethods:
     - type: config
       platforms:
@@ -93,6 +94,12 @@ s3:
     frequency: { minutes: 30 }
     timeout: { minutes: 1 }
 ```
+
+### showBucketDetails
+
+This is an optional setting which allows you to hide the bucket details tab from thew viewer page.
+
+Can be useful in situations where a common service account is used for bucket management rather than individuals.
 
 ### bucketLocatorMethods
 
