@@ -10,6 +10,7 @@ import {
 import { S3BucketsProvider } from './S3BucketsProvider';
 import { S3Client } from './S3Api';
 import {
+  AuditorService,
   AuthService,
   DiscoveryService,
   HttpAuthService,
@@ -42,6 +43,7 @@ export interface S3Environment {
   discovery: DiscoveryService;
   permissions: PermissionsService;
   httpAuth: HttpAuthService;
+  audit: AuditorService;
 }
 
 export interface S3BuilderReturn {
@@ -401,7 +403,31 @@ export class S3Builder {
 
       const { endpoint, bucket, key } = req.params;
 
-      this.requireBucketPermission(endpoint as string, bucket, decision);
+      // Create an audit event for the download action, replacing standard logging event.
+      const auditorEvent = await this.env.audit.createEvent({
+        eventId: '/stream/:endpoint/:bucket/:key(*)',
+        request: req,
+        severityLevel:
+          this.env.config.getOptional('s3.audit.download.severityLevel') ??
+          'medium',
+        meta: {
+          endpoint,
+          bucket,
+          uid: key,
+          queryType: 'by-id',
+          actionType: 'download',
+          permissionDecision: permissions.s3ObjectDownload.name,
+          permissionResult: decision.result,
+        },
+      });
+
+      try {
+        this.requireBucketPermission(endpoint as string, bucket, decision);
+      } catch (error) {
+        assertError(error);
+        await auditorEvent.fail({ error });
+        throw error;
+      }
 
       const object = await client.headObject(endpoint as string, bucket, key);
       res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
@@ -421,13 +447,16 @@ export class S3Builder {
       }
 
       const body = await client.streamObject(endpoint as string, bucket, key);
-      body.on('error', err => {
-        assertError(err);
-        this.env.logger.error(err.message);
-        res.status(400).send(err.message);
+      body.on('error', error => {
+        assertError(error);
+        auditorEvent.fail({ error });
+        res.status(400).send(error.message);
       });
       body.on('data', data => res.write(data));
-      body.on('end', () => res.send());
+      body.on('end', () => {
+        auditorEvent.success();
+        res.send();
+      });
     });
 
     return router;

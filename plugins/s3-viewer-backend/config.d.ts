@@ -1,4 +1,7 @@
-import { SchedulerServiceTaskScheduleDefinitionConfig } from '@backstage/backend-plugin-api';
+import {
+  AuditorServiceEventSeverityLevel,
+  SchedulerServiceTaskScheduleDefinitionConfig,
+} from '@backstage/backend-plugin-api';
 
 /** Configuration for the S3 Viewer plugin */
 export interface Config {
@@ -8,6 +11,25 @@ export interface Config {
      * @visibility frontend
      * */
     showBucketDetails?: boolean;
+
+    /**
+     * Audit configuration
+     * @visibility backend
+     */
+    audit?: {
+      /**
+       * Configuration for download auditing
+       * @visibility backend
+       */
+      download?: {
+        /**
+         * The severity level to use for download audit events
+         * Defaults to 'medium' if not specified
+         * @visibility backend
+         */
+        severityLevel?: AuditorServiceEventSeverityLevel;
+      };
+    };
 
     /**
      * If defined, it sets the schedule used to refresh the list of buckets

@@ -54,6 +54,9 @@ This plugin allows fetching the buckets from different endpoints and using diffe
 ```yaml
 s3:
   showBucketDetails: true # Optional default (true)
+  audit:
+    download:
+      severityLevel: low # Optional - default is 'medium'
   bucketLocatorMethods:
     - type: config
       platforms:
@@ -100,6 +103,25 @@ s3:
 This is an optional setting which allows you to hide the bucket details tab from thew viewer page.
 
 Can be useful in situations where a common service account is used for bucket management rather than individuals.
+
+### audit
+
+This lists any audit levels as per the [Backstage Auditor Service](https://backstage.io/docs/backend-system/core-services/auditor/)
+
+Example:
+
+```yaml
+s3:
+  audit:
+    download:
+      severityLevel: low # Optional - default is medium
+```
+
+This is a setting specifically for the `Download` category to audit it. This replaces the generic logger that was there in case of an error.
+
+Recommended (default) is `medium` however and it's up to your requirements, you may wish to have them only for debug so set it to `low`. See [Audit Severity Mappings](https://backstage.io/docs/backend-system/core-services/auditor/#severity-levels-and-default-mappings).
+
+
 
 ### bucketLocatorMethods
 
