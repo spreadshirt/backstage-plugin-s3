@@ -56,6 +56,7 @@ export const s3ViewerPlugin = createBackendPlugin({
         permissions: coreServices.permissions,
         httpAuth: coreServices.httpAuth,
         httpRouter: coreServices.httpRouter,
+        audit: coreServices.auditor,
       },
       async init(deps) {
         let builder = S3Builder.createBuilder(deps);
