@@ -1,5 +1,20 @@
 # @spreadshirt/backstage-plugin-s3-viewer-backend
 
+## 0.13.0
+
+### Minor Changes
+
+- 5bd0def: Add AuditService to replace default logging on Download Events, also provided optional configuration settings.
+
+  Potentially breaking change if a user is manually creating a `S3Builder` will need to now add AuditService to list of deps.
+
+- e7873a3: feat: add ability to show/hide bucket details at a server/cluster level default value of true
+
+  ```yaml
+  s3:
+    showBucketDetails: false
+  ```
+
 ## 0.12.3
 
 ### Patch Changes

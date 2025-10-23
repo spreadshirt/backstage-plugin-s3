@@ -1,5 +1,16 @@
 # @spreadshirt/backstage-plugin-s3-viewer
 
+## 0.7.0
+
+### Minor Changes
+
+- e7873a3: feat: add ability to show/hide bucket details at a server/cluster level default value of true
+
+  ```yaml
+  s3:
+    showBucketDetails: false
+  ```
+
 ## 0.6.3
 
 ### Patch Changes
