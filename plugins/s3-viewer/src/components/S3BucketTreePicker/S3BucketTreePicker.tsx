@@ -7,7 +7,6 @@ import {
   createStyles,
   List,
   ListItem,
-  ListItemIcon,
   ListItemText,
   makeStyles,
   Tooltip,
@@ -17,7 +16,6 @@ import { Progress } from '@backstage/core-components';
 import Alert from '@material-ui/lab/Alert';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
-import ClearIcon from '@material-ui/icons/Clear';
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -91,17 +89,6 @@ export const S3BucketTreePicker = ({
 
   return (
     <List dense className={classes.list}>
-      <ListItem
-        button
-        onClick={() => updateTreeViewValues('', '')}
-        selected={state.bucket === '' && state.endpoint === ''}
-        disabled={isSelected('', '')}
-      >
-        <ListItemText primary="Clear (Reset)" />
-        <ListItemIcon style={{ minWidth: '24px' }}>
-          <ClearIcon />
-        </ListItemIcon>
-      </ListItem>
       {Object.entries(bucketsByEndpoint).map(
         ([endpointName, buckets], idxOne) => (
           <Fragment key={idxOne}>
