@@ -109,11 +109,7 @@ export const S3BucketTreePicker = ({
                     component="div"
                     selected={isSelected(endpointName, bucketName)}
                     onClick={() => {
-                      if (isSelected(endpointName, bucketName)) {
-                        updateTreeViewValues('', '');
-                      } else {
-                        updateTreeViewValues(bucketName, endpointName);
-                      }
+                      updateTreeViewValues(bucketName, endpointName);
                     }}
                   >
                     <Tooltip title={bucketName}>
