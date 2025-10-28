@@ -239,7 +239,7 @@ export const S3ViewerContent = () => {
                   disabled: isSelected('', ''),
                   tooltip: isSelected('', '')
                     ? 'Disabled, no bucket selected'
-                    : 'Clear selected bucket',
+                    : 'Reset navigation',
                   isFreeAction: true,
                   onClick: () => updateTreeViewValues('', ''),
                 },
