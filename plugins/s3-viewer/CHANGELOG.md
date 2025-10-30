@@ -1,5 +1,28 @@
 # @spreadshirt/backstage-plugin-s3-viewer
 
+## 0.7.0
+
+### Minor Changes
+
+- c4f365c: Cleaned up bucket double clicking issues where it would reset selection to nil, see [#182](https://github.com/spreadshirt/backstage-plugin-s3/issues/182).
+
+  Added a bucket visiblity icon to the table display which now implemented a clear bucket feature as double clicking now resets back to root directory of bucket selection.
+
+- e7873a3: feat: add ability to show/hide bucket details at a server/cluster level default value of true
+
+  ```yaml
+  s3:
+    showBucketDetails: false
+  ```
+
+### Patch Changes
+
+- 5abb47e: Bump Backstage dependencies to latest version 1.44.2
+- 43c2c66: Fix some security updates
+- Updated dependencies [5abb47e]
+- Updated dependencies [43c2c66]
+  - @spreadshirt/backstage-plugin-s3-viewer-common@0.5.19
+
 ## 0.6.3
 
 ### Patch Changes

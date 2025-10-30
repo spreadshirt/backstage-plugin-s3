@@ -1,5 +1,18 @@
 # app
 
+## 0.1.12
+
+### Patch Changes
+
+- b751b95: Install missing global CSS rules for @backstage/ui
+- 5abb47e: Bump Backstage dependencies to latest version 1.44.2
+- 43c2c66: Fix some security updates
+- Updated dependencies [5abb47e]
+- Updated dependencies [c4f365c]
+- Updated dependencies [e7873a3]
+- Updated dependencies [43c2c66]
+  - @spreadshirt/backstage-plugin-s3-viewer@0.7.0
+
 ## 0.1.11
 
 ### Patch Changes
