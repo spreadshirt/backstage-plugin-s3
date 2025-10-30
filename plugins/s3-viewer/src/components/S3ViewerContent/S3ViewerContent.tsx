@@ -10,6 +10,8 @@ import { S3OverviewCard } from '../S3OverviewCard';
 import { S3ApiRef } from '../../api';
 import { rootRouteRef } from '../../routes';
 import { getFolderFromUrlDir, getPathFromUrlDir } from '../../utils';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -178,6 +180,10 @@ export const S3ViewerContent = () => {
     tableRef.current?.onQueryChange();
   };
 
+  const isSelected = (endpoint: string, bucket: string): boolean => {
+    return locationInfo.bucket === bucket && locationInfo.endpoint === endpoint;
+  };
+
   const updateTreeViewValues = useCallback(
     (newBucket: string, newEndpoint: string) => {
       setLocationInfo({
@@ -222,6 +228,21 @@ export const S3ViewerContent = () => {
               tableRef={tableRef}
               columns={columns}
               actions={[
+                {
+                  icon: () =>
+                    isSelected('', '') ? (
+                      <VisibilityOffIcon />
+                    ) : (
+                      <VisibilityIcon />
+                    ),
+                  position: 'row',
+                  disabled: isSelected('', ''),
+                  tooltip: isSelected('', '')
+                    ? 'Disabled, no bucket selected'
+                    : 'Reset navigation',
+                  isFreeAction: true,
+                  onClick: () => updateTreeViewValues('', ''),
+                },
                 {
                   icon: () => <SubdirectoryArrowLeftIcon />,
                   position: 'row',
