@@ -17,6 +17,7 @@ Check the installation process for these plugins in the following links:
 
 ## Deploying new releases ( _internal_ )
 
+- If updating Backstage: Run `yarn backstage-cli versions:bump` to update to the most recent Backstage version
 - After every change made in the plugins, execute `yarn changeset` and follow the steps.
 - When everything is ready, execute locally `yarn release` to update all the plugin versions, update the `CHANGELOG.md` files & update the `yarn.lock`.
 - Finally, run `yarn publish-release` to publish the packages to npm.
