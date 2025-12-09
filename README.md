@@ -38,6 +38,6 @@ After executing these two commands, a new window in your browser will be opened 
 
 ## License
 
-Copyright 2020-2022 © sprd.net AG. All rights reserved.
+Copyright 2020-2025 © sprd.net AG. All rights reserved.
 
 Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
