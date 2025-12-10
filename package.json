@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/spreadshirt/backstage-plugin-s3"
+    "url": "git+https://github.com/spreadshirt/backstage-plugin-s3.git"
   },
   "license": "Apache-2.0",
   "author": {
