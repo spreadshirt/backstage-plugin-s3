@@ -17,6 +17,7 @@ Check the installation process for these plugins in the following links:
 
 ## Deploying new releases ( _internal_ )
 
+- If updating Backstage: Run `yarn backstage-cli versions:bump` to update to the most recent Backstage version
 - After every change made in the plugins, execute `yarn changeset` and follow the steps.
 - When everything is ready, execute locally `yarn release` to update all the plugin versions, update the `CHANGELOG.md` files & update the `yarn.lock`.
 - Finally, run `yarn publish-release` to publish the packages to npm.
@@ -37,6 +38,6 @@ After executing these two commands, a new window in your browser will be opened 
 
 ## License
 
-Copyright 2020-2022 © sprd.net AG. All rights reserved.
+Copyright 2020-2025 © sprd.net AG. All rights reserved.
 
 Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
