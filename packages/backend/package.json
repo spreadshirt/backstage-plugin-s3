@@ -35,7 +35,7 @@
     "@backstage/plugin-permission-common": "^0.9.3",
     "@backstage/plugin-permission-node": "^0.10.6",
     "@backstage/plugin-user-settings-backend": "^0.3.8",
-    "@spreadshirt/backstage-plugin-s3-viewer-backend": "^0.13.0",
+    "@spreadshirt/backstage-plugin-s3-viewer-backend": "workspace:^",
     "app": "link:../app",
     "better-sqlite3": "^9.0.0",
     "node-gyp": "^9.0.0"
