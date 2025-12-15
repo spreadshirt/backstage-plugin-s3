@@ -44,7 +44,7 @@
   ],
   "dependencies": {
     "@backstage/backend-plugin-api": "^1.5.0",
-    "@spreadshirt/backstage-plugin-s3-viewer-common": "workspace:^",
+    "@spreadshirt/backstage-plugin-s3-viewer-common": "0.6.0",
     "@types/express": "*",
     "express": "^4.17.1",
     "stream": "^0.0.2"
