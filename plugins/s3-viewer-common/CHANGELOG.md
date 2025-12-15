@@ -1,5 +1,15 @@
 # @spreadshirt/backstage-plugin-s3-viewer-common
 
+## 0.6.1
+
+### Patch Changes
+
+- bad991b: Bump package version to fix release
+
+  The previous minor release was unpublished because it was broken
+  and the version can't be reused, thus we bump the patch version
+  of all packages.
+
 ## 0.6.0
 
 ### Minor Changes
