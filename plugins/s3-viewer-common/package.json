@@ -46,6 +46,7 @@
   ],
   "dependencies": {
     "@aws-sdk/client-s3": "^3.360.0",
-    "@backstage/plugin-permission-common": "^0.9.6"
+    "@backstage/plugin-permission-common": "^0.9.6",
+    "@backstage/plugin-permission-node": "^0.10.10"
   }
 }

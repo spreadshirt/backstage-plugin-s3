@@ -2,6 +2,7 @@ import {
   createPermission,
   ResourcePermission,
 } from '@backstage/plugin-permission-common';
+import { createPermissionResourceRef } from '@backstage/plugin-permission-node';
 import { BucketDetails, BucketStats } from './types';
 
 export type BucketDetailsFilter = {
@@ -16,6 +17,14 @@ export type BucketDetailsFilters =
   | BucketDetailsFilter;
 
 export const S3_VIEWER_RESOURCE_TYPE = 's3-viewer.bucket';
+
+export const s3ViewerPermissionResourceRef = createPermissionResourceRef<
+  BucketDetails,
+  BucketDetailsFilter
+>().with({
+  pluginId: 's3-viewer',
+  resourceType: S3_VIEWER_RESOURCE_TYPE,
+});
 
 export type S3BucketDetailsPermission = ResourcePermission<
   typeof S3_VIEWER_RESOURCE_TYPE
