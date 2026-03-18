@@ -5,13 +5,12 @@ import {
 } from '@backstage/plugin-permission-node';
 import {
   BucketDetailsFilters,
-  S3_VIEWER_RESOURCE_TYPE,
+  s3ViewerPermissionResourceRef,
 } from '@spreadshirt/backstage-plugin-s3-viewer-common';
 import { rules } from './rules';
 
 const { conditions, createConditionalDecision } = createConditionExports({
-  pluginId: 's3-viewer',
-  resourceType: S3_VIEWER_RESOURCE_TYPE,
+  resourceRef: s3ViewerPermissionResourceRef,
   rules,
 });
 
