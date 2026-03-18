@@ -55,12 +55,18 @@
     "@backstage/core-app-api": "^1.19.6",
     "@backstage/dev-utils": "^1.1.21",
     "@backstage/test-utils": "^1.7.16",
+    "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.0.0",
     "@types/jest": "*",
+    "@types/react": "^18",
     "cross-fetch": "^4.0.0",
-    "msw": "^2.0.0"
+    "jest": "^30.3.0",
+    "msw": "^2.0.0",
+    "react": "^18.0.2",
+    "react-dom": "^18.0.2",
+    "react-router-dom": "^6.3.0"
   },
   "files": [
     "dist",
