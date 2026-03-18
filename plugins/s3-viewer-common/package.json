@@ -39,14 +39,19 @@
     "postpack": "backstage-cli package postpack"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.35.4"
+    "@backstage/cli": "^0.36.0",
+    "@testing-library/dom": "^10.0.0",
+    "@testing-library/react": "^16.0.0",
+    "jest": "^30.3.0",
+    "react": "^18.0.2",
+    "react-dom": "^18.0.2"
   },
   "files": [
     "dist"
   ],
   "dependencies": {
     "@aws-sdk/client-s3": "^3.360.0",
-    "@backstage/plugin-permission-common": "^0.9.6",
-    "@backstage/plugin-permission-node": "^0.10.10"
+    "@backstage/plugin-permission-common": "^0.9.7",
+    "@backstage/plugin-permission-node": "^0.10.11"
   }
 }

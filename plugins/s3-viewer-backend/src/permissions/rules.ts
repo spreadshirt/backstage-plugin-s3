@@ -1,6 +1,6 @@
 import { createPermissionRule } from '@backstage/plugin-permission-node';
 import { s3ViewerPermissionResourceRef } from '@spreadshirt/backstage-plugin-s3-viewer-common';
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 const isBucketOwner = createPermissionRule({
   name: 'IS_BUCKET_OWNER',

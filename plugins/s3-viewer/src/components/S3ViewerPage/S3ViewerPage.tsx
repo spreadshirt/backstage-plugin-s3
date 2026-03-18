@@ -1,6 +1,6 @@
 import { Content, Header, InfoCard, Page } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@backstage/ui';
 import { S3ViewerContent } from '../S3ViewerContent';
 
 export const S3ViewerPage = () => {
@@ -11,13 +11,13 @@ export const S3ViewerPage = () => {
     <Page themeId="tool">
       <Header title={`${orgName} S3 viewer`} />
       <Content>
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
+        <Grid.Root>
+          <Grid.Item>
             <InfoCard>
               <S3ViewerContent />
             </InfoCard>
-          </Grid>
-        </Grid>
+          </Grid.Item>
+        </Grid.Root>
       </Content>
     </Page>
   );

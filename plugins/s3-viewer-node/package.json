@@ -37,13 +37,14 @@
     "postpack": "backstage-cli package postpack"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.35.4"
+    "@backstage/cli": "^0.36.0",
+    "jest": "^30.3.0"
   },
   "files": [
     "dist"
   ],
   "dependencies": {
-    "@backstage/backend-plugin-api": "^1.7.0",
+    "@backstage/backend-plugin-api": "^1.8.0",
     "@spreadshirt/backstage-plugin-s3-viewer-common": "0.7.0",
     "@types/express": "*",
     "express": "^4.17.1",

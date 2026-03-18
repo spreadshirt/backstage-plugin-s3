@@ -1,7 +1,8 @@
 import Alert from '@material-ui/lab/Alert';
 import { BucketDetails } from '@spreadshirt/backstage-plugin-s3-viewer-common';
 import { humanFileSize } from '../../utils';
-import { Divider, Grid, Typography } from '@material-ui/core';
+import { Grid } from '@backstage/ui';
+import { Divider, Typography } from '@material-ui/core';
 import { Progress, StructuredMetadataTable } from '@backstage/core-components';
 
 type S3BucketViewProps = {
@@ -70,13 +71,13 @@ export const S3BucketViewer = ({
     <>
       <Typography variant="h5">{bucketInfo?.bucket || ''}</Typography>
       <Divider style={{ marginTop: 20, marginBottom: 20 }} />
-      <Grid container>
-        <Grid item xs={12}>
+      <Grid.Root>
+        <Grid.Item colSpan="6">
           <StructuredMetadataTable
             metadata={getBucketInfoMetadata(bucketInfo)}
           />
-        </Grid>
-      </Grid>
+        </Grid.Item>
+      </Grid.Root>
     </>
   );
 };

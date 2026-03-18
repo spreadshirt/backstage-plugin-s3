@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { FetchObjectResult } from '@spreadshirt/backstage-plugin-s3-viewer-common';
+import { Grid } from '@backstage/ui';
 import {
   createStyles,
   Divider,
-  Grid,
   makeStyles,
   Typography,
 } from '@material-ui/core';
@@ -107,8 +107,6 @@ export const S3ObjectViewer = ({
   loadingObjectInfo,
   errorObjectInfo,
 }: S3ObjectViewProps) => {
-  const classes = useStyles();
-
   if (loadingObjectInfo) {
     return <Progress />;
   } else if (errorObjectInfo) {
@@ -130,40 +128,27 @@ export const S3ObjectViewer = ({
     <>
       <Typography variant="h5">{objectInfo.name}</Typography>
       <Divider style={{ marginTop: 20, marginBottom: 20 }} />
-      <Grid container>
-        <Grid item xs={12}>
+      <Grid.Root columns="1">
+        <Grid.Item>
           <StructuredMetadataTable metadata={getMetadata(objectInfo)} />
-        </Grid>
-        <Grid item xs={12}>
+        </Grid.Item>
+        <Grid.Item>
           <Divider style={{ marginTop: 20, marginBottom: 20 }} />
-        </Grid>
-        <Grid
-          container
-          direction="column"
-          alignItems="center"
-          justifyContent="center"
-          className={classes.margin}
-        >
+        </Grid.Item>
+        <Grid.Item>
           <S3Preview objectInfo={objectInfo} />
-        </Grid>
-        <Grid
-          container
-          direction="column"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <Grid item xs={6}>
-            <LinkButton
-              style={{ textDecoration: 'none' }}
-              variant="outlined"
-              title={`Download ${objectInfo.downloadName}`}
-              to={objectInfo.downloadUrl}
-            >
-              Download
-            </LinkButton>
-          </Grid>
-        </Grid>
-      </Grid>
+        </Grid.Item>
+        <Grid.Item>
+          <LinkButton
+            style={{ textDecoration: 'none' }}
+            variant="outlined"
+            title={`Download ${objectInfo.downloadName}`}
+            to={objectInfo.downloadUrl}
+          >
+            Download
+          </LinkButton>
+        </Grid.Item>
+      </Grid.Root>
     </>
   );
 };
