@@ -1,5 +1,18 @@
 # app
 
+## 0.3.0
+
+### Minor Changes
+
+- 6eee6a7: Update Backstage to 1.48.5
+
+  Note that we jumped three minor releases, but luckily only a few deprecations needed to be fixed.
+
+### Patch Changes
+
+- Updated dependencies [6eee6a7]
+  - @spreadshirt/backstage-plugin-s3-viewer@0.9.0
+
 ## 0.2.0
 
 ### Minor Changes
