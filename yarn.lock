@@ -13796,6 +13796,7 @@ __metadata:
   resolution: "backstage-plugin-s3@workspace:."
   dependencies:
     "@backstage/cli": "npm:^0.36.0"
+    "@backstage/cli-defaults": "npm:^0.1.0"
     "@changesets/cli": "npm:^2.27.9"
     "@jest/environment-jsdom-abstract": "npm:^30.3.0"
     "@spotify/prettier-config": "npm:^15.0.0"
