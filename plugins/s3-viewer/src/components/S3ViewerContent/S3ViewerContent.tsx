@@ -3,7 +3,8 @@ import useAsync from 'react-use/lib/useAsync';
 import { Content, Table, TableColumn } from '@backstage/core-components';
 import { useApi, useRouteRefParams } from '@backstage/core-plugin-api';
 import { KeyData } from '@spreadshirt/backstage-plugin-s3-viewer-common';
-import { createStyles, Grid, makeStyles, Typography } from '@material-ui/core';
+import { Grid } from '@backstage/ui';
+import { Typography } from '@material-ui/core';
 import SubdirectoryArrowLeftIcon from '@material-ui/icons/SubdirectoryArrowLeft';
 import { S3BucketTreePicker } from '../S3BucketTreePicker';
 import { S3OverviewCard } from '../S3OverviewCard';
@@ -12,17 +13,6 @@ import { rootRouteRef } from '../../routes';
 import { getFolderFromUrlDir, getPathFromUrlDir } from '../../utils';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    content: {
-      width: '100%',
-      display: 'flex',
-      flexWrap: 'wrap',
-      alignItems: 'center',
-    },
-  }),
-);
 
 const updateSearchParams = (
   newBucket: string,
@@ -48,7 +38,6 @@ type LocationInfo = {
 
 export const S3ViewerContent = () => {
   const s3Api = useApi(S3ApiRef);
-  const classes = useStyles();
   const tableRef = useRef<any>();
   const urlParams = useRouteRefParams(rootRouteRef);
 
@@ -215,15 +204,15 @@ export const S3ViewerContent = () => {
 
   return (
     <>
-      <Content className={classes.content} noPadding>
-        <Grid container spacing={1}>
-          <Grid item xs={2}>
+      <Content noPadding>
+        <Grid.Root columns="12">
+          <Grid.Item colSpan="2">
             <S3BucketTreePicker
               state={{ ...locationInfo }}
               updateTreeViewValues={updateTreeViewValues}
             />
-          </Grid>
-          <Grid item xs={6}>
+          </Grid.Item>
+          <Grid.Item colSpan="6">
             <Table<KeyData>
               tableRef={tableRef}
               columns={columns}
@@ -280,8 +269,8 @@ export const S3ViewerContent = () => {
                 emptyRowsWhenPaging: false,
               }}
             />
-          </Grid>
-          <Grid item xs={4}>
+          </Grid.Item>
+          <Grid.Item colSpan="4">
             <S3OverviewCard
               bucketInfo={bucketInfo}
               loadingBucketInfo={loadingBucketInfo}
@@ -290,8 +279,8 @@ export const S3ViewerContent = () => {
               loadingObjectInfo={loadingObjectInfo}
               errorObjectInfo={errorObjectInfo}
             />
-          </Grid>
-        </Grid>
+          </Grid.Item>
+        </Grid.Root>
       </Content>
     </>
   );
