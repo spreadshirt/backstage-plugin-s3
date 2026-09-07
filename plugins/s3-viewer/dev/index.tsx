@@ -1,11 +1,7 @@
-import { createDevApp } from '@backstage/dev-utils';
-import { s3ViewerPlugin, S3ViewerPage } from '../src/plugin';
+import { createDevApp } from '@backstage/frontend-dev-utils';
+import catalogPlugin from '@backstage/plugin-catalog/alpha';
+import s3ViewerPlugin from '../src/alpha';
 
-createDevApp()
-  .registerPlugin(s3ViewerPlugin)
-  .addPage({
-    element: <S3ViewerPage />,
-    title: 'Root Page',
-    path: '/s3-viewer',
-  })
-  .render();
+createDevApp({
+  features: [catalogPlugin, s3ViewerPlugin],
+});

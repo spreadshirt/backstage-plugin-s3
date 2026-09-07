@@ -11,6 +11,15 @@
     "name": "Spreadshirt"
   },
   "private": true,
+  "backstage": {
+    "cli": {
+      "new": {
+        "globals": {
+          "license": "UNLICENSED"
+        }
+      }
+    }
+  },
   "workspaces": {
     "packages": [
       "packages/*",
@@ -36,7 +45,8 @@
     "npm:release": "yarn install && tsc && yarn build:all && changeset publish"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.35.4",
+    "@backstage/cli": "backstage:^",
+    "@backstage/cli-defaults": "backstage:^",
     "@changesets/cli": "^2.27.9",
     "@jest/environment-jsdom-abstract": "^30.3.0",
     "@spotify/prettier-config": "^15.0.0",
@@ -63,5 +73,5 @@
       "prettier --write"
     ]
   },
-  "packageManager": "yarn@4.5.0"
+  "packageManager": "yarn@4.13.0"
 }

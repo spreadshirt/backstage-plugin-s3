@@ -14,6 +14,7 @@ services:
       - CEPH_DEMO_ACCESS_KEY=70VkRWd3IHDxEafKZFX9 # Created with `tr -dc A-Za-z0-9 </dev/urandom | head -c 20 ; echo ''`
       - CEPH_DEMO_SECRET_KEY=v0GerzwTw0cD2Dcq4m0aGeNzQVnpyzc0zW4Mc05A # Created with `tr -dc A-Za-z0-9 </dev/urandom | head -c 40 ; echo ''`
       - CEPH_DEMO_BUCKET=foobar
+      - CEPH_ARGS=--mon-data-avail-warn=1 --mon-data-avail-crit=1 --mon-osd-full-ratio=.99 --mon-osd-backfillfull-ratio=.98 --mon-osd-nearfull-ratio=.95
       - DATA_TO_SYNC=/etc/examples
       - DATA_TO_SYNC_BUCKET=foobar
     command: demo

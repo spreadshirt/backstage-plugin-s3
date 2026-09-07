@@ -1,7 +1,19 @@
 app:
   title: S3 Viewer Example App
   baseUrl: http://localhost:3000
-
+  packages: all
+  extensions:
+    - page:catalog:
+        config:
+          exportSettings:
+            enabled: true
+            disableBuiltinExporters: false
+    - catalog-filter:catalog/list:
+        config:
+          initialFilter: all
+    - catalog-filter:catalog/kind:
+        config:
+          initialFilter: user
 backend:
   baseUrl: http://localhost:7007
   listen:

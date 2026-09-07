@@ -13,38 +13,88 @@ With this plugin, you will be able to navigate around your internal AWS S3 stora
 
 ## Getting started
 
-To get started, follow these steps:
-
 1. Install the plugin by running this command:
+
     ```bash
     # From your Backstage root directory
-    yarn --cwd add packages/app @spreadshirt/backstage-plugin-s3-viewer
+    yarn --cwd packages/app add @spreadshirt/backstage-plugin-s3-viewer
     ```
 
-2. Add the new route to the app by adding the following line:
+2. Add the configuration to the `app-config.yaml` file. This is described in the backend plugin.
+
+3. Optionally set a cookie after sign-in so downloads and previews work. This belongs in the **app**, not the plugin:
+
     ```typescript
-    // In packages/app/src/App.tsx
-    import { S3ViewerPage } from '@spreadshirt/backstage-plugin-s3-viewer';
+    import { S3ApiRef } from '@spreadshirt/backstage-plugin-s3-viewer';
+    import { IdentityApi, useApi } from '@backstage/core-plugin-api';
 
-    const routes = (
-      <FlatRoutes>
-        {/* ...other routes */}
-        <Route path="/s3-viewer" element={<S3ViewerPage />} />
-      </FlatRoutes>
-    )
+    // Inside a React component (for example the SignInPageBlueprint loader):
+    const s3ViewerApi = useApi(S3ApiRef);
+
+    async function onSignInSuccess(identityApi: IdentityApi) {
+      props.onSignInSuccess(identityApi);
+      await s3ViewerApi.setCookie();
+    }
     ```
 
-3. Now, add a new element to the Sidebar, so the endpoint can be easily accessible for the users. You can place it wherever you prefer:
-    ```typescript
-    // In packages/app/src/components/Root/Root.tsx
-    import { SiAmazons3 } from 'react-icons/si';
+    Wire that into your sign-in page (New Frontend System `SignInPageBlueprint`, or the legacy `components.SignInPage` option).
 
-    <SidebarPage>
-      {/* ...other contents */}
-      <SidebarItem icon={SiAmazons3} to="s3-viewer" text="S3 Viewer" />   
-    </SidebarPage>
-    ```
-4. Add the configuration to the `app-config.yaml` file. This is described in the backend plugin.
+### New Frontend System
+
+Install the plugin as a feature. The page is served at `/s3-viewer` by default and appears in the sidebar from the page `title` and `icon`.
+
+```typescript
+// In packages/app/src/App.tsx
+import { createApp } from '@backstage/frontend-defaults';
+import s3ViewerPlugin from '@spreadshirt/backstage-plugin-s3-viewer/alpha';
+
+const app = createApp({
+  features: [
+    s3ViewerPlugin,
+    // ...other features
+  ],
+});
+
+export default app.createRoot();
+```
+
+You can override the path in configuration if needed:
+
+```yaml
+app:
+  extensions:
+    - page:s3-viewer:
+        config:
+          path: /s3-viewer
+```
+
+### Legacy frontend system
+
+If your app still uses the legacy frontend system:
+
+```typescript
+// In packages/app/src/App.tsx
+import { S3ViewerPage } from '@spreadshirt/backstage-plugin-s3-viewer';
+
+const routes = (
+  <FlatRoutes>
+    {/* ...other routes */}
+    <Route path="/s3-viewer" element={<S3ViewerPage />} />
+  </FlatRoutes>
+)
+```
+
+Add a sidebar item:
+
+```typescript
+// In packages/app/src/components/Root/Root.tsx
+import { SiAmazons3 } from 'react-icons/si';
+
+<SidebarPage>
+  {/* ...other contents */}
+  <SidebarItem icon={SiAmazons3} to="s3-viewer" text="S3 Viewer" />
+</SidebarPage>
+```
 
 ## Features
 

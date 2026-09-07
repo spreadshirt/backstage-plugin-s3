@@ -1,0 +1,9 @@
+/* packages/app/src/styles.css */
+html,
+:root,
+body {
+  /* Backstage UI Design Tokens for the Sidebar */
+  --bui-sidebar-closed-width: 72px;
+  --bui-sidebar-open-width: 240px;
+  --bui-sidebar-logo-height: 24px;
+}

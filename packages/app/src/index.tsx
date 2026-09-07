@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 import ReactDOM from 'react-dom/client';
-import App from './App';
+import app from './App';
+// 1. Core Backstage UI rules (Load this first)
 import '@backstage/ui/css/styles.css';
 
-ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+// 2. Your custom tokens and design variable overrides (Load this second)
+import './styles.css';
+
+ReactDOM.createRoot(document.getElementById('root')!).render(app);

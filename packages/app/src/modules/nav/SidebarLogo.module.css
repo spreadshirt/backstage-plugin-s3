@@ -1,0 +1,14 @@
+.root {
+  width: var(--bui-sidebar-closed-width);
+  height: calc(3 * var(--bui-sidebar-logo-height));
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  margin-bottom: -14px;
+  margin-left: calc(var(--bui-sidebar-closed-width) / 4);
+}
+
+.link {
+  width: var(--bui-sidebar-closed-width);
+  margin-left: 24px;
+}
