@@ -1,5 +1,26 @@
 # @spreadshirt/backstage-plugin-s3-viewer
 
+## 0.10.0
+
+### Minor Changes
+
+- 4f511bf: Add a New Frontend System `/alpha` entry with `PageBlueprint` and `ApiBlueprint`, while keeping the legacy plugin API. (Backwards Compatible)
+
+  Removed dependency 'stream' this was causing major issues with looping, as this is a core node package.
+
+  Converted the base application to New Frontend System
+
+  Upgraded to the latest backstage 1.54.X
+
+  Dependency cleanups
+
+  Upgrade compose setup
+
+### Patch Changes
+
+- Updated dependencies [4f511bf]
+  - @spreadshirt/backstage-plugin-s3-viewer-common@0.8.0
+
 ## 0.9.0
 
 ### Minor Changes
