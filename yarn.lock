@@ -2239,7 +2239,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/core-app-api@npm:^1.20.4":
+"@backstage/core-app-api@backstage:^::backstage=1.54.6&npm=1.20.4, @backstage/core-app-api@npm:^1.20.4":
   version: 1.20.4
   resolution: "@backstage/core-app-api@npm:1.20.4"
   dependencies:
@@ -2375,7 +2375,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/dev-utils@npm:^1.1.26":
+"@backstage/dev-utils@backstage:^::backstage=1.54.6&npm=1.1.26, @backstage/dev-utils@npm:^1.1.26":
   version: 1.1.26
   resolution: "@backstage/dev-utils@npm:1.1.26"
   dependencies:
@@ -2485,7 +2485,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/frontend-dev-utils@npm:^0.1.5":
+"@backstage/frontend-dev-utils@backstage:^::backstage=1.54.6&npm=0.1.5, @backstage/frontend-dev-utils@npm:^0.1.5":
   version: 0.1.5
   resolution: "@backstage/frontend-dev-utils@npm:0.1.5"
   dependencies:
@@ -7649,16 +7649,16 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@spreadshirt/backstage-plugin-s3-viewer@workspace:plugins/s3-viewer"
   dependencies:
-    "@backstage/cli": "npm:^0.36.5"
-    "@backstage/core-app-api": "npm:^1.20.4"
+    "@backstage/cli": "backstage:^"
+    "@backstage/core-app-api": "backstage:^"
     "@backstage/core-compat-api": "backstage:^"
     "@backstage/core-components": "backstage:^"
     "@backstage/core-plugin-api": "backstage:^"
-    "@backstage/dev-utils": "npm:^1.1.26"
-    "@backstage/frontend-dev-utils": "npm:^0.1.5"
+    "@backstage/dev-utils": "backstage:^"
+    "@backstage/frontend-dev-utils": "backstage:^"
     "@backstage/frontend-plugin-api": "backstage:^"
     "@backstage/plugin-catalog": "backstage:^"
-    "@backstage/test-utils": "npm:^1.7.21"
+    "@backstage/test-utils": "backstage:^"
     "@material-ui/core": "npm:^4.12.2"
     "@material-ui/icons": "npm:^4.9.1"
     "@material-ui/lab": "npm:^4.0.0-alpha.61"
@@ -10062,7 +10062,7 @@ __metadata:
   dependencies:
     "@backstage/backend-defaults": "backstage:^"
     "@backstage/backend-plugin-api": "backstage:^"
-    "@backstage/cli": "npm:^0.36.5"
+    "@backstage/cli": "backstage:^"
     "@backstage/config": "backstage:^"
     "@backstage/plugin-app-backend": "backstage:^"
     "@backstage/plugin-auth-backend": "backstage:^"
