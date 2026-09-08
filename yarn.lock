@@ -7603,8 +7603,8 @@ __metadata:
     "@backstage/types": "backstage:^"
     "@smithy/protocol-http": "npm:^4.1.0"
     "@smithy/signature-v4": "npm:^4.1.0"
-    "@spreadshirt/backstage-plugin-s3-viewer-common": "npm:0.7.0"
-    "@spreadshirt/backstage-plugin-s3-viewer-node": "npm:0.4.0"
+    "@spreadshirt/backstage-plugin-s3-viewer-common": "npm:0.8.0"
+    "@spreadshirt/backstage-plugin-s3-viewer-node": "npm:0.5.0"
     "@types/cookie-parser": "npm:^1.4.10"
     "@types/express": "npm:*"
     "@types/jest": "npm:*"
@@ -7622,7 +7622,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@spreadshirt/backstage-plugin-s3-viewer-common@npm:0.7.0, @spreadshirt/backstage-plugin-s3-viewer-common@workspace:plugins/s3-viewer-common":
+"@spreadshirt/backstage-plugin-s3-viewer-common@npm:0.8.0, @spreadshirt/backstage-plugin-s3-viewer-common@workspace:plugins/s3-viewer-common":
   version: 0.0.0-use.local
   resolution: "@spreadshirt/backstage-plugin-s3-viewer-common@workspace:plugins/s3-viewer-common"
   dependencies:
@@ -7633,13 +7633,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@spreadshirt/backstage-plugin-s3-viewer-node@npm:0.4.0, @spreadshirt/backstage-plugin-s3-viewer-node@workspace:plugins/s3-viewer-node":
+"@spreadshirt/backstage-plugin-s3-viewer-node@npm:0.5.0, @spreadshirt/backstage-plugin-s3-viewer-node@workspace:plugins/s3-viewer-node":
   version: 0.0.0-use.local
   resolution: "@spreadshirt/backstage-plugin-s3-viewer-node@workspace:plugins/s3-viewer-node"
   dependencies:
     "@backstage/backend-plugin-api": "backstage:^"
     "@backstage/cli": "backstage:^"
-    "@spreadshirt/backstage-plugin-s3-viewer-common": "npm:0.7.0"
+    "@spreadshirt/backstage-plugin-s3-viewer-common": "npm:0.8.0"
     "@types/express": "npm:*"
     express: "npm:^4.22.0"
   languageName: unknown
@@ -7662,7 +7662,7 @@ __metadata:
     "@material-ui/core": "npm:^4.12.2"
     "@material-ui/icons": "npm:^4.9.1"
     "@material-ui/lab": "npm:^4.0.0-alpha.61"
-    "@spreadshirt/backstage-plugin-s3-viewer-common": "npm:0.7.0"
+    "@spreadshirt/backstage-plugin-s3-viewer-common": "npm:0.8.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^16.0.0"
     "@testing-library/user-event": "npm:^14.0.0"
