@@ -8,24 +8,14 @@
     "access": "public",
     "exports": {
       ".": {
-        "import": {
-          "types": "./dist/index.d.ts",
-          "default": "./dist/index.esm.js"
-        },
-        "require": {
-          "types": "./dist/index.d.ts",
-          "default": "./dist/index.cjs.js"
-        }
+        "import": "./dist/index.esm.js",
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.esm.js"
       },
       "./alpha": {
-        "import": {
-          "types": "./dist/alpha.d.ts",
-          "default": "./dist/alpha.esm.js"
-        },
-        "require": {
-          "types": "./dist/alpha.d.ts",
-          "default": "./dist/alpha.cjs.js"
-        }
+        "import": "./dist/alpha.esm.js",
+        "types": "./dist/alpha.d.ts",
+        "default": "./dist/alpha.esm.js"
       },
       "./package.json": "./package.json"
     }
