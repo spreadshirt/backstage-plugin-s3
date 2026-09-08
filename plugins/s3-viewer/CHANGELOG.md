@@ -1,5 +1,14 @@
 # @spreadshirt/backstage-plugin-s3-viewer
 
+## 0.10.1
+
+### Patch Changes
+
+- 5188798: Fix broken exports after Backstage 1.54.x update
+
+  The imports didn't work because they were written for CJS, which doesn't seem to
+  be exported for frontend plugins.
+
 ## 0.10.0
 
 ### Minor Changes
