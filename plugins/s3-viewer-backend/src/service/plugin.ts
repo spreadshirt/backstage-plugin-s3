@@ -22,25 +22,25 @@ export const s3ViewerPlugin = createBackendPlugin({
     env.registerExtensionPoint(s3ViewerExtensionPoint, {
       setClient(client) {
         if (s3Client !== undefined) {
-          throw new Error('A S3 client has been already set');
+          throw new Error('An S3 client has already been set');
         }
         s3Client = client;
       },
       setCredentialsProvider(credentialsProvider) {
         if (s3CredentialsProvider !== undefined) {
-          throw new Error('A credentials provider has been already set');
+          throw new Error('A credentials provider has already been set');
         }
         s3CredentialsProvider = credentialsProvider;
       },
       setBucketsProvider(bucketsProvider) {
         if (s3BucketsProvider !== undefined) {
-          throw new Error('A buckets provider has been already set');
+          throw new Error('A buckets provider has already been set');
         }
         s3BucketsProvider = bucketsProvider;
       },
       setBucketStatsProvider(bucketStatsProvider) {
         if (s3BucketStatsProvider !== undefined) {
-          throw new Error('A bucket stats provider has been already set');
+          throw new Error('A bucket stats provider has already been set');
         }
         s3BucketStatsProvider = bucketStatsProvider;
       },
