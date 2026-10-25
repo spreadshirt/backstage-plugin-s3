@@ -71,7 +71,7 @@ export interface Config {
           type: 'radosgw-admin';
           platforms: Array<{
             /**
-             * The endpoint where the radogw-admin can be reached.
+             * The endpoint where the radosgw-admin can be reached.
              * @visibility backend
              */
             endpoint: string;
@@ -96,7 +96,7 @@ export interface Config {
           type: 'iam-role';
           platforms: Array<{
             /**
-             * The endpoint where the radogw-admin can be reached.
+             * The endpoint where the radosgw-admin can be reached.
              * @visibility backend
              */
             endpoint: string;

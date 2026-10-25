@@ -33,7 +33,7 @@ export async function fetchBucketsForPlatform(
 
         return bucketsAllowed.some(a => {
           // Add the start/end of regular expression, so no unexpected matches happen
-          // Example: `test` should't match `test-one`, but `test.*` should.
+          // Example: `test` shouldn't match `test-one`, but `test.*` should.
           return b.match(`^${a}$`);
         });
       }) || [];
