@@ -59,7 +59,7 @@
     "knex": "^3.3.0",
     "luxon": "^3.7.2",
     "yn": "^5.1.0",
-    "zod": "^4.4.3"
+    "zod": "^4.6.6"
   },
   "devDependencies": {
     "@backstage/backend-test-utils": "backstage:^",
